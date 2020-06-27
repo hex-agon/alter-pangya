@@ -1,7 +1,6 @@
 package work.fking.pangya.networking.crypt;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufUtil;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 
@@ -55,8 +54,6 @@ public class PangCrypt {
         int tableIdx = (key << 8) + salt;
         int xorByte = PangCryptTables.FIRST[tableIdx] ^ PangCryptTables.SECOND[tableIdx];
 
-        LOGGER.error("Encrypt key={}, salt={}, tableIdx={}, xorByte={}", key, salt, tableIdx, Integer.toHexString(xorByte));
-
         target.writeByte(salt);
         target.writeShortLE(size);
         target.writeByte(xorByte);
@@ -68,8 +65,6 @@ public class PangCrypt {
         int w = (v - y) / 255;
         int z = (w + w / 255) & 0xFF;
 
-        LOGGER.error("Encrypt key={}, u={}, x={}, v={}, y={}, w={}, z={}", key, uncompressedPayloadSize, x, v, y, w, z);
-
         target.writeByte(z); // 6
         target.writeByte(y); // 7
         target.writeByte(x); // 8
@@ -78,12 +73,9 @@ public class PangCrypt {
         int start = target.readerIndex() + 10;
         int length = payloadSize + CRYPT_STRIDE + 3;
 
-        LOGGER.error("{}", ByteBufUtil.hexDump(target));
-
-        for (int i = start; i < length; i++) {
+        for (int i = length - 1; i >= start; i--) {
             int value = target.getByte(i) ^ target.getByte(i - CRYPT_STRIDE);
 
-            LOGGER.error("xor'ing byte at {} with {}, value from {} to {}", i, Integer.toHexString(target.getByte(i - CRYPT_STRIDE) & 0xff), Integer.toHexString(target.getByte(i) & 0xFF), Integer.toHexString(value & 0xFF));
             target.setByte(i, value);
         }
         int byteIdx = target.readerIndex() + 7;

@@ -5,8 +5,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelPipeline;
 import lombok.extern.log4j.Log4j2;
-import work.fking.pangya.networking.crypt.PangCryptCodec;
-import work.fking.pangya.networking.lzo.Lzo1xEncoder;
+import work.fking.pangya.networking.protocol.ProtocolEncoder;
 import work.fking.pangya.networking.protocol.Protocol;
 import work.fking.pangya.networking.protocol.ProtocolDecoder;
 import work.fking.pangya.packet.outbound.HelloPacket;
@@ -32,8 +31,9 @@ public class HelloHandler extends ChannelInboundHandlerAdapter {
 
         ChannelPipeline pipeline = ctx.pipeline();
         pipeline.remove(this);
+        pipeline.remove("encoder");
         pipeline.addLast(new ProtocolDecoder(protocol));
-        pipeline.addFirst(new Lzo1xEncoder());
-        pipeline.addFirst(new PangCryptCodec());
+        pipeline.addLast(new PacketHandler());
+        pipeline.addFirst(new ProtocolEncoder());
     }
 }

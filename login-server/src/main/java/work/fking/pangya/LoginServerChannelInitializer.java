@@ -5,7 +5,7 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import lombok.extern.log4j.Log4j2;
 import work.fking.pangya.networking.protocol.Protocol;
-import work.fking.pangya.networking.protocol.ProtocolEncoder;
+import work.fking.pangya.networking.protocol.SimplePacketEncoder;
 
 @Log4j2
 public class LoginServerChannelInitializer extends ChannelInitializer<Channel> {
@@ -24,7 +24,7 @@ public class LoginServerChannelInitializer extends ChannelInitializer<Channel> {
     protected void initChannel(Channel channel) {
         ChannelPipeline pipeline = channel.pipeline();
 
-        pipeline.addLast(new ProtocolEncoder());
+        pipeline.addLast("encoder", new SimplePacketEncoder());
         pipeline.addLast(helloHandler);
     }
 }

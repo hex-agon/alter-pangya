@@ -21,7 +21,7 @@ public class LoginResultPacket implements OutboundPacket {
 
     @Override
     public void encode(ByteBuf buffer, AttributeMap attributeMap) {
-        buffer.writeByte(ID);
+        buffer.writeShortLE(ID);
         buffer.writeByte(result.code);
     }
 

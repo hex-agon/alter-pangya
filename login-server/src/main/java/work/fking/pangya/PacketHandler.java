@@ -13,13 +13,10 @@ public class PacketHandler extends SimpleChannelInboundHandler<InboundPacket> {
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, InboundPacket msg) {
-        System.out.println(msg.toString());
 
         if (msg instanceof LoginRequestPacket) {
             LoginResultPacket loginResultPacket = LoginResultPacket.builder()
-                                                                   .error()
-                                                                   .errorCode(ErrorCode.INVALID_CREDENTIALS)
-                                                                   .build();
+                                                                   .error(ErrorCode.INVALID_CREDENTIALS);
             ctx.channel().writeAndFlush(loginResultPacket);
         }
     }

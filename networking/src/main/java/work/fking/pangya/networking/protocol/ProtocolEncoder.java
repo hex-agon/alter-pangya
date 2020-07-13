@@ -21,22 +21,23 @@ public class ProtocolEncoder extends MessageToByteEncoder<OutboundPacket> {
 
     @Override
     protected void encode(ChannelHandlerContext ctx, OutboundPacket packet, ByteBuf buffer) throws IOException {
+        LOGGER.trace("Encoding packet={}", packet.getClass().getSimpleName());
         // TODO: Everything here is terribly inefficient
         ByteBuf pktBuffer = ctx.alloc().buffer();
         packet.encode(pktBuffer, ctx.channel());
 
-        LOGGER.debug("payload={}", ByteBufUtil.hexDump(pktBuffer));
+        LOGGER.trace("payload={}", ByteBufUtil.hexDump(pktBuffer));
 
         ByteBufOutputStream outputStream = new ByteBufOutputStream(ctx.alloc().buffer());
-        LzoOutputStream stream = new LzoOutputStream(outputStream, compressor, 4096);
+        LzoOutputStream stream = new LzoOutputStream(outputStream, compressor, 1024);
         pktBuffer.readBytes(stream, pktBuffer.readableBytes());
         stream.flush();
 
         ByteBuf compressed = outputStream.buffer();
-        LOGGER.debug("payloadCompressed={}", ByteBufUtil.hexDump(compressed));
+        LOGGER.trace("payloadCompressed={}", ByteBufUtil.hexDump(compressed));
         compressed.skipBytes(8); // the lzo lib writes the uncompressedLength + compressedLength to the header and we don't want it
 
         PangCrypt.encrypt(buffer, compressed, compressed.readableBytes(), 0, 0);
-        LOGGER.debug("encrypted={}", ByteBufUtil.hexDump(buffer));
+        LOGGER.trace("encrypted={}", ByteBufUtil.hexDump(buffer));
     }
 }

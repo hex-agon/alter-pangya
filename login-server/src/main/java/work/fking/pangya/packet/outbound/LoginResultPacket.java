@@ -60,8 +60,8 @@ public class LoginResultPacket implements OutboundPacket {
             return new SuccessBuilder();
         }
 
-        public ErrorBuilder error() {
-            return new ErrorBuilder();
+        public LoginResultPacket error(ErrorCode errorCode) {
+            return new ErrorLoginResultPacket(errorCode);
         }
 
         public LoginResultPacket requestNickname() {
@@ -149,24 +149,6 @@ public class LoginResultPacket implements OutboundPacket {
         public void encode(ByteBuf buffer, AttributeMap attributeMap) {
             super.encode(buffer, attributeMap);
             buffer.writeIntLE(errorCode.code);
-        }
-    }
-
-    public static class ErrorBuilder {
-
-        private ErrorCode errorCode;
-
-        public ErrorBuilder errorCode(ErrorCode errorCode) {
-            this.errorCode = errorCode;
-            return this;
-        }
-
-        public LoginResultPacket build() {
-
-            if (errorCode == null) {
-                throw new IllegalStateException("The error code is required");
-            }
-            return new ErrorLoginResultPacket(errorCode);
         }
     }
 

@@ -1,43 +1,41 @@
 package work.fking.pangya.networking.protocol;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufOutputStream;
 import io.netty.buffer.ByteBufUtil;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
 import lombok.extern.log4j.Log4j2;
-import org.anarres.lzo.LzoAlgorithm;
-import org.anarres.lzo.LzoCompressor;
-import org.anarres.lzo.LzoLibrary;
-import org.anarres.lzo.LzoOutputStream;
 import work.fking.pangya.networking.crypt.PangCrypt;
+import work.fking.pangya.networking.lzo.MInt;
+import work.fking.pangya.networking.lzo.MiniLZO;
 
 import java.io.IOException;
 
 @Log4j2
 public class ProtocolEncoder extends MessageToByteEncoder<OutboundPacket> {
 
-    private final LzoCompressor compressor = LzoLibrary.getInstance().newCompressor(LzoAlgorithm.LZO1X, null);
+    private final byte[] lzoOutBuffer = new byte[32768];
+    private final int[] lzoDict = new int[32768];
+    private final MInt lzoOutLength = new MInt();
 
     @Override
-    protected void encode(ChannelHandlerContext ctx, OutboundPacket packet, ByteBuf buffer) throws IOException {
+    protected void encode(ChannelHandlerContext ctx, OutboundPacket packet, ByteBuf buffer) {
         LOGGER.trace("Encoding packet={}", packet.getClass().getSimpleName());
         // TODO: Everything here is terribly inefficient
         ByteBuf pktBuffer = ctx.alloc().buffer();
         packet.encode(pktBuffer, ctx.channel());
 
         LOGGER.trace("payload={}", ByteBufUtil.hexDump(pktBuffer));
+        int uncompressedSize = pktBuffer.readableBytes();
+        byte[] source = new byte[uncompressedSize];
+        pktBuffer.readBytes(source);
+        MiniLZO.lzo1x_1_compress(source, source.length, lzoOutBuffer, lzoOutLength, lzoDict);
 
-        ByteBufOutputStream outputStream = new ByteBufOutputStream(ctx.alloc().buffer());
-        LzoOutputStream stream = new LzoOutputStream(outputStream, compressor, 1024);
-        pktBuffer.readBytes(stream, pktBuffer.readableBytes());
-        stream.flush();
-
-        ByteBuf compressed = outputStream.buffer();
+        ByteBuf compressed = Unpooled.wrappedBuffer(lzoOutBuffer, 0, lzoOutLength.v);
         LOGGER.trace("payloadCompressed={}", ByteBufUtil.hexDump(compressed));
-        compressed.skipBytes(8); // the lzo lib writes the uncompressedLength + compressedLength to the header and we don't want it
 
-        PangCrypt.encrypt(buffer, compressed, compressed.readableBytes(), 0, 0);
+        PangCrypt.encrypt(buffer, compressed, uncompressedSize, 0, 0);
         LOGGER.trace("encrypted={}", ByteBufUtil.hexDump(buffer));
     }
 }

@@ -17,7 +17,7 @@ public class PacketHandler extends SimpleChannelInboundHandler<InboundPacket> {
         if (msg instanceof LoginRequestPacket loginRequest) {
             LOGGER.debug("LoginRequest username={}, passwordHash={}", loginRequest.getUsername(), loginRequest.getPasswordMd5());
             LoginResultPacket loginResultPacket = LoginResultPacket.builder()
-                                                                   .error(ErrorCode.INVALID_CREDENTIALS);
+                                                                   .error(ErrorCode.ALREADY_LOGGED_IN);
             ctx.channel().writeAndFlush(loginResultPacket);
         }
     }

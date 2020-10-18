@@ -31,8 +31,8 @@ public class HelloHandler extends ChannelInboundHandlerAdapter {
 
         ChannelPipeline pipeline = ctx.pipeline();
         pipeline.remove(this);
-        pipeline.replace("encoder", "protocol", new ProtocolEncoder());
-        pipeline.addLast(new ProtocolDecoder(protocol));
-        pipeline.addLast(new PacketHandler());
+        pipeline.replace("encoder", "encoder", new ProtocolEncoder());
+        pipeline.addLast("decoder", new ProtocolDecoder(protocol));
+        pipeline.addLast("packetHandler", new PacketHandler());
     }
 }

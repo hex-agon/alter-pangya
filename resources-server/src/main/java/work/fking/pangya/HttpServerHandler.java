@@ -38,17 +38,9 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
         LOGGER.trace("Incoming request uri={}", uri);
 
         switch (uri) {
-            case URI_TRANSLATIONS_REQUEST:
-                serveResource(ctx, "/translation.txt");
-                break;
-
-            case URI_UPDATELIST_REQUEST:
-                serveResource(ctx, "/updatelist.txt");
-                break;
-
-            default:
-                reply(ctx, HttpResponseStatus.NOT_FOUND, Unpooled.EMPTY_BUFFER);
-                break;
+            case URI_TRANSLATIONS_REQUEST -> serveResource(ctx, "/translation.txt");
+            case URI_UPDATELIST_REQUEST -> serveResource(ctx, "/updatelist.txt");
+            default -> reply(ctx, HttpResponseStatus.NOT_FOUND, Unpooled.EMPTY_BUFFER);
         }
     }
 

@@ -12,13 +12,15 @@ import work.fking.pangya.packet.outbound.LoginResultPacket.ErrorCode;
 public class PacketHandler extends SimpleChannelInboundHandler<InboundPacket> {
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, InboundPacket msg) {
+    protected void channelRead0(ChannelHandlerContext ctx, InboundPacket packet) {
 
-        if (msg instanceof LoginRequestPacket loginRequest) {
+        if (packet instanceof LoginRequestPacket loginRequest) {
             LOGGER.debug("LoginRequest username={}, passwordHash={}", loginRequest.getUsername(), loginRequest.getPasswordMd5());
             LoginResultPacket loginResultPacket = LoginResultPacket.builder()
                                                                    .error(ErrorCode.ALREADY_LOGGED_IN);
             ctx.channel().writeAndFlush(loginResultPacket);
+        } else {
+            LOGGER.warn("Unhandled inbound packet={}", packet);
         }
     }
 }

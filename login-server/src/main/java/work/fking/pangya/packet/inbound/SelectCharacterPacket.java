@@ -1,0 +1,21 @@
+package work.fking.pangya.packet.inbound;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.util.AttributeMap;
+import lombok.Getter;
+import lombok.ToString;
+import work.fking.pangya.networking.protocol.InboundPacket;
+
+@Getter
+@ToString
+public class SelectCharacterPacket implements InboundPacket {
+
+    private int characterId;
+    private int hairColor;
+
+    @Override
+    public void decode(ByteBuf buffer, AttributeMap attributes) {
+        characterId = buffer.readIntLE();
+        hairColor = buffer.readShortLE();
+    }
+}

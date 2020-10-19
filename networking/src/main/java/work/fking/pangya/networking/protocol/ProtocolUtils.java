@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import lombok.experimental.UtilityClass;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 @UtilityClass
 public class ProtocolUtils {
@@ -19,5 +20,10 @@ public class ProtocolUtils {
     public void writePString(ByteBuf buffer, String string) {
         buffer.writeShortLE(string.length());
         buffer.writeBytes(string.getBytes(StandardCharsets.US_ASCII));
+    }
+
+    public void writeFixedSizeString(ByteBuf buffer, String string, int size) {
+        byte[] bytes = string.getBytes(StandardCharsets.US_ASCII);
+        buffer.writeBytes(Arrays.copyOf(bytes, size));
     }
 }

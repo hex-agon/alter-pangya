@@ -5,8 +5,10 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import lombok.extern.log4j.Log4j2;
 import work.fking.pangya.networking.protocol.InboundPacket;
 import work.fking.pangya.packet.inbound.LoginRequestPacket;
+import work.fking.pangya.packet.outbound.LoginKeyPacket;
 import work.fking.pangya.packet.outbound.LoginResultPacket;
-import work.fking.pangya.packet.outbound.LoginResultPacket.ErrorCode;
+import work.fking.pangya.packet.outbound.ServerListPacket;
+import work.fking.pangya.packet.outbound.SessionKeyPacket;
 
 @Log4j2
 public class PacketHandler extends SimpleChannelInboundHandler<InboundPacket> {
@@ -17,8 +19,14 @@ public class PacketHandler extends SimpleChannelInboundHandler<InboundPacket> {
         if (packet instanceof LoginRequestPacket loginRequest) {
             LOGGER.debug("LoginRequest username={}, passwordHash={}", loginRequest.getUsername(), loginRequest.getPasswordMd5());
             LoginResultPacket loginResultPacket = LoginResultPacket.builder()
-                                                                   .error(ErrorCode.ALREADY_LOGGED_IN);
+                                                                   .success()
+                                                                   .username("username")
+                                                                   .nickname("nickname")
+                                                                   .userId(1)
+                                                                   .build();
             ctx.channel().writeAndFlush(loginResultPacket);
+            ctx.channel().writeAndFlush(new LoginKeyPacket());
+            ctx.channel().writeAndFlush(new ServerListPacket());
         } else {
             LOGGER.warn("Unhandled inbound packet={}", packet);
         }

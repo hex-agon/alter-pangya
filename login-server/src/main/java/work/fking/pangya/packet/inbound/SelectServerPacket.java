@@ -14,7 +14,7 @@ public class SelectServerPacket implements InboundPacket {
 
     @Override
     public void decode(ByteBuf buffer, AttributeMap attributes) {
-        serverId = buffer.readIntLE();
+        serverId = buffer.readShortLE();
         buffer.skipBytes(2);
     }
 }

@@ -7,6 +7,8 @@ import lombok.ToString;
 import work.fking.pangya.networking.protocol.InboundPacket;
 import work.fking.pangya.networking.protocol.ProtocolUtils;
 
+import java.util.Arrays;
+
 @Getter
 @ToString
 public class LoginRequestPacket implements InboundPacket {
@@ -14,12 +16,16 @@ public class LoginRequestPacket implements InboundPacket {
     private static final int PADDING_LENGTH = 17;
 
     private String username;
-    private String passwordMd5;
+    private char[] passwordMd5;
 
     @Override
     public void decode(ByteBuf buffer, AttributeMap attributes) {
         username = ProtocolUtils.readPString(buffer);
-        passwordMd5 = ProtocolUtils.readPString(buffer);
+        passwordMd5 = ProtocolUtils.readPStringCharArray(buffer);
         buffer.skipBytes(PADDING_LENGTH);
+    }
+
+    public void clearPasswordMd5() {
+        Arrays.fill(passwordMd5, '0');
     }
 }

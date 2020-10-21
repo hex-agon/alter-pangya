@@ -17,6 +17,16 @@ public class ProtocolUtils {
         return new String(bytes, StandardCharsets.US_ASCII);
     }
 
+    public char[] readPStringCharArray(ByteBuf buffer) {
+        int size = buffer.readUnsignedShortLE();
+        char[] characters = new char[size];
+
+        for (int i = 0; i < size; i++) {
+            characters[i] = (char) buffer.readByte();
+        }
+        return characters;
+    }
+
     public void writePString(ByteBuf buffer, String string) {
         buffer.writeShortLE(string.length());
         buffer.writeBytes(string.getBytes(StandardCharsets.US_ASCII));

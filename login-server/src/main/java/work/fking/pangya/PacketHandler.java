@@ -1,14 +1,13 @@
 package work.fking.pangya;
 
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import lombok.extern.log4j.Log4j2;
 import work.fking.pangya.networking.protocol.InboundPacket;
 import work.fking.pangya.packet.inbound.LoginRequestPacket;
-import work.fking.pangya.packet.outbound.LoginKeyPacket;
 import work.fking.pangya.packet.outbound.LoginResultPacket;
-import work.fking.pangya.packet.outbound.ServerListPacket;
-import work.fking.pangya.packet.outbound.SessionKeyPacket;
+import work.fking.pangya.packet.outbound.LoginResultPacket.Result;
 
 @Log4j2
 public class PacketHandler extends SimpleChannelInboundHandler<InboundPacket> {
@@ -17,16 +16,14 @@ public class PacketHandler extends SimpleChannelInboundHandler<InboundPacket> {
     protected void channelRead0(ChannelHandlerContext ctx, InboundPacket packet) {
 
         if (packet instanceof LoginRequestPacket loginRequest) {
-            LOGGER.debug("LoginRequest username={}, passwordHash={}", loginRequest.getUsername(), loginRequest.getPasswordMd5());
-            LoginResultPacket loginResultPacket = LoginResultPacket.builder()
-                                                                   .success()
-                                                                   .username("username")
-                                                                   .nickname("nickname")
-                                                                   .userId(1)
+            LOGGER.debug("{}", loginRequest);
+            LoginResultPacket loginResultPacket = LoginResultPacket.error(Result.GEO_BLOCKED)
+                                                                   .notice("Something's fishy")
                                                                    .build();
-            ctx.channel().writeAndFlush(loginResultPacket);
-            ctx.channel().writeAndFlush(new LoginKeyPacket());
-            ctx.channel().writeAndFlush(new ServerListPacket());
+
+            Channel channel = ctx.channel();
+            channel.write(loginResultPacket);
+            channel.flush();
         } else {
             LOGGER.warn("Unhandled inbound packet={}", packet);
         }

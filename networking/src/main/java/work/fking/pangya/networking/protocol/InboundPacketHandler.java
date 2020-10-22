@@ -1,8 +1,8 @@
 package work.fking.pangya.networking.protocol;
 
-import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.Channel;
 
 public interface InboundPacketHandler<P extends InboundPacket> {
 
-    void handle(ChannelHandlerContext ctx, P packet);
+    void handle(Channel channel, P packet);
 }

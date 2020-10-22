@@ -1,8 +1,12 @@
 package work.fking.pangya;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import lombok.extern.log4j.Log4j2;
 import work.fking.pangya.networking.SimpleServer;
+import work.fking.pangya.networking.protocol.InboundPacketDispatcher;
 import work.fking.pangya.networking.protocol.Protocol;
+import work.fking.pangya.packet.handler.LoginPacketHandler;
 import work.fking.pangya.packet.inbound.CheckNicknamePacket;
 import work.fking.pangya.packet.inbound.GhostClientPacket;
 import work.fking.pangya.packet.inbound.LoginRequestPacket;
@@ -30,8 +34,15 @@ public class LoginServer {
                                         .registerInboundPacket(8, SelectCharacterPacket.class)
                                         .registerInboundPacket(11, ReconnectPacket.class);
 
+            Injector injector = Guice.createInjector();
+
+            InboundPacketDispatcher packetDispatcher = InboundPacketDispatcher.create(injector::getInstance)
+                                                                              .registerHandler(LoginRequestPacket.class, LoginPacketHandler.class);
+
+            LoginServerChannelInitializer channelInitializer = LoginServerChannelInitializer.create(protocol, packetDispatcher);
+
             SimpleServer server = SimpleServer.builder()
-                                              .channelInitializer(LoginServerChannelInitializer.create(protocol))
+                                              .channelInitializer(channelInitializer)
                                               .address(InetAddress.getByName("127.0.0.1"))
                                               .port(PORT)
                                               .build();

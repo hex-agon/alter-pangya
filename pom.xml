@@ -22,6 +22,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>15</maven.compiler.source>
         <maven.compiler.target>15</maven.compiler.target>
+        <guice.version>4.2.3</guice.version>
         <fastutil.version>8.3.1</fastutil.version>
         <netty.version>4.1.51.Final</netty.version>
         <log4j2.version>2.13.3</log4j2.version>
@@ -30,6 +31,12 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+            <version>${guice.version}</version>
+            <classifier>no_aop</classifier>
+        </dependency>
         <dependency>
             <groupId>it.unimi.dsi</groupId>
             <artifactId>fastutil</artifactId>

@@ -3,7 +3,6 @@ package work.fking.pangya.login.model;
 import io.netty.channel.Channel;
 import io.netty.util.AttributeKey;
 import lombok.Getter;
-import work.fking.common.model.PlayerAccount;
 
 @Getter
 public class LoginSession {

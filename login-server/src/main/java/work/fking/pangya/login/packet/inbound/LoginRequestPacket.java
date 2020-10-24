@@ -24,8 +24,4 @@ public class LoginRequestPacket implements InboundPacket {
         passwordMd5 = ProtocolUtils.readPStringCharArray(buffer);
         buffer.skipBytes(PADDING_LENGTH);
     }
-
-    public void clearPasswordMd5() {
-        Arrays.fill(passwordMd5, '0');
-    }
 }

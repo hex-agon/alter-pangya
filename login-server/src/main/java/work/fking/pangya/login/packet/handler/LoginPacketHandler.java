@@ -33,7 +33,6 @@ public class LoginPacketHandler implements InboundPacketHandler<LoginRequestPack
             return;
         }
         LoginRequest loginRequest = LoginRequest.of(channel, packet.getUsername(), packet.getPasswordMd5());
-        packet.clearPasswordMd5();
         loginService.queueLoginRequest(loginRequest);
     }
 }

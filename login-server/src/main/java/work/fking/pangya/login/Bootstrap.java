@@ -4,6 +4,8 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Stage;
 import lombok.extern.log4j.Log4j2;
+import work.fking.pangya.login.module.DatabaseModule;
+import work.fking.pangya.login.module.SharedModule;
 import work.fking.pangya.login.packet.handler.CheckNicknamePacketHandler;
 import work.fking.pangya.login.packet.handler.LoginPacketHandler;
 import work.fking.pangya.login.packet.handler.SelectCharacterPacketHandler;
@@ -49,10 +51,10 @@ public class Bootstrap {
     }
 
     private void start() throws IOException, InterruptedException {
-        Protocol protocol = createProtocol();
-        Injector injector = Guice.createInjector(Stage.PRODUCTION);
-        InboundPacketDispatcher packetDispatcher = createPacketDispatcher(injector);
+        Injector injector = Guice.createInjector(Stage.PRODUCTION, new SharedModule(), new DatabaseModule());
 
+        Protocol protocol = createProtocol();
+        InboundPacketDispatcher packetDispatcher = createPacketDispatcher(injector);
         ServerChannelInitializer channelInitializer = ServerChannelInitializer.create(protocol, packetDispatcher);
 
         SimpleServer server = SimpleServer.builder()

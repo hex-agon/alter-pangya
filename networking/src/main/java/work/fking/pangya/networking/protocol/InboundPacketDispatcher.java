@@ -1,5 +1,6 @@
 package work.fking.pangya.networking.protocol;
 
+import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import lombok.extern.log4j.Log4j2;
@@ -8,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Log4j2
+@Sharable
 public class InboundPacketDispatcher extends SimpleChannelInboundHandler<InboundPacket> {
 
     private final Map<Class<? extends InboundPacket>, InboundPacketHandler<? extends InboundPacket>> handlers = new HashMap<>();

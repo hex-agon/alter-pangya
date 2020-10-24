@@ -4,10 +4,8 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Stage;
 import lombok.extern.log4j.Log4j2;
-import work.fking.pangya.networking.SimpleServer;
-import work.fking.pangya.networking.protocol.InboundPacketDispatcher;
-import work.fking.pangya.networking.protocol.Protocol;
 import work.fking.pangya.login.packet.handler.LoginPacketHandler;
+import work.fking.pangya.login.packet.handler.SelectCharacterPacketHandler;
 import work.fking.pangya.login.packet.inbound.CheckNicknamePacket;
 import work.fking.pangya.login.packet.inbound.GhostClientPacket;
 import work.fking.pangya.login.packet.inbound.LoginRequestPacket;
@@ -15,6 +13,9 @@ import work.fking.pangya.login.packet.inbound.ReconnectPacket;
 import work.fking.pangya.login.packet.inbound.SelectCharacterPacket;
 import work.fking.pangya.login.packet.inbound.SelectServerPacket;
 import work.fking.pangya.login.packet.inbound.SetNicknamePacket;
+import work.fking.pangya.networking.SimpleServer;
+import work.fking.pangya.networking.protocol.InboundPacketDispatcher;
+import work.fking.pangya.networking.protocol.Protocol;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -37,23 +38,24 @@ public class Bootstrap {
 
     private InboundPacketDispatcher createPacketDispatcher(Injector injector) {
         return InboundPacketDispatcher.create(injector::getInstance)
-                                      .registerHandler(LoginRequestPacket.class, LoginPacketHandler.class);
+                                      .registerHandler(LoginRequestPacket.class, LoginPacketHandler.class)
+                                      .registerHandler(SelectCharacterPacket.class, SelectCharacterPacketHandler.class);
     }
 
     private void start() throws IOException, InterruptedException {
-            Protocol protocol = createProtocol();
-            Injector injector = Guice.createInjector(Stage.PRODUCTION);
-            InboundPacketDispatcher packetDispatcher = createPacketDispatcher(injector);
+        Protocol protocol = createProtocol();
+        Injector injector = Guice.createInjector(Stage.PRODUCTION);
+        InboundPacketDispatcher packetDispatcher = createPacketDispatcher(injector);
 
-            ServerChannelInitializer channelInitializer = ServerChannelInitializer.create(protocol, packetDispatcher);
+        ServerChannelInitializer channelInitializer = ServerChannelInitializer.create(protocol, packetDispatcher);
 
-            SimpleServer server = SimpleServer.builder()
-                                              .channelInitializer(channelInitializer)
-                                              .address(InetAddress.getByName("127.0.0.1"))
-                                              .port(PORT)
-                                              .build();
+        SimpleServer server = SimpleServer.builder()
+                                          .channelInitializer(channelInitializer)
+                                          .address(InetAddress.getByName("127.0.0.1"))
+                                          .port(PORT)
+                                          .build();
 
-            server.start();
+        server.start();
     }
 
     public static void main(String[] args) {

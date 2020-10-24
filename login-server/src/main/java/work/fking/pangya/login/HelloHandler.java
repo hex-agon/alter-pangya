@@ -1,4 +1,4 @@
-package work.fking.pangya;
+package work.fking.pangya.login;
 
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
@@ -9,7 +9,7 @@ import work.fking.pangya.networking.protocol.InboundPacketDispatcher;
 import work.fking.pangya.networking.protocol.Protocol;
 import work.fking.pangya.networking.protocol.ProtocolDecoder;
 import work.fking.pangya.networking.protocol.ProtocolEncoder;
-import work.fking.pangya.packet.outbound.HelloPacket;
+import work.fking.pangya.login.packet.outbound.HelloPacket;
 
 @Log4j2
 @Sharable

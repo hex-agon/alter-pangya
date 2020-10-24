@@ -1,4 +1,4 @@
-package work.fking.pangya;
+package work.fking.pangya.resources;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;

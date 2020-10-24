@@ -1,4 +1,4 @@
-package work.fking.pangya;
+package work.fking.pangya.resources;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;

@@ -1,4 +1,4 @@
-package work.fking.pangya.packet.inbound;
+package work.fking.pangya.login.packet.inbound;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.util.AttributeMap;

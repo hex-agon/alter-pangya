@@ -1,4 +1,4 @@
-package work.fking.pangya;
+package work.fking.pangya.login;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -7,14 +7,14 @@ import lombok.extern.log4j.Log4j2;
 import work.fking.pangya.networking.SimpleServer;
 import work.fking.pangya.networking.protocol.InboundPacketDispatcher;
 import work.fking.pangya.networking.protocol.Protocol;
-import work.fking.pangya.packet.handler.LoginPacketHandler;
-import work.fking.pangya.packet.inbound.CheckNicknamePacket;
-import work.fking.pangya.packet.inbound.GhostClientPacket;
-import work.fking.pangya.packet.inbound.LoginRequestPacket;
-import work.fking.pangya.packet.inbound.ReconnectPacket;
-import work.fking.pangya.packet.inbound.SelectCharacterPacket;
-import work.fking.pangya.packet.inbound.SelectServerPacket;
-import work.fking.pangya.packet.inbound.SetNicknamePacket;
+import work.fking.pangya.login.packet.handler.LoginPacketHandler;
+import work.fking.pangya.login.packet.inbound.CheckNicknamePacket;
+import work.fking.pangya.login.packet.inbound.GhostClientPacket;
+import work.fking.pangya.login.packet.inbound.LoginRequestPacket;
+import work.fking.pangya.login.packet.inbound.ReconnectPacket;
+import work.fking.pangya.login.packet.inbound.SelectCharacterPacket;
+import work.fking.pangya.login.packet.inbound.SelectServerPacket;
+import work.fking.pangya.login.packet.inbound.SetNicknamePacket;
 
 import java.io.IOException;
 import java.net.InetAddress;

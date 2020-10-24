@@ -1,4 +1,4 @@
-package work.fking.pangya;
+package work.fking.pangya.resources;
 
 import lombok.extern.log4j.Log4j2;
 import work.fking.pangya.networking.SimpleServer;

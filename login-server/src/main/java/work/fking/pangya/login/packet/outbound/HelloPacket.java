@@ -2,6 +2,7 @@ package work.fking.pangya.login.packet.outbound;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.util.AttributeMap;
+import work.fking.pangya.networking.crypt.PangCrypt;
 import work.fking.pangya.networking.protocol.OutboundPacket;
 
 public class HelloPacket implements OutboundPacket {
@@ -16,7 +17,7 @@ public class HelloPacket implements OutboundPacket {
 
     public static HelloPacket create(int cryptKey) {
 
-        if (cryptKey < 0 || cryptKey >= 0xF) {
+        if (cryptKey < 0 || cryptKey > PangCrypt.CRYPT_KEY_MAX) {
             throw new IllegalArgumentException("Invalid crypt key");
         }
         return new HelloPacket(cryptKey);

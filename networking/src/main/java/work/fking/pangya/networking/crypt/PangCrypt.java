@@ -20,7 +20,7 @@ public class PangCrypt {
 
     public void decrypt(ByteBuf buffer, int key) {
 
-        if (key < CRYPT_KEY_MIN || key >= CRYPT_KEY_MAX) {
+        if (key < CRYPT_KEY_MIN || key > CRYPT_KEY_MAX) {
             throw new PangCryptException("Key is out of range, must be 0-15");
         }
 
@@ -48,7 +48,7 @@ public class PangCrypt {
 
     public void encrypt(ByteBuf target, ByteBuf compressedPayload, int uncompressedPayloadSize, int key, int salt) {
 
-        if (key < CRYPT_KEY_MIN || key >= CRYPT_KEY_MAX) {
+        if (key < CRYPT_KEY_MIN || key > CRYPT_KEY_MAX) {
             throw new PangCryptException("Key is out of range, must be 0-15");
         }
 

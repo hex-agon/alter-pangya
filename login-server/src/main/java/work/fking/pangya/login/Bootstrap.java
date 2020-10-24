@@ -4,8 +4,10 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Stage;
 import lombok.extern.log4j.Log4j2;
+import work.fking.pangya.login.packet.handler.CheckNicknamePacketHandler;
 import work.fking.pangya.login.packet.handler.LoginPacketHandler;
 import work.fking.pangya.login.packet.handler.SelectCharacterPacketHandler;
+import work.fking.pangya.login.packet.handler.SetNicknamePacketHandler;
 import work.fking.pangya.login.packet.inbound.CheckNicknamePacket;
 import work.fking.pangya.login.packet.inbound.GhostClientPacket;
 import work.fking.pangya.login.packet.inbound.LoginRequestPacket;
@@ -26,7 +28,7 @@ public class Bootstrap {
     private static final int PORT = 10103;
 
     private Protocol createProtocol() {
-        return Protocol.create()
+        return Protocol.create() // TODO: Make it immutable
                        .registerInboundPacket(1, LoginRequestPacket.class)
                        .registerInboundPacket(3, SelectServerPacket.class)
                        .registerInboundPacket(4, GhostClientPacket.class)
@@ -37,9 +39,11 @@ public class Bootstrap {
     }
 
     private InboundPacketDispatcher createPacketDispatcher(Injector injector) {
-        return InboundPacketDispatcher.create(injector::getInstance)
+        return InboundPacketDispatcher.create(injector::getInstance) // TODO: Make it immutable
                                       .registerHandler(LoginRequestPacket.class, LoginPacketHandler.class)
-                                      .registerHandler(SelectCharacterPacket.class, SelectCharacterPacketHandler.class);
+                                      .registerHandler(SelectCharacterPacket.class, SelectCharacterPacketHandler.class)
+                                      .registerHandler(CheckNicknamePacket.class, CheckNicknamePacketHandler.class)
+                                      .registerHandler(SetNicknamePacket.class, SetNicknamePacketHandler.class);
     }
 
     private void start() throws IOException, InterruptedException {

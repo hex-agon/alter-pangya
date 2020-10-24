@@ -1,7 +1,6 @@
 package work.fking.pangya.networking.crypt;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufUtil;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 
@@ -61,8 +60,6 @@ public class PangCrypt {
         int tableIdx = (key << 8) + salt;
         int xorByte = PangCryptTables.FIRST[tableIdx] ^ PangCryptTables.SECOND[tableIdx];
 
-        LOGGER.trace("table idx={}, table0={} table1={}", tableIdx, PangCryptTables.FIRST[tableIdx], PangCryptTables.SECOND[tableIdx]);
-
         target.writeByte(salt);
         target.writeShortLE(size);
         target.writeByte(xorByte);
@@ -74,14 +71,10 @@ public class PangCrypt {
         int w = (v - y) / 255;
         int z = (w + w / 255) & 0xFF;
 
-        LOGGER.trace("u={}, x={}, v={}, y={}, w={}, z={}", uncompressedPayloadSize, x, v, y, w, z);
-
-        target.writeByte(z); // 6
-        target.writeByte(y); // 7
-        target.writeByte(x); // 8
+        target.writeByte(z);
+        target.writeByte(y);
+        target.writeByte(x);
         target.writeBytes(compressedPayload);
-
-        LOGGER.trace("pre xor buffer={}", ByteBufUtil.hexDump(target));
 
         int start = target.readerIndex() + 10;
         int length = payloadSize + CRYPT_STRIDE + 3;
@@ -91,9 +84,7 @@ public class PangCrypt {
 
             target.setByte(i, value);
         }
-        LOGGER.trace("post xor buffer={}", ByteBufUtil.hexDump(target));
         int byteIdx = target.readerIndex() + 7;
         target.setByte(byteIdx, target.getByte(byteIdx) ^ PangCryptTables.SECOND[tableIdx]);
-        LOGGER.trace("result buffer={}", ByteBufUtil.hexDump(target));
     }
 }

@@ -34,16 +34,13 @@ public class ProtocolEncoder extends MessageToByteEncoder<OutboundPacket> {
         ByteBuf pktBuffer = ctx.alloc().buffer();
         packet.encode(pktBuffer, ctx.channel());
 
-        LOGGER.trace("payload={}", ByteBufUtil.hexDump(pktBuffer));
         int uncompressedSize = pktBuffer.readableBytes();
         byte[] source = new byte[uncompressedSize];
         pktBuffer.readBytes(source);
         MiniLZO.lzo1x_1_compress(source, source.length, lzoOutBuffer, lzoOutLength, lzoDict);
 
         ByteBuf compressed = Unpooled.wrappedBuffer(lzoOutBuffer, 0, lzoOutLength.v);
-        LOGGER.trace("payloadCompressed={}", ByteBufUtil.hexDump(compressed));
 
         PangCrypt.encrypt(buffer, compressed, uncompressedSize, cryptKey, 0);
-        LOGGER.trace("encrypted={}", ByteBufUtil.hexDump(buffer));
     }
 }

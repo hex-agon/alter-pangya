@@ -28,22 +28,24 @@ public class Bootstrap {
     private static final int PORT = 10103;
 
     private Protocol createProtocol() {
-        return Protocol.create() // TODO: Make it immutable
-                       .registerInboundPacket(1, LoginRequestPacket.class)
-                       .registerInboundPacket(3, SelectServerPacket.class)
-                       .registerInboundPacket(4, GhostClientPacket.class)
-                       .registerInboundPacket(6, SetNicknamePacket.class)
-                       .registerInboundPacket(7, CheckNicknamePacket.class)
-                       .registerInboundPacket(8, SelectCharacterPacket.class)
-                       .registerInboundPacket(11, ReconnectPacket.class);
+        return Protocol.builder()
+                       .inboundPacket(1, LoginRequestPacket.class)
+                       .inboundPacket(3, SelectServerPacket.class)
+                       .inboundPacket(4, GhostClientPacket.class)
+                       .inboundPacket(6, SetNicknamePacket.class)
+                       .inboundPacket(7, CheckNicknamePacket.class)
+                       .inboundPacket(8, SelectCharacterPacket.class)
+                       .inboundPacket(11, ReconnectPacket.class)
+                       .build();
     }
 
     private InboundPacketDispatcher createPacketDispatcher(Injector injector) {
-        return InboundPacketDispatcher.create(injector::getInstance) // TODO: Make it immutable
-                                      .registerHandler(LoginRequestPacket.class, LoginPacketHandler.class)
-                                      .registerHandler(SelectCharacterPacket.class, SelectCharacterPacketHandler.class)
-                                      .registerHandler(CheckNicknamePacket.class, CheckNicknamePacketHandler.class)
-                                      .registerHandler(SetNicknamePacket.class, SetNicknamePacketHandler.class);
+        return InboundPacketDispatcher.builder(injector::getInstance)
+                                      .handler(LoginRequestPacket.class, LoginPacketHandler.class)
+                                      .handler(SelectCharacterPacket.class, SelectCharacterPacketHandler.class)
+                                      .handler(CheckNicknamePacket.class, CheckNicknamePacketHandler.class)
+                                      .handler(SetNicknamePacket.class, SetNicknamePacketHandler.class)
+                                      .build();
     }
 
     private void start() throws IOException, InterruptedException {

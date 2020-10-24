@@ -12,26 +12,20 @@ import java.util.Map;
 @Sharable
 public class InboundPacketDispatcher extends SimpleChannelInboundHandler<InboundPacket> {
 
-    private final Map<Class<? extends InboundPacket>, InboundPacketHandler<? extends InboundPacket>> handlers = new HashMap<>();
-    private final InboundPacketHandlerFactory handlerFactory;
+    private final Map<Class<? extends InboundPacket>, InboundPacketHandler<? extends InboundPacket>> handlers;
 
-    private InboundPacketDispatcher(InboundPacketHandlerFactory handlerFactory) {
-        this.handlerFactory = handlerFactory;
+    private InboundPacketDispatcher(Map<Class<? extends InboundPacket>, InboundPacketHandler<? extends InboundPacket>> handlers) {
+        this.handlers = handlers;
     }
 
-    public static InboundPacketDispatcher create(InboundPacketHandlerFactory handlerFactory) {
-        return new InboundPacketDispatcher(handlerFactory);
-    }
-
-    public <P extends InboundPacket> InboundPacketDispatcher registerHandler(Class<P> inboundPacketClass, Class<? extends InboundPacketHandler<P>> packetHandlerClass) {
-        handlers.put(inboundPacketClass, handlerFactory.create(packetHandlerClass));
-        return this;
+    public static Builder builder(InboundPacketHandlerFactory handlerFactory) {
+        return new Builder(handlerFactory);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     protected void channelRead0(ChannelHandlerContext ctx, InboundPacket packet) {
-        // this cast is safe, checked by registerHandler method
+        // this cast is safe, checked by the builder.handler method
         InboundPacketHandler<InboundPacket> packetHandler = (InboundPacketHandler<InboundPacket>) handlers.get(packet.getClass());
 
         if (packetHandler == null) {
@@ -44,5 +38,24 @@ public class InboundPacketDispatcher extends SimpleChannelInboundHandler<Inbound
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         LOGGER.error("Exception caught on packet dispatcher", cause);
+    }
+
+    public static class Builder {
+
+        private final Map<Class<? extends InboundPacket>, InboundPacketHandler<? extends InboundPacket>> handlers = new HashMap<>();
+        private final InboundPacketHandlerFactory handlerFactory;
+
+        public Builder(InboundPacketHandlerFactory handlerFactory) {
+            this.handlerFactory = handlerFactory;
+        }
+
+        public <P extends InboundPacket> Builder handler(Class<P> inboundPacketClass, Class<? extends InboundPacketHandler<P>> packetHandlerClass) {
+            handlers.put(inboundPacketClass, handlerFactory.create(packetHandlerClass));
+            return this;
+        }
+
+        public InboundPacketDispatcher build() {
+            return new InboundPacketDispatcher(handlers);
+        }
     }
 }

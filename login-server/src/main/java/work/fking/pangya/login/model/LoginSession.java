@@ -3,6 +3,7 @@ package work.fking.pangya.login.model;
 import io.netty.channel.Channel;
 import io.netty.util.AttributeKey;
 import lombok.Getter;
+import work.fking.common.model.PlayerAccount;
 
 @Getter
 public class LoginSession {
@@ -11,6 +12,7 @@ public class LoginSession {
 
     private final Channel channel;
 
+    private PlayerAccount playerAccount;
     private LoginState state;
 
     private LoginSession(Channel channel) {
@@ -20,6 +22,10 @@ public class LoginSession {
 
     public static LoginSession create(Channel channel) {
         return new LoginSession(channel);
+    }
+
+    public void setPlayerAccount(PlayerAccount playerAccount) {
+        this.playerAccount = playerAccount;
     }
 
     public void updateState(LoginState loginState) {

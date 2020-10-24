@@ -150,7 +150,7 @@ public class LoginResultPacket implements OutboundPacket {
             return this;
         }
 
-        public ErrorLoginResultPacket build() {
+        public LoginResultPacket build() {
 
             if (!notice.isEmpty() && !result.allowsNotice) {
                 throw new IllegalStateException("This result doesn't allow a notice message");
@@ -185,7 +185,7 @@ public class LoginResultPacket implements OutboundPacket {
         WHITELISTED_USERS_ONLY(0xE),
         SERVER_MAINTENANCE(0xF),
         GEO_BLOCKED(0x10),
-        REQUEST_NICKNAME(0xD8, false),
+        CREATE_NICKNAME(0xD8, false),
         SELECT_CHARACTER(0xD9, false);
 
         private final int code;

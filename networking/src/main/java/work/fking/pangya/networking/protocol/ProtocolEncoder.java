@@ -10,14 +10,22 @@ import work.fking.pangya.networking.crypt.PangCrypt;
 import work.fking.pangya.networking.lzo.MInt;
 import work.fking.pangya.networking.lzo.MiniLZO;
 
-import java.io.IOException;
-
 @Log4j2
 public class ProtocolEncoder extends MessageToByteEncoder<OutboundPacket> {
 
     private final byte[] lzoOutBuffer = new byte[32768];
     private final int[] lzoDict = new int[32768];
     private final MInt lzoOutLength = new MInt();
+
+    private final int cryptKey;
+
+    private ProtocolEncoder(int cryptKey) {
+        this.cryptKey = cryptKey;
+    }
+
+    public static ProtocolEncoder create(int cryptKey) {
+        return new ProtocolEncoder(cryptKey);
+    }
 
     @Override
     protected void encode(ChannelHandlerContext ctx, OutboundPacket packet, ByteBuf buffer) {
@@ -35,7 +43,7 @@ public class ProtocolEncoder extends MessageToByteEncoder<OutboundPacket> {
         ByteBuf compressed = Unpooled.wrappedBuffer(lzoOutBuffer, 0, lzoOutLength.v);
         LOGGER.trace("payloadCompressed={}", ByteBufUtil.hexDump(compressed));
 
-        PangCrypt.encrypt(buffer, compressed, uncompressedSize, 0, 0);
+        PangCrypt.encrypt(buffer, compressed, uncompressedSize, cryptKey, 0);
         LOGGER.trace("encrypted={}", ByteBufUtil.hexDump(buffer));
     }
 }

@@ -15,6 +15,10 @@ public class HelloPacket implements OutboundPacket {
     }
 
     public static HelloPacket create(int cryptKey) {
+
+        if (cryptKey < 0 || cryptKey >= 0xF) {
+            throw new IllegalArgumentException("Invalid crypt key");
+        }
         return new HelloPacket(cryptKey);
     }
 

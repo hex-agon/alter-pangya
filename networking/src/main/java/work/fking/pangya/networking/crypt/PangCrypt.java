@@ -13,9 +13,15 @@ public class PangCrypt {
     public final int SERVER_HEADER_SIZE = 8;
     private final int CRYPT_STRIDE = 4;
 
+    public final int CRYPT_KEY_MIN = 0;
+    public final int CRYPT_KEY_MAX = 0xF;
+
+    public final int CRYPT_SALT_MIN = 0;
+    public final int CRYPT_SALT_MAX = 0xFF;
+
     public void decrypt(ByteBuf buffer, int key) {
 
-        if (key < 0 || key >= 0xF) {
+        if (key < CRYPT_KEY_MIN || key >= CRYPT_KEY_MAX) {
             throw new PangCryptException("Key is out of range, must be 0-15");
         }
 
@@ -43,11 +49,11 @@ public class PangCrypt {
 
     public void encrypt(ByteBuf target, ByteBuf compressedPayload, int uncompressedPayloadSize, int key, int salt) {
 
-        if (key < 0 || key >= 0xF) {
+        if (key < CRYPT_KEY_MIN || key >= CRYPT_KEY_MAX) {
             throw new PangCryptException("Key is out of range, must be 0-15");
         }
 
-        if (salt < 0 || salt > 0xFF) {
+        if (salt < CRYPT_SALT_MIN || salt > CRYPT_SALT_MAX) {
             throw new PangCryptException("Salt is out of range, must be 0-255");
         }
         int payloadSize = compressedPayload.readableBytes();

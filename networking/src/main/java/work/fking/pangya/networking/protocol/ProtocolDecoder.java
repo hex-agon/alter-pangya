@@ -12,9 +12,15 @@ import java.util.List;
 public class ProtocolDecoder extends ByteToMessageDecoder {
 
     private final Protocol protocol;
+    private final int cryptKey;
 
-    public ProtocolDecoder(Protocol protocol) {
+    private ProtocolDecoder(Protocol protocol, int cryptKey) {
         this.protocol = protocol;
+        this.cryptKey = cryptKey;
+    }
+
+    public static ProtocolDecoder create(Protocol protocol, int cryptKey) {
+        return new ProtocolDecoder(protocol, cryptKey);
     }
 
     @Override
@@ -31,7 +37,7 @@ public class ProtocolDecoder extends ByteToMessageDecoder {
             return;
         }
         buffer.resetReaderIndex();
-        PangCrypt.decrypt(buffer, 0);
+        PangCrypt.decrypt(buffer, cryptKey);
 
         int packetId = buffer.readShortLE();
         LOGGER.trace("Incoming packetId={}", packetId);

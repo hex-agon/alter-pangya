@@ -1,15 +1,19 @@
 package work.fking.pangya.login;
 
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelPipeline;
 import lombok.extern.log4j.Log4j2;
+import work.fking.common.Rand;
+import work.fking.pangya.login.model.LoginSession;
+import work.fking.pangya.login.packet.outbound.HelloPacket;
+import work.fking.pangya.networking.crypt.PangCrypt;
 import work.fking.pangya.networking.protocol.InboundPacketDispatcher;
 import work.fking.pangya.networking.protocol.Protocol;
 import work.fking.pangya.networking.protocol.ProtocolDecoder;
 import work.fking.pangya.networking.protocol.ProtocolEncoder;
-import work.fking.pangya.login.packet.outbound.HelloPacket;
 
 @Log4j2
 @Sharable
@@ -29,14 +33,24 @@ public class HelloHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
-        LOGGER.trace("New connection from {}", ctx.channel().remoteAddress());
-        // TODO: Think on how we'll pass the cryptKey around
-        ctx.writeAndFlush(HelloPacket.create(0));
+        int cryptKey = Rand.withMax(PangCrypt.CRYPT_KEY_MAX);
+        LOGGER.trace("New connection from {}, selected cryptKey={}", ctx.channel().remoteAddress(), cryptKey);
+        createLoginSession(ctx.channel());
+        ctx.writeAndFlush(HelloPacket.create(cryptKey));
+        reorderPipeline(ctx.pipeline(), cryptKey);
+    }
 
-        ChannelPipeline pipeline = ctx.pipeline();
+    private void createLoginSession(Channel channel) {
+        // TODO: We'll likely register this session somewhere, might even move it out of the netty threads
+        LoginSession session = LoginSession.create(channel);
+        channel.attr(LoginSession.KEY).set(session);
+    }
+
+    private void reorderPipeline(ChannelPipeline pipeline, int cryptKey) {
         pipeline.remove(this);
-        pipeline.replace("encoder", "encoder", new ProtocolEncoder());
-        pipeline.addLast("decoder", new ProtocolDecoder(protocol));
+        pipeline.replace("encoder", "encoder", ProtocolEncoder.create(cryptKey));
+        pipeline.addLast("checker", LoginSessionChecker.instance());
+        pipeline.addLast("decoder", ProtocolDecoder.create(protocol, cryptKey));
         pipeline.addLast("packetDispatcher", packetDispatcher);
     }
 }

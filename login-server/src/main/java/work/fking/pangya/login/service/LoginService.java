@@ -41,11 +41,12 @@ public class LoginService {
     }
 
     public void resumeLoginFlow(LoginSession loginSession) {
-
+        LOGGER.debug("resumeLoginFlow enter state={}", loginSession.getState());
         if (loginSession.getState() == LoginState.AUTHENTICATING) {
             throw new IllegalStateException("Cannot resume login flow when session state is AUTHENTICATING");
         }
         checkSetupTasks(loginSession);
+        LOGGER.debug("resumeLoginFlow checkSetupTasks state={}", loginSession.getState());
 
         switch (loginSession.getState()) {
 

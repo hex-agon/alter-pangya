@@ -11,6 +11,10 @@ public record PlayerAccount(long id, String username, String nickname, byte[] pa
         DISABLED
     }
 
+    public PlayerAccount withNickname(String nickname) {
+        return new PlayerAccount(id, username, nickname, passwordHash, status, suspensionLiftTimestamp);
+    }
+
     public void clearPasswordHash() {
         Arrays.fill(passwordHash, (byte) '0');
     }

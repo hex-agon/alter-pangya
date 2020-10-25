@@ -4,8 +4,10 @@ import io.netty.channel.Channel;
 import lombok.extern.log4j.Log4j2;
 import work.fking.pangya.login.model.LoginSession;
 import work.fking.pangya.login.model.LoginState;
+import work.fking.pangya.login.model.NicknameSetRequest;
 import work.fking.pangya.login.packet.inbound.SetNicknamePacket;
 import work.fking.pangya.login.service.LoginService;
+import work.fking.pangya.login.service.NicknameService;
 import work.fking.pangya.networking.protocol.InboundPacketHandler;
 
 import javax.inject.Inject;
@@ -15,10 +17,12 @@ import javax.inject.Singleton;
 @Singleton
 public class SetNicknamePacketHandler implements InboundPacketHandler<SetNicknamePacket> {
 
+    private final NicknameService nicknameService;
     private final LoginService loginService;
 
     @Inject
-    public SetNicknamePacketHandler(LoginService loginService) {
+    public SetNicknamePacketHandler(NicknameService nicknameService, LoginService loginService) {
+        this.nicknameService = nicknameService;
         this.loginService = loginService;
     }
 
@@ -31,6 +35,7 @@ public class SetNicknamePacketHandler implements InboundPacketHandler<SetNicknam
             channel.disconnect();
             return;
         }
-        loginService.resumeLoginFlow(session);
+        NicknameSetRequest request = NicknameSetRequest.of(channel, packet.getNickname(), result -> loginService.resumeLoginFlow(session));
+        nicknameService.queueNicknameCheckSet(request);
     }
 }

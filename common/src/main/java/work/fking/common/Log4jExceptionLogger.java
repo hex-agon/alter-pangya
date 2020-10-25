@@ -1,4 +1,4 @@
-package work.fking.pangya.login;
+package work.fking.common;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -9,6 +9,6 @@ public class Log4jExceptionLogger implements UncaughtExceptionHandler {
 
     @Override
     public void uncaughtException(Thread t, Throwable e) {
-        LOGGER.error(e);
+        LOGGER.catching(e);
     }
 }

@@ -13,12 +13,12 @@ public class ReconnectPacket implements InboundPacket {
 
     private String username;
     private int userId;
-    private String sessionToken;
+    private String loginKey;
 
     @Override
     public void decode(ByteBuf buffer, AttributeMap attributes) {
         username = ProtocolUtils.readPString(buffer);
         userId = buffer.readIntLE();
-        sessionToken = ProtocolUtils.readPString(buffer);
+        loginKey = ProtocolUtils.readPString(buffer);
     }
 }

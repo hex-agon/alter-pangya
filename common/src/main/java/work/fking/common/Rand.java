@@ -10,6 +10,18 @@ public class Rand {
 
     private static final Random RANDOM = new SecureRandom();
 
+    public static String randomHexString(int length) {
+        byte[] bytes = new byte[length];
+        RANDOM.nextBytes(bytes);
+
+        StringBuilder builder = new StringBuilder();
+
+        for (byte aByte : bytes) {
+            builder.append(String.format("%02x", aByte));
+        }
+        return builder.toString();
+    }
+
     public static long nextLong() {
         return RANDOM.nextLong();
     }

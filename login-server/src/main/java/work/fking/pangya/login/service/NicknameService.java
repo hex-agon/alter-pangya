@@ -14,11 +14,13 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import java.util.concurrent.ExecutorService;
+import java.util.regex.Pattern;
 
 @Log4j2
 @Singleton
 public class NicknameService {
 
+    private static final Pattern NICKNAME_PATTERN = Pattern.compile("[\\w()]{4,16}");
     private final PlayerAccountRepository playerRepository;
     private final ExecutorService executorService;
 
@@ -44,6 +46,8 @@ public class NicknameService {
 
         if (exists) {
             result = CheckNicknameResultPacket.error(Result.IN_USE);
+        } else if (!NICKNAME_PATTERN.matcher(request.nickname()).matches()) {
+            result = CheckNicknameResultPacket.error(Result.INCORRECT_FORMAT_OR_LENGTH);
         } else {
             result = CheckNicknameResultPacket.available(request.nickname());
         }

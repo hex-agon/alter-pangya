@@ -8,7 +8,9 @@ import work.fking.pangya.login.module.DatabaseModule;
 import work.fking.pangya.login.module.SharedModule;
 import work.fking.pangya.login.packet.handler.CheckNicknamePacketHandler;
 import work.fking.pangya.login.packet.handler.LoginPacketHandler;
+import work.fking.pangya.login.packet.handler.ReconnectPacketHandler;
 import work.fking.pangya.login.packet.handler.SelectCharacterPacketHandler;
+import work.fking.pangya.login.packet.handler.SelectServerPacketHandler;
 import work.fking.pangya.login.packet.handler.SetNicknamePacketHandler;
 import work.fking.pangya.login.packet.inbound.CheckNicknamePacket;
 import work.fking.pangya.login.packet.inbound.GhostClientPacket;
@@ -47,6 +49,8 @@ public class Bootstrap {
                                       .handler(SelectCharacterPacket.class, SelectCharacterPacketHandler.class)
                                       .handler(CheckNicknamePacket.class, CheckNicknamePacketHandler.class)
                                       .handler(SetNicknamePacket.class, SetNicknamePacketHandler.class)
+                                      .handler(SelectServerPacket.class, SelectServerPacketHandler.class)
+                                      .handler(ReconnectPacket.class, ReconnectPacketHandler.class)
                                       .build();
     }
 

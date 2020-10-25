@@ -109,10 +109,11 @@ public class LoginService {
     }
 
     private void proceedToLoggedIn(LoginSession session) {
+        PlayerAccount playerAccount = session.getPlayerAccount();
         LoginResultPacket loginResultPacket = LoginResultPacket.success()
-                                                               .userId(1)
-                                                               .username("hello")
-                                                               .nickname("nickname")
+                                                               .userId(playerAccount.id())
+                                                               .username(playerAccount.username())
+                                                               .nickname(playerAccount.nickname())
                                                                .build();
 
         session.updateState(LoginState.LOGGED_IN);

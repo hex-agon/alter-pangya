@@ -47,6 +47,7 @@ public class ProtocolDecoder extends ByteToMessageDecoder {
 
             if (inboundPacket == null) {
                 LOGGER.warn("Unknown packetId={}", packetId);
+                buffer.clear();
                 ctx.disconnect();
                 return;
             }

@@ -8,9 +8,11 @@ import work.fking.pangya.login.model.LoginRequest;
 import work.fking.pangya.login.model.LoginSession;
 import work.fking.pangya.login.model.LoginState;
 import work.fking.pangya.login.model.PlayerAccount;
+import work.fking.pangya.login.packet.outbound.ChatMacrosPacket;
 import work.fking.pangya.login.packet.outbound.LoginKeyPacket;
 import work.fking.pangya.login.packet.outbound.LoginResultPacket;
 import work.fking.pangya.login.packet.outbound.LoginResultPacket.Result;
+import work.fking.pangya.login.packet.outbound.MessageServerListPacket;
 import work.fking.pangya.login.packet.outbound.ServerListPacket;
 import work.fking.pangya.login.repository.PlayerAccountRepository;
 
@@ -119,11 +121,11 @@ public class LoginService {
         session.updateState(LoginState.LOGGED_IN);
 
         Channel channel = session.getChannel();
-        channel.write(LoginKeyPacket.create("loginKey"));
-        // TODO: Send chat macros
+        channel.write(LoginKeyPacket.create("7430F52"));
+        channel.write(new ChatMacrosPacket());
         channel.write(loginResultPacket);
         channel.write(new ServerListPacket());
-        // TODO: Send message server list
+        channel.write(new MessageServerListPacket());
         channel.flush();
     }
 

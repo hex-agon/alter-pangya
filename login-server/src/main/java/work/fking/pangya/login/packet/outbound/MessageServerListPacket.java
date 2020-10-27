@@ -13,11 +13,11 @@ public class MessageServerListPacket implements OutboundPacket {
     public void encode(ByteBuf buffer, AttributeMap attributeMap) {
         buffer.writeShortLE(ID);
         ProtocolUtils.writeFixedSizeString(buffer, "Testing", 40);
-        buffer.writeIntLE(20202); // serverId
+        buffer.writeIntLE(20302); // serverId
         buffer.writeIntLE(1000); // capacity
         buffer.writeIntLE(500); // playerCount
         ProtocolUtils.writeFixedSizeString(buffer, "127.0.0.1", 18); // serverIp
-        buffer.writeShortLE(20202); // serverPort
+        buffer.writeShortLE(20302); // serverPort
         buffer.writeShortLE(0xFFFF); // unknown
     }
 }

@@ -1,4 +1,4 @@
-package work.fking.common;
+package work.fking.pangya.common;
 
 import lombok.experimental.UtilityClass;
 

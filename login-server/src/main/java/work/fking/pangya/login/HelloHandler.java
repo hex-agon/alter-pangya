@@ -6,7 +6,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelPipeline;
 import lombok.extern.log4j.Log4j2;
-import work.fking.common.Rand;
+import work.fking.pangya.common.Rand;
 import work.fking.pangya.login.model.LoginSession;
 import work.fking.pangya.login.packet.outbound.HelloPacket;
 import work.fking.pangya.networking.crypt.PangCrypt;

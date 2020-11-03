@@ -1,4 +1,4 @@
-package work.fking.common.model;
+package work.fking.pangya.common.model;
 
 import java.util.List;
 

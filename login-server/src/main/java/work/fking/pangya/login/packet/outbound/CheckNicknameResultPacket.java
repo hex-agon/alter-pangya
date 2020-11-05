@@ -27,22 +27,6 @@ public class CheckNicknameResultPacket implements OutboundPacket {
         target.writeIntLE(result.code);
     }
 
-    private static class AvailableNicknamePacket extends CheckNicknameResultPacket {
-
-        private final String nickname;
-
-        private AvailableNicknamePacket(String nickname) {
-            super(Result.AVAILABLE);
-            this.nickname = nickname;
-        }
-
-        @Override
-        public void encode(ByteBuf target) {
-            super.encode(target);
-            ProtocolUtils.writePString(target, nickname);
-        }
-    }
-
     public enum Result {
         AVAILABLE(0),
         ERROR(1),
@@ -57,6 +41,22 @@ public class CheckNicknameResultPacket implements OutboundPacket {
 
         Result(int code) {
             this.code = code;
+        }
+    }
+
+    private static class AvailableNicknamePacket extends CheckNicknameResultPacket {
+
+        private final String nickname;
+
+        private AvailableNicknamePacket(String nickname) {
+            super(Result.AVAILABLE);
+            this.nickname = nickname;
+        }
+
+        @Override
+        public void encode(ByteBuf target) {
+            super.encode(target);
+            ProtocolUtils.writePString(target, nickname);
         }
     }
 }

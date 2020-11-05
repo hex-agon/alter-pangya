@@ -1,6 +1,7 @@
 package work.fking.pangya.login.service;
 
-import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import work.fking.pangya.login.model.LoginSession;
 import work.fking.pangya.login.model.LoginState;
 import work.fking.pangya.login.model.NicknameCheckRequest;
@@ -16,7 +17,6 @@ import javax.inject.Singleton;
 import java.util.concurrent.ExecutorService;
 import java.util.regex.Pattern;
 
-@Log4j2
 @Singleton
 public class NicknameService {
 

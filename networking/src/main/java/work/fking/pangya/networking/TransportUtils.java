@@ -10,10 +10,12 @@ import io.netty.channel.epoll.EpollSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import lombok.experimental.UtilityClass;
 
-@UtilityClass
-public class TransportUtils {
+public final class TransportUtils {
+
+    private TransportUtils() {
+        throw new UnsupportedOperationException("Utility class");
+    }
 
     public static Class<? extends Channel> selectBestChannelAvailable() {
         return Epoll.isAvailable() ? EpollSocketChannel.class : NioSocketChannel.class;

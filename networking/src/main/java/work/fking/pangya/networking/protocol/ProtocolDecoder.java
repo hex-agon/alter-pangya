@@ -3,13 +3,15 @@ package work.fking.pangya.networking.protocol;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
-import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import work.fking.pangya.networking.crypt.PangCrypt;
 
 import java.util.List;
 
-@Log4j2
 public class ProtocolDecoder extends ByteToMessageDecoder {
+
+    private static final Logger LOGGER = LogManager.getLogger(InboundPacketDispatcher.class);
 
     private final Protocol protocol;
     private final int cryptKey;

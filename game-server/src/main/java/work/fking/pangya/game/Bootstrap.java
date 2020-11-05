@@ -3,7 +3,8 @@ package work.fking.pangya.game;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Stage;
-import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import work.fking.pangya.game.packet.handler.HandoverPacketHandler;
 import work.fking.pangya.game.packet.inbound.HandoverPacket;
 import work.fking.pangya.networking.SimpleServer;
@@ -13,10 +14,21 @@ import work.fking.pangya.networking.protocol.Protocol;
 import java.io.IOException;
 import java.net.InetAddress;
 
-@Log4j2
 public class Bootstrap {
 
+    private static final Logger LOGGER = LogManager.getLogger(Bootstrap.class);
+
     private static final int PORT = 20202;
+
+    public static void main(String[] args) {
+        LOGGER.info("Bootstrapping the game server...");
+        try {
+            Bootstrap bootstrap = new Bootstrap();
+            bootstrap.start();
+        } catch (Exception e) {
+            LOGGER.fatal("Failed to bootstrap the server", e);
+        }
+    }
 
     private Protocol createProtocol() {
         return Protocol.builder()
@@ -44,15 +56,5 @@ public class Bootstrap {
                                           .build();
 
         server.start();
-    }
-
-    public static void main(String[] args) {
-        LOGGER.info("Bootstrapping the game server...");
-        try {
-            Bootstrap bootstrap = new Bootstrap();
-            bootstrap.start();
-        } catch (Exception e) {
-            LOGGER.fatal("Failed to bootstrap the server", e);
-        }
     }
 }

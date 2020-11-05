@@ -4,13 +4,15 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
-import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import work.fking.pangya.networking.crypt.PangCrypt;
 import work.fking.pangya.networking.lzo.MInt;
 import work.fking.pangya.networking.lzo.MiniLZO;
 
-@Log4j2
 public class ProtocolEncoder extends MessageToByteEncoder<OutboundPacket> {
+
+    private static final Logger LOGGER = LogManager.getLogger(InboundPacketDispatcher.class);
 
     private final byte[] lzoOutBuffer = new byte[32768];
     private final int[] lzoDict = new int[32768];

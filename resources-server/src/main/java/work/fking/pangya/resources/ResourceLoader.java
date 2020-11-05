@@ -2,14 +2,16 @@ package work.fking.pangya.resources;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-@Log4j2
 public class ResourceLoader {
+
+    private static final Logger LOGGER = LogManager.getLogger(ResourceLoader.class);
 
     private final Map<String, ByteBuf> cachedResources = new HashMap<>();
 

@@ -15,11 +15,13 @@ import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpVersion;
 import io.netty.util.CharsetUtil;
-import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-@Log4j2
 @Sharable
 public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
+
+    private static final Logger LOGGER = LogManager.getLogger(HttpServerHandler.class);
 
     private static final ByteBuf INTERNAL_ERROR_BUFFER = Unpooled.copiedBuffer("Internal server error", CharsetUtil.UTF_8);
     private static final String URI_TRANSLATIONS_REQUEST = "/Translation/Read.aspx";

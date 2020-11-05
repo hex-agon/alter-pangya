@@ -1,7 +1,8 @@
 package work.fking.pangya.login.packet.handler;
 
 import io.netty.channel.Channel;
-import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import work.fking.pangya.login.model.LoginSession;
 import work.fking.pangya.login.model.LoginState;
 import work.fking.pangya.login.model.NicknameCheckRequest;
@@ -12,9 +13,10 @@ import work.fking.pangya.networking.protocol.InboundPacketHandler;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-@Log4j2
 @Singleton
 public class CheckNicknamePacketHandler implements InboundPacketHandler<CheckNicknamePacket> {
+
+    private static final Logger LOGGER = LogManager.getLogger(CheckNicknamePacketHandler.class);
 
     private final NicknameService nicknameService;
 

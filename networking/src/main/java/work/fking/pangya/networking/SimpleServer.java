@@ -6,12 +6,14 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.ServerChannel;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.net.InetAddress;
 
-@Slf4j
 public class SimpleServer {
+
+    private static final Logger LOGGER = LogManager.getLogger(SimpleServer.class);
 
     private final ChannelInitializer<Channel> channelInitializer;
     private final Class<? extends ServerChannel> channelClass;

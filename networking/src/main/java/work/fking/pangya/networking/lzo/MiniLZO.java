@@ -2,6 +2,23 @@ package work.fking.pangya.networking.lzo;
 
 public class MiniLZO {
 
+    public static final int c_top_loop = 1;
+    public static final int c_first_literal_run = 2;
+    public static final int c_match = 3;
+    public static final int c_copy_match = 4;
+    public static final int c_match_done = 5;
+    public static final int c_match_next = 6;
+    public static final int c_eof_found = 7;
+    public static final int c_input_overrun = 8;
+    public static final int c_output_overrun = 9;
+    public static final int c_lookbehind_overrun = 10;
+    public static final int c0_top = 1;
+    public static final int c0_try_match = 2;
+    public static final int c0_literal = 3;
+    public static final int c0_match = 4;
+    public static final int c0_m3_m4_len = 5;
+    public static final int c0_m3_m4_offset = 6;
+    public static final int c0_last = 7;
     private static final int LZO_E_OK = 0;
     private static final int LZO_E_ERROR = -1;
     private static final int LZO_E_OUT_OF_MEMORY = -2;
@@ -11,26 +28,6 @@ public class MiniLZO {
     private static final int LZO_E_LOOKBEHIND_OVERRUN = -6;
     private static final int LZO_E_EOF_NOT_FOUND = -7;
     private static final int LZO_E_INPUT_NOT_CONSUMED = -8;
-
-    public static final int c_top_loop = 1;
-    public static final int c_first_literal_run = 2;
-    public static final int c_match = 3;
-    public static final int c_copy_match = 4;
-    public static final int c_match_done = 5;
-    public static final int c_match_next = 6;
-
-    public static final int c_eof_found = 7;
-    public static final int c_input_overrun = 8;
-    public static final int c_output_overrun = 9;
-    public static final int c_lookbehind_overrun = 10;
-
-    public static final int c0_top = 1;
-    public static final int c0_try_match = 2;
-    public static final int c0_literal = 3;
-    public static final int c0_match = 4;
-    public static final int c0_m3_m4_len = 5;
-    public static final int c0_m3_m4_offset = 6;
-    public static final int c0_last = 7;
 
     private static int _lzo1x_1_do_compress(final byte[] in, final int in_len, final byte[] out, MInt out_len, int[] dict) {
         int ip;

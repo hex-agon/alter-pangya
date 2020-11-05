@@ -5,7 +5,8 @@ import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelPipeline;
-import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import work.fking.pangya.common.Rand;
 import work.fking.pangya.login.model.LoginSession;
 import work.fking.pangya.login.packet.outbound.HelloPacket;
@@ -15,9 +16,10 @@ import work.fking.pangya.networking.protocol.Protocol;
 import work.fking.pangya.networking.protocol.ProtocolDecoder;
 import work.fking.pangya.networking.protocol.ProtocolEncoder;
 
-@Log4j2
 @Sharable
 public class HelloHandler extends ChannelInboundHandlerAdapter {
+
+    private static final Logger LOGGER = LogManager.getLogger(HelloHandler.class);
 
     private final Protocol protocol;
     private final InboundPacketDispatcher packetDispatcher;

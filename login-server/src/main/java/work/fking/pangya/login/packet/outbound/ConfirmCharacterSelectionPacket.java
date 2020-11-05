@@ -11,13 +11,13 @@ public class ConfirmCharacterSelectionPacket implements OutboundPacket {
     private ConfirmCharacterSelectionPacket() {
     }
 
+    public static ConfirmCharacterSelectionPacket instance() {
+        return INSTANCE;
+    }
+
     @Override
     public void encode(ByteBuf target) {
         target.writeShortLE(ID);
         target.writeByte(0);
-    }
-
-    public static ConfirmCharacterSelectionPacket instance() {
-        return INSTANCE;
     }
 }

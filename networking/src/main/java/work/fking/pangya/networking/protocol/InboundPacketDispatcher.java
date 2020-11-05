@@ -3,14 +3,16 @@ package work.fking.pangya.networking.protocol;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@Log4j2
 @Sharable
 public class InboundPacketDispatcher extends SimpleChannelInboundHandler<InboundPacket> {
+
+    private static final Logger LOGGER = LogManager.getLogger(InboundPacketDispatcher.class);
 
     private final Map<Class<? extends InboundPacket>, InboundPacketHandler<? extends InboundPacket>> handlers;
 

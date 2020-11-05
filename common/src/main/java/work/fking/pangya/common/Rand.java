@@ -1,14 +1,15 @@
 package work.fking.pangya.common;
 
-import lombok.experimental.UtilityClass;
-
 import java.security.SecureRandom;
 import java.util.Random;
 
-@UtilityClass
-public class Rand {
+public final class Rand {
 
     private static final Random RANDOM = new SecureRandom();
+
+    private Rand() {
+        throw new UnsupportedOperationException("Utility class");
+    }
 
     public static String randomHexString(int length) {
         byte[] bytes = new byte[length];

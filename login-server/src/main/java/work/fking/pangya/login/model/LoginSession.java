@@ -2,9 +2,7 @@ package work.fking.pangya.login.model;
 
 import io.netty.channel.Channel;
 import io.netty.util.AttributeKey;
-import lombok.Getter;
 
-@Getter
 public class LoginSession {
 
     public static final AttributeKey<LoginSession> KEY = AttributeKey.valueOf("loginSession");
@@ -23,8 +21,20 @@ public class LoginSession {
         return new LoginSession(channel);
     }
 
+    public Channel getChannel() {
+        return channel;
+    }
+
+    public PlayerAccount getPlayerAccount() {
+        return playerAccount;
+    }
+
     public void setPlayerAccount(PlayerAccount playerAccount) {
         this.playerAccount = playerAccount;
+    }
+
+    public LoginState getState() {
+        return state;
     }
 
     public void updateState(LoginState loginState) {

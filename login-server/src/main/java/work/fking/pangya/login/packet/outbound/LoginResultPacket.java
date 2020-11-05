@@ -28,6 +28,37 @@ public class LoginResultPacket implements OutboundPacket {
         target.writeByte(resultCode);
     }
 
+    public enum Result {
+        SUCCESS(0x0),
+        INVALID_ID_PW(0x1),
+        INVALID_ID(0x2),
+        USERNAME_IN_USE(0x4, false), // actually accepts notice but it glitches out
+        BANNED(0x5),
+        INCORRECT_USERNAME_PASSWORD(0x6),
+        ACCOUNT_SUSPENDED(0x7),
+        PLAYER_UNDER_AGE(0x9),
+        INCORRECT_SSN(0xC),
+        INCORRECT_USERNAME(0xD),
+        WHITELISTED_USERS_ONLY(0xE),
+        SERVER_MAINTENANCE(0xF),
+        GEO_BLOCKED(0x10),
+        CREATE_NICKNAME(0xD8, false),
+        SELECT_CHARACTER(0xD9, false);
+
+        private final int code;
+        private final boolean allowsNotice;
+
+        Result(int code) {
+            this.code = code;
+            this.allowsNotice = true;
+        }
+
+        Result(int code, boolean allowsNotice) {
+            this.code = code;
+            this.allowsNotice = allowsNotice;
+        }
+    }
+
     private static class SuccessLoginResultPacket extends LoginResultPacket {
 
         private final int userId;
@@ -167,37 +198,6 @@ public class LoginResultPacket implements OutboundPacket {
                 }
             }
             return new ErrorLoginResultPacket(result, suspensionTime, notice);
-        }
-    }
-
-    public enum Result {
-        SUCCESS(0x0),
-        INVALID_ID_PW(0x1),
-        INVALID_ID(0x2),
-        USERNAME_IN_USE(0x4, false), // actually accepts notice but it glitches out
-        BANNED(0x5),
-        INCORRECT_USERNAME_PASSWORD(0x6),
-        ACCOUNT_SUSPENDED(0x7),
-        PLAYER_UNDER_AGE(0x9),
-        INCORRECT_SSN(0xC),
-        INCORRECT_USERNAME(0xD),
-        WHITELISTED_USERS_ONLY(0xE),
-        SERVER_MAINTENANCE(0xF),
-        GEO_BLOCKED(0x10),
-        CREATE_NICKNAME(0xD8, false),
-        SELECT_CHARACTER(0xD9, false);
-
-        private final int code;
-        private final boolean allowsNotice;
-
-        Result(int code) {
-            this.code = code;
-            this.allowsNotice = true;
-        }
-
-        Result(int code, boolean allowsNotice) {
-            this.code = code;
-            this.allowsNotice = allowsNotice;
         }
     }
 }

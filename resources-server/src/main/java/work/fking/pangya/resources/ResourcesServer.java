@@ -1,12 +1,14 @@
 package work.fking.pangya.resources;
 
-import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import work.fking.pangya.networking.SimpleServer;
 
 import java.net.InetAddress;
 
-@Log4j2
 public class ResourcesServer {
+
+    private static final Logger LOGGER = LogManager.getLogger(ResourcesServer.class);
 
     public static final int MAX_CONTENT_LENGTH = 65536;
     private static final int PORT = 50009;

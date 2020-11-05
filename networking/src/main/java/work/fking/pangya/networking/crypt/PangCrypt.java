@@ -1,24 +1,26 @@
 package work.fking.pangya.networking.crypt;
 
 import io.netty.buffer.ByteBuf;
-import lombok.experimental.UtilityClass;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-@Slf4j
-@UtilityClass
-public class PangCrypt {
+public final class PangCrypt {
 
-    public final int CLIENT_HEADER_SIZE = 5;
-    public final int SERVER_HEADER_SIZE = 8;
-    private final int CRYPT_STRIDE = 4;
+    private static final Logger LOGGER = LogManager.getLogger(PangCrypt.class);
 
-    public final int CRYPT_KEY_MIN = 0;
-    public final int CRYPT_KEY_MAX = 0xF;
+    public static final int CLIENT_HEADER_SIZE = 5;
+    public static final int SERVER_HEADER_SIZE = 8;
+    public static final int CRYPT_KEY_MIN = 0;
+    public static final int CRYPT_KEY_MAX = 0xF;
+    public static final int CRYPT_SALT_MIN = 0;
+    public static final int CRYPT_SALT_MAX = 0xFF;
+    private static final int CRYPT_STRIDE = 4;
 
-    public final int CRYPT_SALT_MIN = 0;
-    public final int CRYPT_SALT_MAX = 0xFF;
+    private PangCrypt() {
+        throw new UnsupportedOperationException("Utility class");
+    }
 
-    public void decrypt(ByteBuf buffer, int key) {
+    public static void decrypt(ByteBuf buffer, int key) {
 
         if (key < CRYPT_KEY_MIN || key > CRYPT_KEY_MAX) {
             throw new PangCryptException("Key is out of range, must be 0-15");
@@ -46,7 +48,7 @@ public class PangCrypt {
         }
     }
 
-    public void encrypt(ByteBuf target, ByteBuf compressedPayload, int uncompressedPayloadSize, int key, int salt) {
+    public static void encrypt(ByteBuf target, ByteBuf compressedPayload, int uncompressedPayloadSize, int key, int salt) {
 
         if (key < CRYPT_KEY_MIN || key > CRYPT_KEY_MAX) {
             throw new PangCryptException("Key is out of range, must be 0-15");

@@ -6,9 +6,7 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.stream.ChunkedWriteHandler;
-import lombok.extern.log4j.Log4j2;
 
-@Log4j2
 public class HttpServerChannelInitializer extends ChannelInitializer<Channel> {
 
     private final HttpServerHandler httpServerHandler = new HttpServerHandler();

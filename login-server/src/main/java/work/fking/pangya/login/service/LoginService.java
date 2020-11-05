@@ -3,7 +3,8 @@ package work.fking.pangya.login.service;
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import at.favre.lib.crypto.bcrypt.BCrypt.Verifyer;
 import io.netty.channel.Channel;
-import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import work.fking.pangya.login.model.LoginRequest;
 import work.fking.pangya.login.model.LoginSession;
 import work.fking.pangya.login.model.LoginState;
@@ -23,9 +24,10 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.concurrent.ExecutorService;
 
-@Log4j2
 @Singleton
 public class LoginService {
+
+    private static final Logger LOGGER = LogManager.getLogger(LoginService.class);
 
     private static final Verifyer BCRYPT_VERIFIER = BCrypt.verifyer();
 

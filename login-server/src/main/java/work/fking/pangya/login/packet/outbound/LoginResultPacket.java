@@ -1,7 +1,6 @@
 package work.fking.pangya.login.packet.outbound;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.util.AttributeMap;
 import work.fking.pangya.networking.protocol.OutboundPacket;
 import work.fking.pangya.networking.protocol.ProtocolUtils;
 
@@ -24,9 +23,9 @@ public class LoginResultPacket implements OutboundPacket {
     }
 
     @Override
-    public void encode(ByteBuf buffer, AttributeMap attributeMap) {
-        buffer.writeShortLE(ID);
-        buffer.writeByte(resultCode);
+    public void encode(ByteBuf target) {
+        target.writeShortLE(ID);
+        target.writeByte(resultCode);
     }
 
     private static class SuccessLoginResultPacket extends LoginResultPacket {
@@ -44,13 +43,13 @@ public class LoginResultPacket implements OutboundPacket {
         }
 
         @Override
-        public void encode(ByteBuf buffer, AttributeMap attributeMap) {
-            super.encode(buffer, attributeMap);
+        public void encode(ByteBuf target) {
+            super.encode(target);
 
-            ProtocolUtils.writePString(buffer, username);
-            buffer.writeIntLE(userId);
-            buffer.writeBytes(unknown);
-            ProtocolUtils.writePString(buffer, nickname);
+            ProtocolUtils.writePString(target, username);
+            target.writeIntLE(userId);
+            target.writeBytes(unknown);
+            ProtocolUtils.writePString(target, nickname);
         }
     }
 
@@ -106,15 +105,15 @@ public class LoginResultPacket implements OutboundPacket {
         }
 
         @Override
-        public void encode(ByteBuf buffer, AttributeMap attributeMap) {
-            super.encode(buffer, attributeMap);
+        public void encode(ByteBuf target) {
+            super.encode(target);
 
             if (suspensionTime > 0) {
-                buffer.writeIntLE(suspensionTime);
+                target.writeIntLE(suspensionTime);
             }
 
             if (result.allowsNotice) {
-                ProtocolUtils.writePString(buffer, notice);
+                ProtocolUtils.writePString(target, notice);
             }
         }
     }

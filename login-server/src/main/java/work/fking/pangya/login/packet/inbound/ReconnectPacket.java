@@ -1,24 +1,18 @@
 package work.fking.pangya.login.packet.inbound;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.util.AttributeMap;
-import lombok.Getter;
-import lombok.ToString;
 import work.fking.pangya.networking.protocol.InboundPacket;
+import work.fking.pangya.networking.protocol.PacketFactory;
 import work.fking.pangya.networking.protocol.ProtocolUtils;
 
-@Getter
-@ToString
-public class ReconnectPacket implements InboundPacket {
+public record ReconnectPacket(String username, int userId, String loginKey) implements InboundPacket {
 
-    private String username;
-    private int userId;
-    private String loginKey;
+    @PacketFactory
+    public static InboundPacket decode(ByteBuf buffer) {
+        String username = ProtocolUtils.readPString(buffer);
+        int userId = buffer.readIntLE();
+        String loginKey = ProtocolUtils.readPString(buffer);
 
-    @Override
-    public void decode(ByteBuf buffer, AttributeMap attributes) {
-        username = ProtocolUtils.readPString(buffer);
-        userId = buffer.readIntLE();
-        loginKey = ProtocolUtils.readPString(buffer);
+        return new ReconnectPacket(username, userId, loginKey);
     }
 }

@@ -1,7 +1,6 @@
 package work.fking.pangya.login.packet.outbound;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.util.AttributeMap;
 import work.fking.pangya.networking.protocol.OutboundPacket;
 import work.fking.pangya.networking.protocol.ProtocolUtils;
 
@@ -23,9 +22,9 @@ public class CheckNicknameResultPacket implements OutboundPacket {
     }
 
     @Override
-    public void encode(ByteBuf buffer, AttributeMap attributeMap) {
-        buffer.writeShortLE(ID);
-        buffer.writeIntLE(result.code);
+    public void encode(ByteBuf target) {
+        target.writeShortLE(ID);
+        target.writeIntLE(result.code);
     }
 
     private static class AvailableNicknamePacket extends CheckNicknameResultPacket {
@@ -38,9 +37,9 @@ public class CheckNicknameResultPacket implements OutboundPacket {
         }
 
         @Override
-        public void encode(ByteBuf buffer, AttributeMap attributeMap) {
-            super.encode(buffer, attributeMap);
-            ProtocolUtils.writePString(buffer, nickname);
+        public void encode(ByteBuf target) {
+            super.encode(target);
+            ProtocolUtils.writePString(target, nickname);
         }
     }
 

@@ -1,7 +1,6 @@
 package work.fking.pangya.game.packet.outbound;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.util.AttributeMap;
 import work.fking.pangya.networking.crypt.PangCrypt;
 import work.fking.pangya.networking.protocol.OutboundPacket;
 
@@ -23,9 +22,9 @@ public class HelloPacket implements OutboundPacket {
     }
 
     @Override
-    public void encode(ByteBuf buffer, AttributeMap attributeMap) {
-        buffer.writeByte(0);
-        buffer.writeBytes(unknown);
-        buffer.writeByte(cryptKey);
+    public void encode(ByteBuf target) {
+        target.writeByte(0);
+        target.writeBytes(unknown);
+        target.writeByte(cryptKey);
     }
 }

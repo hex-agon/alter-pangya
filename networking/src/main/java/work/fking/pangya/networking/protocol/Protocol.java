@@ -1,5 +1,7 @@
 package work.fking.pangya.networking.protocol;
 
+import io.netty.buffer.ByteBuf;
+
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodHandles.Lookup;
@@ -11,7 +13,8 @@ import java.util.Arrays;
  */
 public final class Protocol {
 
-    private static final MethodType DEFAULT_CONSTRUCTOR_METHOD_TYPE = MethodType.methodType(void.class);
+    private static final String FACTORY_METHOD_NAME = "decode";
+    private static final MethodType FACTORY_METHOD_TYPE = MethodType.methodType(InboundPacket.class, ByteBuf.class);
     private static final Lookup LOOKUP = MethodHandles.lookup();
 
     private final MethodHandle[] inboundPacketConstructors;
@@ -24,7 +27,7 @@ public final class Protocol {
         return new Builder();
     }
 
-    public InboundPacket createInboundPacket(int packetId) throws Throwable {
+    public InboundPacket createInboundPacket(int packetId, ByteBuf buffer) throws Throwable {
 
         if (packetId < 0 || packetId >= inboundPacketConstructors.length) {
             return null;
@@ -34,30 +37,29 @@ public final class Protocol {
         if (constructor == null) {
             return null;
         }
-        return (InboundPacket) constructor.invokeExact();
+        return (InboundPacket) constructor.invokeExact(buffer);
     }
 
     public static class Builder {
 
-        private MethodHandle[] inboundPacketConstructors = new MethodHandle[0];
+        private MethodHandle[] inboundPacketFactories = new MethodHandle[0];
 
         public <P extends InboundPacket> Builder inboundPacket(int packetId, Class<P> packetClass) {
             try {
-                if (packetId >= inboundPacketConstructors.length) {
-                    inboundPacketConstructors = Arrays.copyOf(inboundPacketConstructors, packetId + 1);
+                if (packetId >= inboundPacketFactories.length) {
+                    inboundPacketFactories = Arrays.copyOf(inboundPacketFactories, packetId + 1);
                 }
-                MethodHandle constructorHandle = LOOKUP.findConstructor(packetClass, DEFAULT_CONSTRUCTOR_METHOD_TYPE);
-                constructorHandle = constructorHandle.asType(constructorHandle.type().changeReturnType(InboundPacket.class));
+                MethodHandle factoryHandle = LOOKUP.findStatic(packetClass, FACTORY_METHOD_NAME, FACTORY_METHOD_TYPE);
 
-                inboundPacketConstructors[packetId] = constructorHandle;
+                inboundPacketFactories[packetId] = factoryHandle;
             } catch (NoSuchMethodException | IllegalAccessException e) {
-                throw new IllegalArgumentException("The packet class does not have a default zero args constructor", e);
+                throw new IllegalArgumentException("The class " + packetClass.getSimpleName() + " does not have static factory method named 'decode' that accepts a ByteBuf", e);
             }
             return this;
         }
 
         public Protocol build() {
-            return new Protocol(inboundPacketConstructors);
+            return new Protocol(inboundPacketFactories);
         }
     }
 }

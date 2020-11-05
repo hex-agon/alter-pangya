@@ -8,6 +8,6 @@ public class SimplePacketEncoder extends MessageToByteEncoder<OutboundPacket> {
 
     @Override
     protected void encode(ChannelHandlerContext ctx, OutboundPacket packet, ByteBuf buffer) {
-        packet.encode(buffer, ctx.channel());
+        packet.encode(buffer);
     }
 }

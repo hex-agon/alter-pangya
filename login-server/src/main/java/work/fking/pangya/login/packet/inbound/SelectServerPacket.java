@@ -1,20 +1,16 @@
 package work.fking.pangya.login.packet.inbound;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.util.AttributeMap;
-import lombok.Getter;
-import lombok.ToString;
 import work.fking.pangya.networking.protocol.InboundPacket;
+import work.fking.pangya.networking.protocol.PacketFactory;
 
-@Getter
-@ToString
-public class SelectServerPacket implements InboundPacket {
+public record SelectServerPacket(int serverId) implements InboundPacket {
 
-    private int serverId;
-
-    @Override
-    public void decode(ByteBuf buffer, AttributeMap attributes) {
-        serverId = buffer.readShortLE();
+    @PacketFactory
+    public static InboundPacket decode(ByteBuf buffer) {
+        int serverId = buffer.readShortLE();
         buffer.skipBytes(2);
+
+        return new SelectServerPacket(serverId);
     }
 }

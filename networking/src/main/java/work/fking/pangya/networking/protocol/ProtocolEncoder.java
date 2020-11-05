@@ -1,7 +1,6 @@
 package work.fking.pangya.networking.protocol;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
@@ -32,7 +31,7 @@ public class ProtocolEncoder extends MessageToByteEncoder<OutboundPacket> {
         LOGGER.trace("Encoding packet={}", packet.getClass().getSimpleName());
         // TODO: Everything here is terribly inefficient
         ByteBuf pktBuffer = ctx.alloc().buffer();
-        packet.encode(pktBuffer, ctx.channel());
+        packet.encode(pktBuffer);
 
         int uncompressedSize = pktBuffer.readableBytes();
         byte[] source = new byte[uncompressedSize];

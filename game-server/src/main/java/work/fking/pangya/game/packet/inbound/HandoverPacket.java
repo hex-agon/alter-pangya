@@ -1,32 +1,24 @@
 package work.fking.pangya.game.packet.inbound;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.util.AttributeMap;
-import lombok.Getter;
-import lombok.ToString;
 import work.fking.pangya.networking.protocol.InboundPacket;
+import work.fking.pangya.networking.protocol.PacketFactory;
 import work.fking.pangya.networking.protocol.ProtocolUtils;
 
-@Getter
-@ToString
-public class HandoverPacket implements InboundPacket {
+public record HandoverPacket(String username, int userId, String loginKey, String clientVersion, String sessionKey) implements InboundPacket {
 
-    private String username;
-    private int userId;
-    private String loginKey;
-    private String clientVersion;
-    private String sessionKey;
-
-    @Override
-    public void decode(ByteBuf buffer, AttributeMap attributes) {
-        username = ProtocolUtils.readPString(buffer);
-        userId = buffer.readIntLE();
+    @PacketFactory
+    public static InboundPacket decode(ByteBuf buffer) {
+        String username = ProtocolUtils.readPString(buffer);
+        int userId = buffer.readIntLE();
         buffer.readIntLE();
         buffer.readShortLE();
-        loginKey = ProtocolUtils.readPString(buffer);
-        clientVersion = ProtocolUtils.readPString(buffer);
+        String loginKey = ProtocolUtils.readPString(buffer);
+        String clientVersion = ProtocolUtils.readPString(buffer);
         buffer.readIntLE();
         buffer.readIntLE();
-        sessionKey = ProtocolUtils.readPString(buffer);
+        String sessionKey = ProtocolUtils.readPString(buffer);
+
+        return new HandoverPacket(username, userId, loginKey, clientVersion, sessionKey);
     }
 }

@@ -32,7 +32,7 @@ public class LoginPacketHandler implements InboundPacketHandler<LoginRequestPack
             channel.disconnect();
             return;
         }
-        LoginRequest loginRequest = LoginRequest.of(channel, packet.getUsername(), packet.getPasswordMd5());
+        LoginRequest loginRequest = LoginRequest.of(channel, packet.username(), packet.passwordMd5());
         loginService.queueLoginRequest(loginRequest);
     }
 }

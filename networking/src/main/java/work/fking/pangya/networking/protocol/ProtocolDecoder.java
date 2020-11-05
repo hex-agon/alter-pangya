@@ -43,7 +43,7 @@ public class ProtocolDecoder extends ByteToMessageDecoder {
         LOGGER.trace("Incoming packetId={}", packetId);
 
         try {
-            InboundPacket inboundPacket = protocol.createInboundPacket(packetId);
+            InboundPacket inboundPacket = protocol.createInboundPacket(packetId, buffer);
 
             if (inboundPacket == null) {
                 LOGGER.warn("Unknown packetId={}", packetId);
@@ -51,7 +51,6 @@ public class ProtocolDecoder extends ByteToMessageDecoder {
                 ctx.disconnect();
                 return;
             }
-            inboundPacket.decode(buffer, ctx.channel());
             out.add(inboundPacket);
         } catch (Throwable throwable) {
             throw new ProtocolException(throwable);

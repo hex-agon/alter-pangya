@@ -35,7 +35,7 @@ public class SetNicknamePacketHandler implements InboundPacketHandler<SetNicknam
             channel.disconnect();
             return;
         }
-        NicknameSetRequest request = NicknameSetRequest.of(channel, packet.getNickname(), result -> loginService.resumeLoginFlow(session));
+        NicknameSetRequest request = NicknameSetRequest.of(channel, packet.nickname(), result -> loginService.resumeLoginFlow(session));
         nicknameService.queueNicknameCheckSet(request);
     }
 }

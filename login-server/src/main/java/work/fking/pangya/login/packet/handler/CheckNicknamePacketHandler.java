@@ -32,6 +32,6 @@ public class CheckNicknamePacketHandler implements InboundPacketHandler<CheckNic
             channel.disconnect();
             return;
         }
-        nicknameService.queueNicknameCheckRequest(NicknameCheckRequest.of(channel, packet.getNickname()));
+        nicknameService.queueNicknameCheckRequest(NicknameCheckRequest.of(channel, packet.nickname()));
     }
 }

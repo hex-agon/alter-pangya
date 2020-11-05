@@ -1,7 +1,6 @@
 package work.fking.pangya.login.packet.outbound;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.util.AttributeMap;
 import work.fking.pangya.networking.protocol.OutboundPacket;
 
 public class ConfirmCharacterSelectionPacket implements OutboundPacket {
@@ -13,9 +12,9 @@ public class ConfirmCharacterSelectionPacket implements OutboundPacket {
     }
 
     @Override
-    public void encode(ByteBuf buffer, AttributeMap attributeMap) {
-        buffer.writeShortLE(ID);
-        buffer.writeByte(0);
+    public void encode(ByteBuf target) {
+        target.writeShortLE(ID);
+        target.writeByte(0);
     }
 
     public static ConfirmCharacterSelectionPacket instance() {

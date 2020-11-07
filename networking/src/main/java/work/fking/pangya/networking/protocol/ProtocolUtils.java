@@ -3,6 +3,9 @@ package work.fking.pangya.networking.protocol;
 import io.netty.buffer.ByteBuf;
 
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoField;
+import java.time.temporal.TemporalField;
 import java.util.Arrays;
 
 public final class ProtocolUtils {
@@ -37,5 +40,16 @@ public final class ProtocolUtils {
     public static void writeFixedSizeString(ByteBuf buffer, String string, int size) {
         byte[] bytes = string.getBytes(StandardCharsets.US_ASCII);
         buffer.writeBytes(Arrays.copyOf(bytes, size));
+    }
+
+    public static void writeLocalDateTime(ByteBuf target, LocalDateTime localDateTime) {
+        target.writeShortLE(localDateTime.getYear());
+        target.writeShortLE(localDateTime.getMonthValue());
+        target.writeShortLE(localDateTime.getDayOfWeek().getValue());
+        target.writeShortLE(localDateTime.getDayOfMonth());
+        target.writeShortLE(localDateTime.getHour());
+        target.writeShortLE(localDateTime.getMinute());
+        target.writeShortLE(localDateTime.getSecond());
+        target.writeShortLE(localDateTime.get(ChronoField.MILLI_OF_SECOND));
     }
 }

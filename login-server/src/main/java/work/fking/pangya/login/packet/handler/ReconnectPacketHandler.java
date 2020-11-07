@@ -18,6 +18,6 @@ public class ReconnectPacketHandler implements InboundPacketHandler<ReconnectPac
     @Override
     public void handle(Channel channel, ReconnectPacket packet) {
         LOGGER.debug(packet);
-        channel.writeAndFlush(LoginResultPacket.error(Result.SERVER_MAINTENANCE));
+        channel.writeAndFlush(LoginResultPacket.error(Result.BANNED).build());
     }
 }

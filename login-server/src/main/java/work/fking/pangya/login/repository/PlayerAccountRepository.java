@@ -14,5 +14,5 @@ public interface PlayerAccountRepository {
     boolean nicknameExists(@Bind("nickname") String nickname);
 
     @SqlUpdate("UPDATE player_account SET nickname = :nickname WHERE id = :accountId")
-    boolean updateNickname(@Bind("accountId") long accountId, @Bind("nickname") String nickname);
+    boolean updateNickname(@Bind("accountId") int accountId, @Bind("nickname") String nickname);
 }

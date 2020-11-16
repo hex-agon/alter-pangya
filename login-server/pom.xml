@@ -55,6 +55,11 @@
             <version>${jdbi.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.jdbi</groupId>
+            <artifactId>jdbi3-jackson2</artifactId>
+            <version>${jdbi.version}</version>
+        </dependency>
+        <dependency>
             <groupId>at.favre.lib</groupId>
             <artifactId>bcrypt</artifactId>
             <version>${bcrypt.version}</version>

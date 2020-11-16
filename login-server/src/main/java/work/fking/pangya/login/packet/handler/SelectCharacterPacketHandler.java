@@ -34,6 +34,7 @@ public class SelectCharacterPacketHandler implements InboundPacketHandler<Select
             channel.disconnect();
             return;
         }
+        // TODO: actually persist the new player profile
         channel.write(ConfirmCharacterSelectionPacket.instance());
         loginService.resumeLoginFlow(session);
     }

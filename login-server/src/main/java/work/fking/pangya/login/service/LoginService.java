@@ -16,6 +16,7 @@ import work.fking.pangya.login.packet.outbound.LoginResultPacket.Result;
 import work.fking.pangya.login.packet.outbound.MessageServerListPacket;
 import work.fking.pangya.login.packet.outbound.ServerListPacket;
 import work.fking.pangya.login.repository.PlayerAccountRepository;
+import work.fking.pangya.login.repository.PlayerProfileRepository;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -32,11 +33,13 @@ public class LoginService {
     private static final Verifyer BCRYPT_VERIFIER = BCrypt.verifyer();
 
     private final PlayerAccountRepository playerRepository;
+    private final PlayerProfileRepository profileRepository;
     private final ExecutorService executorService;
 
     @Inject
-    public LoginService(PlayerAccountRepository playerRepository, @Named("shared") ExecutorService executorService) {
+    public LoginService(PlayerAccountRepository playerRepository, PlayerProfileRepository profileRepository, @Named("shared") ExecutorService executorService) {
         this.playerRepository = playerRepository;
+        this.profileRepository = profileRepository;
         this.executorService = executorService;
     }
 
@@ -61,7 +64,6 @@ public class LoginService {
         }
     }
 
-    // check if we need to set a nickname or select a character
     private void checkSetupTasks(LoginSession session) {
         PlayerAccount playerAccount = session.getPlayerAccount();
 
@@ -69,6 +71,8 @@ public class LoginService {
 
         if (playerAccount.nickname() == null) {
             session.updateState(LoginState.SELECTING_NICKNAME);
+        } else if (!profileRepository.hasActiveCharacter(playerAccount.id())) {
+            session.updateState(LoginState.SELECTING_CHARACTER);
         } else {
             session.updateState(LoginState.AUTHENTICATED);
         }
@@ -134,14 +138,12 @@ public class LoginService {
     private void proceedToCharacterSelection(LoginSession session) {
         LoginResultPacket loginResultPacket = LoginResultPacket.error(Result.SELECT_CHARACTER).build();
 
-        session.updateState(LoginState.SELECTING_CHARACTER);
         session.getChannel().writeAndFlush(loginResultPacket);
     }
 
     private void proceedToNicknameCreation(LoginSession session) {
         LoginResultPacket loginResultPacket = LoginResultPacket.error(Result.CREATE_NICKNAME).build();
 
-        session.updateState(LoginState.SELECTING_NICKNAME);
         session.getChannel().writeAndFlush(loginResultPacket);
     }
 

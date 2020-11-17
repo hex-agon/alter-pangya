@@ -3,11 +3,13 @@ package work.fking.pangya.login.packet.handler;
 import io.netty.channel.Channel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import work.fking.pangya.common.model.PlayerCharacter;
 import work.fking.pangya.login.model.LoginSession;
 import work.fking.pangya.login.model.LoginState;
+import work.fking.pangya.login.model.NewProfileRequest;
 import work.fking.pangya.login.packet.inbound.SelectCharacterPacket;
-import work.fking.pangya.login.packet.outbound.ConfirmCharacterSelectionPacket;
 import work.fking.pangya.login.service.LoginService;
+import work.fking.pangya.login.service.ProfileService;
 import work.fking.pangya.networking.protocol.InboundPacketHandler;
 
 import javax.inject.Inject;
@@ -19,10 +21,12 @@ public class SelectCharacterPacketHandler implements InboundPacketHandler<Select
     private static final Logger LOGGER = LogManager.getLogger(SelectCharacterPacketHandler.class);
 
     private final LoginService loginService;
+    private final ProfileService profileService;
 
     @Inject
-    public SelectCharacterPacketHandler(LoginService loginService) {
+    public SelectCharacterPacketHandler(LoginService loginService, ProfileService profileService) {
         this.loginService = loginService;
+        this.profileService = profileService;
     }
 
     @Override
@@ -34,8 +38,6 @@ public class SelectCharacterPacketHandler implements InboundPacketHandler<Select
             channel.disconnect();
             return;
         }
-        // TODO: actually persist the new player profile
-        channel.write(ConfirmCharacterSelectionPacket.instance());
-        loginService.resumeLoginFlow(session);
+        profileService.queueNewProfileRequest(new NewProfileRequest(channel, new PlayerCharacter(packet.characterId(), packet.hairColor()), result -> loginService.resumeLoginFlow(session)));
     }
 }

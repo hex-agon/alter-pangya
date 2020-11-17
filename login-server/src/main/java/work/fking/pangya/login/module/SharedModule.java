@@ -1,5 +1,6 @@
 package work.fking.pangya.login.module;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import work.fking.pangya.common.Log4jExceptionLogger;
@@ -16,5 +17,13 @@ public class SharedModule extends AbstractModule {
     @Named("shared")
     public ExecutorService provideSharedExecutorService() {
         return new ForkJoinPool(Runtime.getRuntime().availableProcessors(), ForkJoinPool.defaultForkJoinWorkerThreadFactory, new Log4jExceptionLogger(), true);
+    }
+
+    @Provides
+    @Singleton
+    @Named("shared")
+    public ObjectMapper provideSharedObjectMapper() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper;
     }
 }

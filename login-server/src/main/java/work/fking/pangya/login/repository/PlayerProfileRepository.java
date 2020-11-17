@@ -8,9 +8,9 @@ import work.fking.pangya.login.model.BasicPlayerProfile;
 
 public interface PlayerProfileRepository {
 
-    @SqlQuery("INSERT INTO player_profile VALUES (:accountId, :profile)")
+    @SqlUpdate("INSERT INTO player_profile VALUES (:accountId, :profile)")
     boolean createProfile(@Bind("accountId") int accountId, @Bind("profile") @Json BasicPlayerProfile profile);
 
-    @SqlUpdate("SELECT profile_json ? 'activeCharacter' FROM player_profile WHERE player_account_id = :accountId")
+    @SqlQuery("SELECT exists(SELECT profile_json->'activeCharacter' FROM player_profile WHERE player_account_id = :accountId)")
     boolean hasActiveCharacter(@Bind("accountId") int accountId);
 }

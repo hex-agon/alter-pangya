@@ -51,13 +51,13 @@ public class DatabaseModule extends AbstractModule {
 
     @Provides
     @Singleton
-    public Jdbi provideJdbi(DataSource dataSource) {
+    public Jdbi provideJdbi(DataSource dataSource, @Named("shared") ObjectMapper objectMapper) {
         Jdbi jdbi = Jdbi.create(dataSource)
                         .installPlugin(new PostgresPlugin())
                         .installPlugin(new SqlObjectPlugin())
                         .installPlugin(new Jackson2Plugin());
 
-        jdbi.getConfig(Jackson2Config.class).setMapper(new ObjectMapper());
+        jdbi.getConfig(Jackson2Config.class).setMapper(objectMapper);
         return jdbi;
     }
 

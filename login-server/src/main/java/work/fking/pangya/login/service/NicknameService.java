@@ -1,7 +1,5 @@
 package work.fking.pangya.login.service;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import work.fking.pangya.login.model.LoginSession;
 import work.fking.pangya.login.model.LoginState;
 import work.fking.pangya.login.model.NicknameCheckRequest;

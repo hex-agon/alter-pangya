@@ -44,7 +44,7 @@ public class LoginService {
     }
 
     public void queueLoginRequest(LoginRequest loginRequest) {
-        executorService.submit(() -> authenticate(loginRequest));
+        executorService.execute(() -> authenticate(loginRequest));
     }
 
     public void resumeLoginFlow(LoginSession loginSession) {
@@ -66,8 +66,6 @@ public class LoginService {
 
     private void checkSetupTasks(LoginSession session) {
         PlayerAccount playerAccount = session.getPlayerAccount();
-
-        session.updateState(LoginState.SELECTING_CHARACTER);
 
         if (playerAccount.nickname() == null) {
             session.updateState(LoginState.SELECTING_NICKNAME);

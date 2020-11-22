@@ -57,21 +57,6 @@ public class SimpleServer {
         }
     }
 
-    /**
-     * Gracefully shuts down the server. This method blocks the current thread until both loop groups exit.
-     *
-     * @throws InterruptedException
-     * @throws IllegalStateException If any of the loop groups is already shutting down.
-     */
-    public void shutdown() throws InterruptedException {
-
-        if (bossGroup.isShuttingDown() || workerGroup.isShuttingDown()) {
-            throw new IllegalStateException("Already shutting down");
-        }
-        bossGroup.shutdownGracefully().sync();
-        workerGroup.shutdownGracefully().sync();
-    }
-
     public static class Builder {
 
         private ChannelInitializer<Channel> channelInitializer;

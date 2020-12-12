@@ -33,8 +33,8 @@ public class SelectCharacterPacketHandler implements InboundPacketHandler<Select
     public void handle(Channel channel, SelectCharacterPacket packet) {
         LoginSession session = channel.attr(LoginSession.KEY).get();
 
-        if (session.getState() != LoginState.SELECTING_CHARACTER) {
-            LOGGER.warn("Unexpected login session state, got={}, expected=SELECTING_CHARACTER", session.getState());
+        if (session.state() != LoginState.SELECTING_CHARACTER) {
+            LOGGER.warn("Unexpected login session state, got={}, expected=SELECTING_CHARACTER", session.state());
             channel.disconnect();
             return;
         }

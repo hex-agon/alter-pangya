@@ -29,8 +29,8 @@ public class LoginPacketHandler implements InboundPacketHandler<LoginRequestPack
     public void handle(Channel channel, LoginRequestPacket packet) {
         LoginSession session = channel.attr(LoginSession.KEY).get();
 
-        if (session.getState() != LoginState.AUTHENTICATING) {
-            LOGGER.warn("Unexpected login session state, got={}, expected=AUTHENTICATING", session.getState());
+        if (session.state() != LoginState.AUTHENTICATING) {
+            LOGGER.warn("Unexpected login session state, got={}, expected=AUTHENTICATING", session.state());
             channel.disconnect();
             return;
         }

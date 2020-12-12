@@ -56,7 +56,7 @@ public class NicknameService {
     private void updateNickname(NicknameSetRequest request) {
         LoginSession session = request.channel().attr(LoginSession.KEY).get();
 
-        PlayerAccount playerAccount = session.getPlayerAccount();
+        PlayerAccount playerAccount = session.playerAccount();
         String nickname = request.nickname();
 
         boolean success = playerRepository.updateNickname(playerAccount.id(), nickname);

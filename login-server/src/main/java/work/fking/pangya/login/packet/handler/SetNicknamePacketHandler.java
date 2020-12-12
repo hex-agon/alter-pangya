@@ -32,8 +32,8 @@ public class SetNicknamePacketHandler implements InboundPacketHandler<SetNicknam
     public void handle(Channel channel, SetNicknamePacket packet) {
         LoginSession session = channel.attr(LoginSession.KEY).get();
 
-        if (session.getState() != LoginState.SELECTED_NICKNAME) {
-            LOGGER.warn("Unexpected login session state, got={}, expected=SELECTED_NICKNAME", session.getState());
+        if (session.state() != LoginState.SELECTED_NICKNAME) {
+            LOGGER.warn("Unexpected login session state, got={}, expected=SELECTED_NICKNAME", session.state());
             channel.disconnect();
             return;
         }

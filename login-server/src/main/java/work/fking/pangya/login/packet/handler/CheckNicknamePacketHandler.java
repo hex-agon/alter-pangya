@@ -29,8 +29,8 @@ public class CheckNicknamePacketHandler implements InboundPacketHandler<CheckNic
     public void handle(Channel channel, CheckNicknamePacket packet) {
         LoginSession session = channel.attr(LoginSession.KEY).get();
 
-        if (session.getState() != LoginState.SELECTING_NICKNAME && session.getState() != LoginState.SELECTED_NICKNAME) {
-            LOGGER.warn("Unexpected login session state, got={}, expected=SELECTING_NICKNAME or SELECTED_NICKNAME", session.getState());
+        if (session.state() != LoginState.SELECTING_NICKNAME && session.state() != LoginState.SELECTED_NICKNAME) {
+            LOGGER.warn("Unexpected login session state, got={}, expected=SELECTING_NICKNAME or SELECTED_NICKNAME", session.state());
             channel.disconnect();
             return;
         }

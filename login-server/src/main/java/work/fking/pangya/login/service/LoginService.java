@@ -48,14 +48,14 @@ public class LoginService {
     }
 
     public void resumeLoginFlow(LoginSession loginSession) {
-        LOGGER.debug("resumeLoginFlow enter state={}", loginSession.getState());
-        if (loginSession.getState() == LoginState.AUTHENTICATING) {
+        LOGGER.debug("resumeLoginFlow enter state={}", loginSession.state());
+        if (loginSession.state() == LoginState.AUTHENTICATING) {
             throw new IllegalStateException("Cannot resume login flow when session state is AUTHENTICATING");
         }
         checkSetupTasks(loginSession);
-        LOGGER.debug("resumeLoginFlow checkSetupTasks state={}", loginSession.getState());
+        LOGGER.debug("resumeLoginFlow checkSetupTasks state={}", loginSession.state());
 
-        switch (loginSession.getState()) {
+        switch (loginSession.state()) {
 
             case AUTHENTICATED -> proceedToLoggedIn(loginSession);
             case SELECTING_NICKNAME -> proceedToNicknameCreation(loginSession);
@@ -65,7 +65,7 @@ public class LoginService {
     }
 
     private void checkSetupTasks(LoginSession session) {
-        PlayerAccount playerAccount = session.getPlayerAccount();
+        PlayerAccount playerAccount = session.playerAccount();
 
         if (playerAccount.nickname() == null) {
             session.updateState(LoginState.SELECTING_NICKNAME);
@@ -115,7 +115,7 @@ public class LoginService {
     }
 
     private void proceedToLoggedIn(LoginSession session) {
-        PlayerAccount playerAccount = session.getPlayerAccount();
+        PlayerAccount playerAccount = session.playerAccount();
         LoginResultPacket loginResultPacket = LoginResultPacket.success()
                                                                .userId(playerAccount.id())
                                                                .username(playerAccount.username())
@@ -124,7 +124,7 @@ public class LoginService {
 
         session.updateState(LoginState.LOGGED_IN);
 
-        Channel channel = session.getChannel();
+        Channel channel = session.channel();
         channel.write(LoginKeyPacket.create("7430F52"));
         channel.write(new ChatMacrosPacket());
         channel.write(loginResultPacket);
@@ -136,22 +136,22 @@ public class LoginService {
     private void proceedToCharacterSelection(LoginSession session) {
         LoginResultPacket loginResultPacket = LoginResultPacket.error(Result.SELECT_CHARACTER).build();
 
-        session.getChannel().writeAndFlush(loginResultPacket);
+        session.channel().writeAndFlush(loginResultPacket);
     }
 
     private void proceedToNicknameCreation(LoginSession session) {
         LoginResultPacket loginResultPacket = LoginResultPacket.error(Result.CREATE_NICKNAME).build();
 
-        session.getChannel().writeAndFlush(loginResultPacket);
+        session.channel().writeAndFlush(loginResultPacket);
     }
 
     private void replyAccountBanned(LoginSession loginSession) {
-        loginSession.getChannel().writeAndFlush(LoginResultPacket.error(Result.BANNED).build());
+        loginSession.channel().writeAndFlush(LoginResultPacket.error(Result.BANNED).build());
     }
 
     private void checkAccountSuspended(LoginSession loginSession) {
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime suspensionLiftDateTime = loginSession.getPlayerAccount().suspensionLiftTimestamp();
+        LocalDateTime suspensionLiftDateTime = loginSession.playerAccount().suspensionLiftTimestamp();
 
         if (now.isBefore(suspensionLiftDateTime)) {
             int hours = (int) Duration.between(now, suspensionLiftDateTime).toHours();
@@ -162,12 +162,12 @@ public class LoginService {
             LoginResultPacket build = LoginResultPacket.error(Result.ACCOUNT_SUSPENDED)
                                                        .suspensionTime(hours)
                                                        .build();
-            loginSession.getChannel().writeAndFlush(build);
+            loginSession.channel().writeAndFlush(build);
         }
     }
 
     private void unexpectedState(LoginSession loginSession) {
-        LOGGER.warn("Unexpected login session state, state={}", loginSession.getState());
-        loginSession.getChannel().disconnect();
+        LOGGER.warn("Unexpected login session state, state={}", loginSession.state());
+        loginSession.channel().disconnect();
     }
 }

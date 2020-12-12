@@ -32,7 +32,7 @@ public class ProfileService {
         Channel channel = request.channel();
         LoginSession session = channel.attr(LoginSession.KEY).get();
 
-        boolean result = profileRepository.createProfile(session.getPlayerAccount().id(), BasicPlayerProfile.of(request.character()));
+        boolean result = profileRepository.createProfile(session.playerAccount().id(), BasicPlayerProfile.of(request.character()));
         channel.write(ConfirmCharacterSelectionPacket.instance());
         request.callback().accept(result);
     }

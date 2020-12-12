@@ -21,23 +21,23 @@ public class LoginSession {
         return new LoginSession(channel);
     }
 
-    public Channel getChannel() {
+    public Channel channel() {
         return channel;
     }
 
-    public PlayerAccount getPlayerAccount() {
+    public synchronized PlayerAccount playerAccount() {
         return playerAccount;
     }
 
-    public void setPlayerAccount(PlayerAccount playerAccount) {
+    public synchronized void setPlayerAccount(PlayerAccount playerAccount) {
         this.playerAccount = playerAccount;
     }
 
-    public LoginState getState() {
+    public synchronized LoginState state() {
         return state;
     }
 
-    public void updateState(LoginState loginState) {
+    public synchronized void updateState(LoginState loginState) {
         this.state = loginState;
     }
 }

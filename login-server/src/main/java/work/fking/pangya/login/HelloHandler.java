@@ -23,14 +23,16 @@ public class HelloHandler extends ChannelInboundHandlerAdapter {
 
     private final Protocol protocol;
     private final InboundPacketDispatcher packetDispatcher;
+    private final TailHandler tailHandler;
 
-    private HelloHandler(Protocol protocol, InboundPacketDispatcher packetDispatcher) {
+    private HelloHandler(Protocol protocol, InboundPacketDispatcher packetDispatcher, TailHandler tailHandler) {
         this.protocol = protocol;
         this.packetDispatcher = packetDispatcher;
+        this.tailHandler = tailHandler;
     }
 
-    public static HelloHandler create(Protocol protocol, InboundPacketDispatcher packetDispatcher) {
-        return new HelloHandler(protocol, packetDispatcher);
+    public static HelloHandler create(Protocol protocol, InboundPacketDispatcher packetDispatcher, TailHandler tailHandler) {
+        return new HelloHandler(protocol, packetDispatcher, tailHandler);
     }
 
     @Override
@@ -54,5 +56,6 @@ public class HelloHandler extends ChannelInboundHandlerAdapter {
         pipeline.addLast("checker", LoginSessionChecker.instance());
         pipeline.addLast("decoder", ProtocolDecoder.create(protocol, cryptKey));
         pipeline.addLast("packetDispatcher", packetDispatcher);
+        pipeline.addLast("tailHandler", tailHandler);
     }
 }

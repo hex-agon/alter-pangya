@@ -5,6 +5,7 @@ import at.favre.lib.crypto.bcrypt.BCrypt.Verifyer;
 import io.netty.channel.Channel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import work.fking.pangya.login.LoginServer;
 import work.fking.pangya.login.model.LoginRequest;
 import work.fking.pangya.login.model.LoginSession;
 import work.fking.pangya.login.model.LoginState;
@@ -34,12 +35,14 @@ public class LoginService {
 
     private final PlayerAccountRepository playerRepository;
     private final PlayerProfileRepository profileRepository;
+    private final LoginServer registry;
     private final ExecutorService executorService;
 
     @Inject
-    public LoginService(PlayerAccountRepository playerRepository, PlayerProfileRepository profileRepository, @Named("shared") ExecutorService executorService) {
+    public LoginService(PlayerAccountRepository playerRepository, PlayerProfileRepository profileRepository, LoginServer registry, @Named("shared") ExecutorService executorService) {
         this.playerRepository = playerRepository;
         this.profileRepository = profileRepository;
+        this.registry = registry;
         this.executorService = executorService;
     }
 
@@ -88,6 +91,7 @@ public class LoginService {
 
         session.setPlayerAccount(playerAccount);
         session.updateState(LoginState.AUTHENTICATED);
+        registry.register(session);
 
         switch (playerAccount.status()) {
             case DISABLED -> replyAccountBanned(session);

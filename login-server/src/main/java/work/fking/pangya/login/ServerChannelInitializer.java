@@ -11,12 +11,12 @@ public class ServerChannelInitializer extends ChannelInitializer<Channel> {
 
     private final HelloHandler helloHandler;
 
-    private ServerChannelInitializer(Protocol protocol, InboundPacketDispatcher packetDispatcher) {
-        this.helloHandler = HelloHandler.create(protocol, packetDispatcher);
+    private ServerChannelInitializer(Protocol protocol, InboundPacketDispatcher packetDispatcher, TailHandler tailHandler) {
+        this.helloHandler = HelloHandler.create(protocol, packetDispatcher, tailHandler);
     }
 
-    public static ServerChannelInitializer create(Protocol protocol, InboundPacketDispatcher packetDispatcher) {
-        return new ServerChannelInitializer(protocol, packetDispatcher);
+    public static ServerChannelInitializer create(Protocol protocol, InboundPacketDispatcher packetDispatcher, TailHandler tailHandler) {
+        return new ServerChannelInitializer(protocol, packetDispatcher, tailHandler);
     }
 
     @Override

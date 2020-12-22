@@ -27,14 +27,14 @@ public class OopsiePacket implements OutboundPacket {
 
         //
         target.writeShortLE(0x44);
-        target.writeByte(0xd3);
+        target.writeByte(0xD3);
         target.writeByte(0);
 
         int[] values = {0x01, 0x03, 0x1C, 0x1E, 0x20, 0x05, 0x08, 0x0B, 0x10, 0x12};
         // progress bar
         for (int i = 0; i < values.length; i++) {
             target.writeShortLE(0x44);
-            target.writeByte(210);
+            target.writeByte(0xD2);
             target.writeIntLE(values[i]);
         }
 
@@ -45,7 +45,7 @@ public class OopsiePacket implements OutboundPacket {
         // progress bar
         for (int i = 0; i < values2.length; i++) {
             target.writeShortLE(0x44);
-            target.writeByte(210);
+            target.writeByte(0xD2);
             target.writeIntLE(values2[i]);
         }
 

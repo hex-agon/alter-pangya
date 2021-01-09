@@ -7,7 +7,7 @@ import work.fking.pangya.networking.protocol.ProtocolUtils;
 
 import java.time.LocalDateTime;
 
-public class OopsiePacket implements OutboundPacket {
+public class PlayerDataPacket implements OutboundPacket {
 
     @Override
     public void encode(ByteBuf target) {

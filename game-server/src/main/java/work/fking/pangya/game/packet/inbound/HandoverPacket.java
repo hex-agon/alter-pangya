@@ -15,7 +15,7 @@ public record HandoverPacket(String username, int userId, String loginKey, Strin
         buffer.readShortLE();
         String loginKey = ProtocolUtils.readPString(buffer);
         String clientVersion = ProtocolUtils.readPString(buffer);
-        buffer.readIntLE();
+        buffer.readIntLE(); // check c https://github.com/hsreina/pangya-server/blob/449140f97592d5d403ef0df01d19ca2c6c834361/src/Server/Sync/SyncServer.pas#L411
         buffer.readIntLE();
         String sessionKey = ProtocolUtils.readPString(buffer);
 

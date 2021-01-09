@@ -9,7 +9,7 @@ import work.fking.pangya.game.packet.outbound.CookieBalancePacket;
 import work.fking.pangya.game.packet.outbound.EquipmentPacket;
 import work.fking.pangya.game.packet.outbound.InventoryPacket;
 import work.fking.pangya.game.packet.outbound.MascotRosterPacket;
-import work.fking.pangya.game.packet.outbound.OopsiePacket;
+import work.fking.pangya.game.packet.outbound.PlayerDataPacket;
 import work.fking.pangya.game.packet.outbound.PangBalancePacket;
 import work.fking.pangya.game.packet.outbound.ServerChannelsPacket;
 import work.fking.pangya.game.packet.outbound.Unknown305Packet;
@@ -26,7 +26,9 @@ public class HandoverPacketHandler implements InboundPacketHandler<HandoverPacke
     public void handle(Channel channel, HandoverPacket packet) {
         LOGGER.debug(packet);
 
-        channel.write(new OopsiePacket());
+        // https://github.com/hsreina/pangya-server/blob/449140f97592d5d403ef0df01d19ca2c6c834361/src/Server/Sync/SyncServer.pas#L430
+
+        channel.write(new PlayerDataPacket());
         channel.write(new ServerChannelsPacket());
         channel.write(new CharacterHosterPacket());
         channel.write(new InventoryPacket());
@@ -36,6 +38,5 @@ public class HandoverPacketHandler implements InboundPacketHandler<HandoverPacke
         channel.write(new PangBalancePacket());
         channel.write(new Unknown305Packet());
         channel.flush();
-        channel.disconnect();
     }
 }

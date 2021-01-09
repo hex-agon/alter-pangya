@@ -1,6 +1,7 @@
 package work.fking.pangya.networking.protocol;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import org.apache.logging.log4j.LogManager;
@@ -48,7 +49,8 @@ public class ProtocolDecoder extends ByteToMessageDecoder {
             InboundPacket inboundPacket = protocol.createInboundPacket(packetId, buffer);
 
             if (inboundPacket == null) {
-                LOGGER.warn("Unknown packetId={}", packetId);
+                LOGGER.warn("Unknown packetId={}, size={}", packetId, payloadSize);
+                LOGGER.warn("\n{}", ByteBufUtil.prettyHexDump(buffer, 0, payloadSize));
                 buffer.clear();
                 ctx.disconnect();
                 return;

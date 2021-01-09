@@ -8,9 +8,11 @@ import org.apache.logging.log4j.Logger;
 import work.fking.pangya.game.packet.handler.HandoverPacketHandler;
 import work.fking.pangya.game.packet.handler.LoginBonusStatusPacketHandler;
 import work.fking.pangya.game.packet.handler.SelectChannelPacketHandler;
+import work.fking.pangya.game.packet.handler.Unknown320PacketHandler;
 import work.fking.pangya.game.packet.inbound.HandoverPacket;
 import work.fking.pangya.game.packet.inbound.LoginBonusStatusPacket;
 import work.fking.pangya.game.packet.inbound.SelectChannelPacket;
+import work.fking.pangya.game.packet.inbound.Unknown320Packet;
 import work.fking.pangya.networking.SimpleServer;
 import work.fking.pangya.networking.protocol.InboundPacketDispatcher;
 import work.fking.pangya.networking.protocol.Protocol;
@@ -38,6 +40,7 @@ public class Bootstrap {
         return Protocol.builder()
                        .inboundPacket(2, HandoverPacket.class)
                        .inboundPacket(4, SelectChannelPacket.class)
+                       .inboundPacket(320, Unknown320Packet.class)
                        .inboundPacket(366, LoginBonusStatusPacket.class)
                        .build();
     }
@@ -46,6 +49,7 @@ public class Bootstrap {
         return InboundPacketDispatcher.builder(injector::getInstance)
                                       .handler(HandoverPacket.class, HandoverPacketHandler.class)
                                       .handler(SelectChannelPacket.class, SelectChannelPacketHandler.class)
+                                      .handler(Unknown320Packet.class, Unknown320PacketHandler.class)
                                       .handler(LoginBonusStatusPacket.class, LoginBonusStatusPacketHandler.class)
                                       .build();
     }

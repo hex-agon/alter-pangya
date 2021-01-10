@@ -5,7 +5,6 @@ import io.netty.buffer.ByteBuf;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoField;
-import java.time.temporal.TemporalField;
 import java.util.Arrays;
 
 public final class ProtocolUtils {
@@ -30,6 +29,21 @@ public final class ProtocolUtils {
             characters[i] = (char) buffer.readByte();
         }
         return characters;
+    }
+
+    public static String readFixedSizeString(ByteBuf buffer, int size) {
+        byte[] temp = new byte[size];
+        buffer.readBytes(temp);
+        int nullIdx = size;
+
+        for (int i = 0; i < temp.length; i++) {
+
+            if (temp[i] == 0) {
+                nullIdx = i;
+                break;
+            }
+        }
+        return new String(temp, 0, nullIdx, StandardCharsets.US_ASCII);
     }
 
     public static void writePString(ByteBuf buffer, String string) {

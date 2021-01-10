@@ -37,6 +37,7 @@ public class ProtocolDecoder extends ByteToMessageDecoder {
 
         if (readableBytes < payloadSize) {
             LOGGER.trace("Insufficient amount of bytes, readable={}, needed={}", readableBytes, payloadSize);
+            buffer.resetReaderIndex();
             return;
         }
         buffer.resetReaderIndex();

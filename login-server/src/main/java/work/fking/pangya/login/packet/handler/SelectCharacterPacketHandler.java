@@ -3,7 +3,7 @@ package work.fking.pangya.login.packet.handler;
 import io.netty.channel.Channel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import work.fking.pangya.common.model.PlayerCharacter;
+import work.fking.pangya.common.model.player.PlayerCharacter;
 import work.fking.pangya.login.model.LoginSession;
 import work.fking.pangya.login.model.LoginState;
 import work.fking.pangya.login.model.NewProfileRequest;

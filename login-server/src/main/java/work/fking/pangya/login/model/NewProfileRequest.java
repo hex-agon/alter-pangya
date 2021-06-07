@@ -1,7 +1,7 @@
 package work.fking.pangya.login.model;
 
 import io.netty.channel.Channel;
-import work.fking.pangya.common.model.PlayerCharacter;
+import work.fking.pangya.common.model.player.PlayerCharacter;
 
 import java.util.function.Consumer;
 

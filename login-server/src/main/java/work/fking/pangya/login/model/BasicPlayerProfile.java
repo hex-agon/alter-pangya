@@ -1,6 +1,6 @@
 package work.fking.pangya.login.model;
 
-import work.fking.pangya.common.model.PlayerCharacter;
+import work.fking.pangya.common.model.player.PlayerCharacter;
 
 public record BasicPlayerProfile(PlayerCharacter activeCharacter) {
 

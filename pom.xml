@@ -15,6 +15,7 @@
         <module>login-server</module>
         <module>common</module>
         <module>game-server</module>
+        <module>iff-tools</module>
     </modules>
 
     <name>alterorb-pangya</name>

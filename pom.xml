@@ -25,7 +25,6 @@
         <java.release>16</java.release>
         <jackson.version>2.12.0-rc2</jackson.version>
         <guice.version>4.2.3</guice.version>
-        <fastutil.version>8.3.1</fastutil.version>
         <netty.version>4.1.51.Final</netty.version>
         <log4j2.version>2.13.3</log4j2.version>
         <junit.version>5.6.2</junit.version>
@@ -52,11 +51,6 @@
             <artifactId>guice</artifactId>
             <version>${guice.version}</version>
             <classifier>no_aop</classifier>
-        </dependency>
-        <dependency>
-            <groupId>it.unimi.dsi</groupId>
-            <artifactId>fastutil</artifactId>
-            <version>${fastutil.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>

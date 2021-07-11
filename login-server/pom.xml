@@ -12,9 +12,9 @@
     <artifactId>login-server</artifactId>
 
     <properties>
-        <postgresql.version>42.2.18</postgresql.version>
-        <hikari.version>3.4.5</hikari.version>
-        <jdbi.version>3.17.0</jdbi.version>
+        <postgresql.version>42.2.23</postgresql.version>
+        <hikari.version>4.0.3</hikari.version>
+        <jdbi.version>3.20.1</jdbi.version>
         <bcrypt.version>0.9.0</bcrypt.version>
     </properties>
 
@@ -33,7 +33,6 @@
             <groupId>com.google.inject</groupId>
             <artifactId>guice</artifactId>
             <version>${guice.version}</version>
-            <classifier>no_aop</classifier>
         </dependency>
         <dependency>
             <groupId>org.postgresql</groupId>

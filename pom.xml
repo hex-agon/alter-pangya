@@ -23,11 +23,11 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.release>16</java.release>
-        <jackson.version>2.12.0-rc2</jackson.version>
-        <guice.version>4.2.3</guice.version>
-        <netty.version>4.1.51.Final</netty.version>
-        <log4j2.version>2.13.3</log4j2.version>
-        <junit.version>5.6.2</junit.version>
+        <jackson.version>2.12.4</jackson.version>
+        <guice.version>5.0.1</guice.version>
+        <netty.version>4.1.65.Final</netty.version>
+        <log4j2.version>2.14.1</log4j2.version>
+        <junit.version>5.7.2</junit.version>
     </properties>
 
     <dependencies>

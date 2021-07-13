@@ -3,6 +3,7 @@ package work.fking.pangya.iff;
 import io.netty.buffer.ByteBuf;
 import work.fking.pangya.iff.model.IffObject;
 
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -14,6 +15,8 @@ public record Iff<I extends IffObject>(
         int binding,
         int version
 ) {
+
+    private static final Charset KR_CHARSET = Charset.forName("euc-kr");
 
     public static <T extends IffObject> Iff<T> decode(ByteBuf iffBuffer, Function<ByteBuf, T> iffConstructor) {
         short entries = iffBuffer.readShortLE();
@@ -47,7 +50,7 @@ public record Iff<I extends IffObject>(
                 break;
             }
         }
-        return new String(bytes, 0, limit, StandardCharsets.US_ASCII);
+        return new String(bytes, 0, limit, KR_CHARSET);
     }
 
     public static LocalDateTime readIffDateTime(ByteBuf buffer) {

@@ -1,8 +1,8 @@
 package work.fking.pangya.login.packet.outbound;
 
 import io.netty.buffer.ByteBuf;
-import work.fking.pangya.common.model.GameServer;
-import work.fking.pangya.common.model.GameServerIcon;
+import work.fking.pangya.common.model.server.GameServer;
+import work.fking.pangya.common.model.server.GameServerIcon;
 import work.fking.pangya.networking.protocol.OutboundPacket;
 
 import java.util.List;

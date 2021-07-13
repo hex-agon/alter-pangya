@@ -1,4 +1,4 @@
-package work.fking.pangya.common.model;
+package work.fking.pangya.common.model.server;
 
 import io.netty.buffer.ByteBuf;
 import work.fking.pangya.networking.protocol.ProtocolUtils;

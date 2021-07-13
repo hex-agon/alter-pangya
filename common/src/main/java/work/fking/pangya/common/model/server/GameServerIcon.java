@@ -1,4 +1,4 @@
-package work.fking.pangya.common.model;
+package work.fking.pangya.common.model.server;
 
 public enum GameServerIcon {
     BLACK_PAPEL,

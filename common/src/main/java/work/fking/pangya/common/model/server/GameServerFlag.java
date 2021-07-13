@@ -1,4 +1,4 @@
-package work.fking.pangya.common.model;
+package work.fking.pangya.common.model.server;
 
 public enum GameServerFlag {
     HIDDEN(1 << 4),

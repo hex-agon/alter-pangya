@@ -1,6 +1,7 @@
 package work.fking.pangya.iff.model;
 
 import io.netty.buffer.ByteBuf;
+import work.fking.pangya.iff.Iff;
 
 public record IffClubSet(
         IffCommon common,
@@ -27,15 +28,15 @@ public record IffClubSet(
         int wedgeId = buffer.readIntLE();
         int putterId = buffer.readIntLE();
         int power = buffer.readShortLE();
-        int control = buffer.readIntLE();
-        int accuracy = buffer.readIntLE();
-        int spin = buffer.readIntLE();
-        int curve = buffer.readIntLE();
-        int powerSlot = buffer.readIntLE();
-        int controlSlot = buffer.readIntLE();
-        int accuracySlot = buffer.readIntLE();
-        int spinSlot = buffer.readIntLE();
-        int curveSlot = buffer.readIntLE();
+        int control = buffer.readShortLE();
+        int accuracy = buffer.readShortLE();
+        int spin = buffer.readShortLE();
+        int curve = buffer.readShortLE();
+        int powerSlot = buffer.readShortLE();
+        int controlSlot = buffer.readShortLE();
+        int accuracySlot = buffer.readShortLE();
+        int spinSlot = buffer.readShortLE();
+        int curveSlot = buffer.readShortLE();
 
         return new IffClubSet(
                 common,

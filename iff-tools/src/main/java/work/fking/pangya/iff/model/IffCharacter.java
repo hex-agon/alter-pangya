@@ -9,16 +9,7 @@ public record IffCharacter(
         String texture1,
         String texture2,
         String texture3,
-        int power,
-        int control,
-        int accuracy,
-        int spin,
-        int curve,
-        int powerSlot,
-        int controlSlot,
-        int accuracySlot,
-        int spinSlot,
-        int curveSlot,
+        IffStats stats,
         int unknown,
         int rankS,
         int rankSPowerSlot,
@@ -36,16 +27,7 @@ public record IffCharacter(
         String texture1 = Iff.readFixedLengthString(buffer, 40);
         String texture2 = Iff.readFixedLengthString(buffer, 40);
         String texture3 = Iff.readFixedLengthString(buffer, 40);
-        int power = buffer.readShortLE() & 0xFFFF;
-        int control = buffer.readShortLE();
-        int accuracy = buffer.readShortLE();
-        int spin = buffer.readShortLE();
-        int curve = buffer.readShortLE();
-        int powerSlot = buffer.readByte();
-        int controlSlot = buffer.readByte();
-        int accuracySlot = buffer.readByte();
-        int spinSlot = buffer.readByte();
-        int curveSlot = buffer.readByte();
+        var stats = IffStats.decode(buffer, true);
         int unknown = buffer.readByte();
         int rankS = buffer.readIntLE();
         int rankSPowerSlot = buffer.readByte();
@@ -62,16 +44,7 @@ public record IffCharacter(
                 texture1,
                 texture2,
                 texture3,
-                power,
-                control,
-                accuracy,
-                spin,
-                curve,
-                powerSlot,
-                controlSlot,
-                accuracySlot,
-                spinSlot,
-                curveSlot,
+                stats,
                 unknown,
                 rankS,
                 rankSPowerSlot,

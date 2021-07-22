@@ -1,7 +1,6 @@
 package work.fking.pangya.iff.model;
 
 import io.netty.buffer.ByteBuf;
-import work.fking.pangya.iff.Iff;
 
 public record IffClubSet(
         IffCommon common,
@@ -9,16 +8,7 @@ public record IffClubSet(
         int ironId,
         int wedgeId,
         int putterId,
-        int power,
-        int control,
-        int accuracy,
-        int spin,
-        int curve,
-        int powerSlot,
-        int controlSlot,
-        int accuracySlot,
-        int spinSlot,
-        int curveSlot
+        IffStats stats
 ) implements IffObject {
 
     public static IffClubSet decode(ByteBuf buffer) {
@@ -27,16 +17,7 @@ public record IffClubSet(
         int ironId = buffer.readIntLE();
         int wedgeId = buffer.readIntLE();
         int putterId = buffer.readIntLE();
-        int power = buffer.readShortLE();
-        int control = buffer.readShortLE();
-        int accuracy = buffer.readShortLE();
-        int spin = buffer.readShortLE();
-        int curve = buffer.readShortLE();
-        int powerSlot = buffer.readShortLE();
-        int controlSlot = buffer.readShortLE();
-        int accuracySlot = buffer.readShortLE();
-        int spinSlot = buffer.readShortLE();
-        int curveSlot = buffer.readShortLE();
+        var stats = IffStats.decode(buffer);
 
         return new IffClubSet(
                 common,
@@ -44,16 +25,7 @@ public record IffClubSet(
                 ironId,
                 wedgeId,
                 putterId,
-                power,
-                control,
-                accuracy,
-                spin,
-                curve,
-                powerSlot,
-                controlSlot,
-                accuracySlot,
-                spinSlot,
-                curveSlot
+                stats
         );
     }
 }

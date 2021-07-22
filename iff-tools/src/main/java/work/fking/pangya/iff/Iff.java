@@ -1,10 +1,11 @@
 package work.fking.pangya.iff;
 
 import io.netty.buffer.ByteBuf;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import work.fking.pangya.iff.model.IffObject;
 
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,7 @@ public record Iff<I extends IffObject>(
         int version
 ) {
 
+    private static final Logger LOGGER = LogManager.getLogger(Iff.class);
     private static final Charset KR_CHARSET = Charset.forName("euc-kr");
 
     public static <T extends IffObject> Iff<T> decode(ByteBuf iffBuffer, Function<ByteBuf, T> iffConstructor) {
@@ -30,6 +32,11 @@ public record Iff<I extends IffObject>(
             int position = 8 + entrySize * i;
             iffBuffer.readerIndex(position);
             iffObjects.add(iffConstructor.apply(iffBuffer));
+            int readBytes = iffBuffer.readerIndex() - position;
+
+            if (readBytes != entrySize) {
+                LOGGER.warn("Unparsed content on iff object, read={}, entrySize={}", readBytes, entrySize);
+            }
         }
         return new Iff<>(
                 iffObjects,

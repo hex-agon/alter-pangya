@@ -8,7 +8,8 @@ public record IffClubSet(
         int ironId,
         int wedgeId,
         int putterId,
-        IffStats stats
+        IffStats stats,
+        float workshopRate
 ) implements IffObject {
 
     public static IffClubSet decode(ByteBuf buffer) {
@@ -18,6 +19,15 @@ public record IffClubSet(
         int wedgeId = buffer.readIntLE();
         int putterId = buffer.readIntLE();
         var stats = IffStats.decode(buffer);
+        var type = buffer.readIntLE();
+        var specialStatus = buffer.readIntLE();
+        var recoveryLimit = buffer.readIntLE();
+        var workshopRate = buffer.readFloatLE();
+        var unk1 = buffer.readIntLE();
+        var transferable = buffer.readShortLE();
+        var unk2 = buffer.readShortLE();
+        var unk3 = buffer.readIntLE();
+        var unk4 = buffer.readIntLE();
 
         return new IffClubSet(
                 common,
@@ -25,7 +35,8 @@ public record IffClubSet(
                 ironId,
                 wedgeId,
                 putterId,
-                stats
+                stats,
+                workshopRate
         );
     }
 }

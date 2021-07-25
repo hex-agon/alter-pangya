@@ -6,13 +6,11 @@ import org.apache.logging.log4j.Logger;
 import work.fking.pangya.game.packet.inbound.HandoverPacket;
 import work.fking.pangya.game.packet.outbound.CharacterHosterPacket;
 import work.fking.pangya.game.packet.outbound.CookieBalancePacket;
-import work.fking.pangya.game.packet.outbound.EquipmentPacket;
+import work.fking.pangya.game.packet.outbound.HandoverJunkPacket;
 import work.fking.pangya.game.packet.outbound.InventoryPacket;
-import work.fking.pangya.game.packet.outbound.MascotRosterPacket;
-import work.fking.pangya.game.packet.outbound.PlayerDataPacket;
 import work.fking.pangya.game.packet.outbound.PangBalancePacket;
+import work.fking.pangya.game.packet.outbound.PlayerDataPacket;
 import work.fking.pangya.game.packet.outbound.ServerChannelsPacket;
-import work.fking.pangya.game.packet.outbound.Unknown305Packet;
 import work.fking.pangya.networking.protocol.InboundPacketHandler;
 
 import javax.inject.Singleton;
@@ -28,15 +26,14 @@ public class HandoverPacketHandler implements InboundPacketHandler<HandoverPacke
 
         // https://github.com/hsreina/pangya-server/blob/449140f97592d5d403ef0df01d19ca2c6c834361/src/Server/Sync/SyncServer.pas#L430
 
-        channel.write(new PlayerDataPacket());
-        channel.write(new ServerChannelsPacket());
-        channel.write(new CharacterHosterPacket());
-        channel.write(new InventoryPacket());
-        channel.write(new MascotRosterPacket());
-        channel.write(new EquipmentPacket());
-        channel.write(new CookieBalancePacket());
-        channel.write(new PangBalancePacket());
-        channel.write(new Unknown305Packet());
-        channel.flush();
+        channel.writeAndFlush(new HandoverJunkPacket());
+        channel.writeAndFlush(new PlayerDataPacket());
+        channel.writeAndFlush(new InventoryPacket());
+        channel.writeAndFlush(new CharacterHosterPacket());
+        //        channel.writeAndFlush(new MascotRosterPacket());
+        //        channel.writeAndFlush(new EquipmentPacket());
+        channel.writeAndFlush(new CookieBalancePacket());
+        channel.writeAndFlush(new PangBalancePacket());
+        channel.writeAndFlush(new ServerChannelsPacket());
     }
 }

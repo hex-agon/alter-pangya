@@ -19,7 +19,7 @@ public class ServerListPacket implements OutboundPacket {
                 GameServer.of(
                         20202,
                         "Black papel",
-                        100,
+                        1000,
                         10,
                         "127.0.0.1",
                         20202,

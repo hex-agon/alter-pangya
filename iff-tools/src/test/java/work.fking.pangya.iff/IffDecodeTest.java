@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import work.fking.pangya.iff.model.IffBall;
+import work.fking.pangya.iff.model.IffCaddie;
 import work.fking.pangya.iff.model.IffCharacter;
 import work.fking.pangya.iff.model.IffClubSet;
 import work.fking.pangya.iff.model.IffCourse;
@@ -39,6 +40,13 @@ public class IffDecodeTest {
         ByteBuf buffer = loadResource("/iff/Ball.iff");
 
         Iff.decode(buffer, IffBall::decode).entries().forEach(LOGGER::debug);
+    }
+
+    @Test
+    public void decode_iff_caddie() throws IOException {
+        ByteBuf buffer = loadResource("/iff/Caddie.iff");
+
+        Iff.decode(buffer, IffCaddie::decode).entries().forEach(LOGGER::debug);
     }
 
     @Test

@@ -5,7 +5,7 @@ import work.fking.pangya.networking.protocol.OutboundPacket;
 
 public class PangBalancePacket implements OutboundPacket {
 
-    private static final int ID = 200;
+    private static final int ID = 0xc8;
 
     @Override
     public void encode(ByteBuf target) {

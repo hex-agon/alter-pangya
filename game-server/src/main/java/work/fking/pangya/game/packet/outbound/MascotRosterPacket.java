@@ -5,7 +5,7 @@ import work.fking.pangya.networking.protocol.OutboundPacket;
 
 public class MascotRosterPacket  implements OutboundPacket {
 
-    private static final int ID = 225;
+    private static final int ID = 0xe1;
 
     @Override
     public void encode(ByteBuf target) {

@@ -6,7 +6,7 @@ import work.fking.pangya.networking.protocol.ProtocolUtils;
 
 public class ServerChannelsPacket implements OutboundPacket {
 
-    private static final int ID = 77;
+    private static final int ID = 0x4d;
 
     @Override
     public void encode(ByteBuf target) {

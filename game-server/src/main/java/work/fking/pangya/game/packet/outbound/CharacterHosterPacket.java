@@ -5,7 +5,7 @@ import work.fking.pangya.networking.protocol.OutboundPacket;
 
 public class CharacterHosterPacket implements OutboundPacket {
 
-    private static final int ID = 112;
+    private static final int ID = 0x70;
 
     @Override
     public void encode(ByteBuf target) {
@@ -15,42 +15,46 @@ public class CharacterHosterPacket implements OutboundPacket {
         target.writeShortLE(1); // count
 
         // character entry
-        target.writeIntLE(469762055); // iff id
-        target.writeIntLE(0); // slot
-        target.writeIntLE(0); // hair color
+        target.writeIntLE(67108872); // iff id
+        target.writeIntLE(262513); // this is like a pk id, this is used to reference on the equip id packet
+        target.writeIntLE(3); // hair color
         target.writeIntLE(0);
 
-        // parts
-        target.writeIntLE(136839171);
-        target.writeIntLE(136855557);
-        target.writeIntLE(136871940);
-        target.writeIntLE(136880130);
-        target.writeIntLE(136896516);
-
-        for (int i = 0; i < 24 - 5; i++) {
-            target.writeIntLE(0);
+        // parts iffIds
+        int[] partIffIds = {
+                0, 0, 136331358, 136339993, 136347688, 0,
+                136364599, 136372298, 0, 0, 136398848, 136407055,
+                0, 136423466, 0, 136439863, 136445997, 136456205,
+                0, 0, 0, 0, 0, 0
+        };
+        for (int partIffId : partIffIds) {
+            target.writeIntLE(partIffId);
         }
+        // end parts iffIds
 
-        target.writeIntLE(0);
-        target.writeIntLE(1);
-        target.writeIntLE(2);
-        target.writeIntLE(3);
-        target.writeIntLE(4);
-
-        for (int i = 0; i < 24 - 5; i++) {
-            target.writeIntLE(0);
+        // parts unique ids
+        int[] partUniqueIds = {
+                0, 0, 15069258, 0, 15069259, 0,
+                0, 15069260, 0, 0, 15069792, 15071153,
+                0, 15070499, 0, 15069784, 15069816, 15075062,
+                0, 0, 0, 0, 0, 0
+        };
+        for (int partUniqueId : partUniqueIds) {
+            target.writeIntLE(partUniqueId);
         }
+        // end parts unique ids
+
         target.writeBytes(new byte[216]);
         target.writeIntLE(0);
         target.writeIntLE(0);
         target.writeBytes(new byte[12]);
         target.writeIntLE(0);
         target.writeBytes(new byte[12]);
-        target.writeByte(0); // power
-        target.writeByte(0); // control
-        target.writeByte(0); // impact
-        target.writeByte(0); // spin
-        target.writeByte(0); // curve
+        target.writeByte(8); // power
+        target.writeByte(5); // control
+        target.writeByte(5); // accuracy
+        target.writeByte(2); // spin
+        target.writeByte(1); // curve
         target.writeByte(0); // mastery points
         target.writeMediumLE(0);
 

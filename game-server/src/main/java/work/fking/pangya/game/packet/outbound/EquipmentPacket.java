@@ -1,20 +1,22 @@
 package work.fking.pangya.game.packet.outbound;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
+import io.netty.buffer.Unpooled;
 import work.fking.pangya.networking.protocol.OutboundPacket;
 
 public class EquipmentPacket implements OutboundPacket {
 
-    private static final int ID = 114;
+    private static final int ID = 0x72;
 
     @Override
     public void encode(ByteBuf target) {
         target.writeShortLE(ID);
 
-        target.writeIntLE(0); // caddie
-        target.writeIntLE(67108874); // character
-        target.writeIntLE(0); // club
-        target.writeIntLE(0); // ball
+        target.writeIntLE(83651); // caddie
+        target.writeIntLE(262513); // character
+        target.writeIntLE(15069162); // club
+        target.writeIntLE(335544325); // ball
 
         // items
         for (int i = 0; i < 10; i++) {

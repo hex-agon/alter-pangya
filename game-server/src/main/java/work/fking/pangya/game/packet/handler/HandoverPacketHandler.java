@@ -4,10 +4,13 @@ import io.netty.channel.Channel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import work.fking.pangya.game.packet.inbound.HandoverPacket;
+import work.fking.pangya.game.packet.outbound.CaddieHosterPacket;
 import work.fking.pangya.game.packet.outbound.CharacterHosterPacket;
 import work.fking.pangya.game.packet.outbound.CookieBalancePacket;
+import work.fking.pangya.game.packet.outbound.EquipmentPacket;
 import work.fking.pangya.game.packet.outbound.HandoverJunkPacket;
 import work.fking.pangya.game.packet.outbound.InventoryPacket;
+import work.fking.pangya.game.packet.outbound.MascotRosterPacket;
 import work.fking.pangya.game.packet.outbound.PangBalancePacket;
 import work.fking.pangya.game.packet.outbound.PlayerDataPacket;
 import work.fking.pangya.game.packet.outbound.ServerChannelsPacket;
@@ -26,14 +29,15 @@ public class HandoverPacketHandler implements InboundPacketHandler<HandoverPacke
 
         // https://github.com/hsreina/pangya-server/blob/449140f97592d5d403ef0df01d19ca2c6c834361/src/Server/Sync/SyncServer.pas#L430
 
-        channel.writeAndFlush(new HandoverJunkPacket());
+        channel.write(new HandoverJunkPacket());
         channel.writeAndFlush(new PlayerDataPacket());
+        channel.writeAndFlush(new CharacterHosterPacket()); // known ok
+        channel.writeAndFlush(new CaddieHosterPacket()); // known ok
+        channel.writeAndFlush(new EquipmentPacket()); // known ok
+        channel.writeAndFlush(new MascotRosterPacket());
         channel.writeAndFlush(new InventoryPacket());
-        channel.writeAndFlush(new CharacterHosterPacket());
-        //        channel.writeAndFlush(new MascotRosterPacket());
-        //        channel.writeAndFlush(new EquipmentPacket());
-        channel.writeAndFlush(new CookieBalancePacket());
-        channel.writeAndFlush(new PangBalancePacket());
+        channel.writeAndFlush(new CookieBalancePacket()); // known ok
+        channel.writeAndFlush(new PangBalancePacket()); // known ok
         channel.writeAndFlush(new ServerChannelsPacket());
     }
 }

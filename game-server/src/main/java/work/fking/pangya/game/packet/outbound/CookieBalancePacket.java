@@ -5,7 +5,7 @@ import work.fking.pangya.networking.protocol.OutboundPacket;
 
 public class CookieBalancePacket implements OutboundPacket {
 
-    private static final int ID = 150;
+    private static final int ID = 0x96;
 
     @Override
     public void encode(ByteBuf target) {

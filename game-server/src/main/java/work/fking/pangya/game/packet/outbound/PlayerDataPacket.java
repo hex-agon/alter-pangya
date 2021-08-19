@@ -21,7 +21,7 @@ public class PlayerDataPacket implements OutboundPacket {
         target.writeByte(0); // chat restricted? 0xf yes
         target.writeBytes(new byte[0x8A]);
 
-        // Achievements
+        // Statistics
         target.writeIntLE(0);
         target.writeIntLE(20); // totalStroke
         target.writeIntLE(350); // total playtime in seconds
@@ -50,8 +50,8 @@ public class PlayerDataPacket implements OutboundPacket {
 
         // Equipment
         target.writeIntLE(0); // Caddie Id (iff id?)
-        target.writeIntLE(67108874); // Character Id (iff id?)
-        target.writeIntLE(268435466); // Club set Id (iff id?)
+        target.writeIntLE(0); // Character Id (iff id?)
+        target.writeIntLE(0); // Club set Id (iff id?)
         target.writeIntLE(335544320); // Aztec iff id
 
         // Equipment - inventory items

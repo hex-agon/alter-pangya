@@ -50,7 +50,7 @@ public class ProtocolDecoder extends ByteToMessageDecoder {
             InboundPacket inboundPacket = protocol.createInboundPacket(packetId, buffer);
 
             if (inboundPacket == null) {
-                LOGGER.warn("Unknown packetId={}, size={}", packetId, payloadSize);
+                LOGGER.warn("Unknown packetId=0x{}, size={}", Integer.toHexString(packetId), payloadSize);
                 LOGGER.warn("\n{}", ByteBufUtil.prettyHexDump(buffer, 0, payloadSize));
                 buffer.clear();
                 ctx.disconnect();

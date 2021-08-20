@@ -8,6 +8,8 @@ public record UserProfileRequestPacket() implements InboundPacket {
 
     @PacketFactory
     public static InboundPacket decode(ByteBuf buffer) {
+        var userId = buffer.readIntLE();
+        var type = buffer.readByte();
         return new UserProfileRequestPacket();
     }
 }

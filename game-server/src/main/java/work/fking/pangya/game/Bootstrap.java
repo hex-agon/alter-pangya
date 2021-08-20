@@ -6,6 +6,7 @@ import com.google.inject.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import work.fking.pangya.game.packet.handler.HandoverPacketHandler;
+import work.fking.pangya.game.packet.handler.LoginBonusClaimPacketHandler;
 import work.fking.pangya.game.packet.handler.LoginBonusStatusPacketHandler;
 import work.fking.pangya.game.packet.handler.SelectChannelPacketHandler;
 import work.fking.pangya.game.packet.handler.Unknown156PacketHandler;
@@ -13,6 +14,7 @@ import work.fking.pangya.game.packet.handler.Unknown320PacketHandler;
 import work.fking.pangya.game.packet.handler.UpdateChatMacrosPacketHandler;
 import work.fking.pangya.game.packet.handler.UserProfileRequestPacketHandler;
 import work.fking.pangya.game.packet.inbound.HandoverPacket;
+import work.fking.pangya.game.packet.inbound.LoginBonusClaimPacket;
 import work.fking.pangya.game.packet.inbound.LoginBonusStatusPacket;
 import work.fking.pangya.game.packet.inbound.SelectChannelPacket;
 import work.fking.pangya.game.packet.inbound.Unknown156Packet;
@@ -51,6 +53,7 @@ public class Bootstrap {
                        .inboundPacket(0x9C, Unknown156Packet.class)
                        .inboundPacket(0x140, Unknown320Packet.class)
                        .inboundPacket(0x16E, LoginBonusStatusPacket.class)
+                       .inboundPacket(0x16F, LoginBonusClaimPacket.class)
                        .build();
     }
 
@@ -63,6 +66,7 @@ public class Bootstrap {
                                       .handler(Unknown156Packet.class, Unknown156PacketHandler.class)
                                       .handler(Unknown320Packet.class, Unknown320PacketHandler.class)
                                       .handler(LoginBonusStatusPacket.class, LoginBonusStatusPacketHandler.class)
+                                      .handler(LoginBonusClaimPacket.class, LoginBonusClaimPacketHandler.class)
                                       .build();
     }
 

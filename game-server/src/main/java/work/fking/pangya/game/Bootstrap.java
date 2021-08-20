@@ -5,6 +5,7 @@ import com.google.inject.Injector;
 import com.google.inject.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import work.fking.pangya.game.packet.handler.CreateRoomPacketHandler;
 import work.fking.pangya.game.packet.handler.HandoverPacketHandler;
 import work.fking.pangya.game.packet.handler.LoginBonusClaimPacketHandler;
 import work.fking.pangya.game.packet.handler.LoginBonusStatusPacketHandler;
@@ -13,6 +14,7 @@ import work.fking.pangya.game.packet.handler.Unknown156PacketHandler;
 import work.fking.pangya.game.packet.handler.Unknown320PacketHandler;
 import work.fking.pangya.game.packet.handler.UpdateChatMacrosPacketHandler;
 import work.fking.pangya.game.packet.handler.UserProfileRequestPacketHandler;
+import work.fking.pangya.game.packet.inbound.CreateRoomPacket;
 import work.fking.pangya.game.packet.inbound.HandoverPacket;
 import work.fking.pangya.game.packet.inbound.LoginBonusClaimPacket;
 import work.fking.pangya.game.packet.inbound.LoginBonusStatusPacket;
@@ -48,6 +50,7 @@ public class Bootstrap {
         return Protocol.builder()
                        .inboundPacket(2, HandoverPacket.class)
                        .inboundPacket(4, SelectChannelPacket.class)
+                       .inboundPacket(8, CreateRoomPacket.class)
                        .inboundPacket(0x2f, UserProfileRequestPacket.class)
                        .inboundPacket(0x69, UpdateChatMacrosPacket.class)
                        .inboundPacket(0x9C, Unknown156Packet.class)
@@ -61,6 +64,7 @@ public class Bootstrap {
         return InboundPacketDispatcher.builder(injector::getInstance)
                                       .handler(HandoverPacket.class, HandoverPacketHandler.class)
                                       .handler(SelectChannelPacket.class, SelectChannelPacketHandler.class)
+                                      .handler(CreateRoomPacket.class, CreateRoomPacketHandler.class)
                                       .handler(UserProfileRequestPacket.class, UserProfileRequestPacketHandler.class)
                                       .handler(UpdateChatMacrosPacket.class, UpdateChatMacrosPacketHandler.class)
                                       .handler(Unknown156Packet.class, Unknown156PacketHandler.class)

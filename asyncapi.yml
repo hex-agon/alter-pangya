@@ -1,0 +1,62 @@
+asyncapi: '2.1.0'
+info:
+  title: PangYa
+  version: 1.0.0
+channels:
+  pangya.servers.heartbeat:
+    subscribe:
+      message:
+        $ref: '#/components/messages/heartbeat'
+    publish:
+      message:
+        $ref: '#/components/messages/heartbeat'
+components:
+  messages:
+    heartbeat:
+      payload:
+        type: object
+        properties:
+          kind:
+            type: string
+            enum: ["LOGIN", "GAME", "SOCIAL"]
+            description: The server type
+          id:
+            type: integer
+            description: The server unique identifier
+          name:
+            type: string
+            minLength: 1
+            maxLength: 40
+            description: The server name
+          capacity:
+            type: integer
+            min: 1
+            description: The maximum player count
+          population:
+            type: integer
+            min: 0
+            description: The current player count
+          publicIp:
+            type: string
+            format: ipv4
+            description: The server public ipv4
+          port:
+            type: integer
+            min: 1
+            max: 65535
+            description: The server port
+          flags:
+            type: array
+            items:
+              type: string
+              enum: ["HIDDEN", "SORT_PRIORITY", "GRAND_PRIX"]
+            description: The server flags
+          boosts:
+            type: array
+            items:
+              type: string
+              enum: ["DOUBLE_PANG", "DOUBLE_EXP", "ANGEL_EVENT", "TRIPLE_EXP", "CLUB_MASTERY"]
+            description: The server boosts
+          icon:
+            type: string
+            enum: ["BLACK_PAPEL", "PIPPIN", "TITAN_BOO", "DOLFINI", "LOLO", "QUMA", "TIKI", "CADIE", "CIEN"]

@@ -44,7 +44,7 @@ public class ProtocolDecoder extends ByteToMessageDecoder {
         PangCrypt.decrypt(buffer, cryptKey);
 
         int packetId = buffer.readShortLE();
-        LOGGER.trace("Incoming packetId={}", packetId);
+        LOGGER.trace("Incoming packetId=0x{}", Integer.toHexString(packetId));
 
         try {
             InboundPacket inboundPacket = protocol.createInboundPacket(packetId, buffer);

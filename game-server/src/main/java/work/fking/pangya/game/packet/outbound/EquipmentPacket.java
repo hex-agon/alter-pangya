@@ -13,10 +13,10 @@ public class EquipmentPacket implements OutboundPacket {
     public void encode(ByteBuf target) {
         target.writeShortLE(ID);
 
-        target.writeIntLE(83651); // caddie
-        target.writeIntLE(262513); // character
-        target.writeIntLE(15069162); // club
-        target.writeIntLE(335544325); // ball
+        target.writeIntLE(83651); // caddie, references a unique id, not iff id
+        target.writeIntLE(262513); // character, references a unique id, not iff id
+        target.writeIntLE(2000); // club, references an inventory unique id
+        target.writeIntLE(335544325); // ball, iff id
 
         // items
         for (int i = 0; i < 10; i++) {

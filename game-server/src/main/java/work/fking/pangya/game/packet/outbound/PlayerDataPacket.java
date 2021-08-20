@@ -13,40 +13,40 @@ public class PlayerDataPacket implements OutboundPacket {
         target.writeShortLE(0xFFFF);
         ProtocolUtils.writeFixedSizeString(target, "hexagon", 21); // username
         ProtocolUtils.writeFixedSizeString(target, "Hex agon", 21); // nickname
-        target.writeBytes(new byte[0x20]);
+        target.writeZero(32);
         target.writeByte(0xF); // gm flag
-        target.writeBytes(new byte[6]);
+        target.writeZero(6);
         target.writeIntLE(0); // connectionId
-        target.writeBytes(new byte[0x1F]);
+        target.writeZero(31);
         target.writeByte(0); // chat restricted? 0xf yes
-        target.writeBytes(new byte[0x8A]);
+        target.writeZero(138);
 
         // Statistics
         target.writeIntLE(0);
         target.writeIntLE(20); // totalStroke
         target.writeIntLE(350); // total playtime in seconds
         target.writeIntLE(5); // averageStrokeTime
-        target.writeBytes(new byte[0xB]);
+        target.writeZero(0xB);
         target.writeIntLE(1); // OB Rate
         target.writeIntLE(1); // Total distance
         target.writeIntLE(342); // Total holes
         target.writeIntLE(2);
         target.writeIntLE(333); // Hio count
-        target.writeBytes(new byte[0x19]);
+        target.writeZero(25);
         target.writeIntLE(53489); // Experience
         target.writeByte(0x23); // Rank
         target.writeLongLE(9102393); // pang earned
-        target.writeBytes(new byte[0x39]);
+        target.writeZero(57);
         target.writeIntLE(1); // Quit rate 1
-        target.writeBytes(new byte[0x1F]);
+        target.writeZero(31);
         target.writeIntLE(1); // Game combo part 1
         target.writeIntLE(1); // Game combo part 2
         target.writeIntLE(1); // Quit rate 2
         target.writeLongLE(467); // pang battle won
-        target.writeBytes(new byte[0x25]);
+        target.writeZero(37);
 
         // Unknown
-        target.writeBytes(new byte[0x4D]);
+        target.writeZero(77);
 
         // Equipment
         target.writeIntLE(0); // Caddie Id (iff id?)
@@ -78,13 +78,13 @@ public class PlayerDataPacket implements OutboundPacket {
         target.writeIntLE(0);
 
         // Unknown 2
-        target.writeBytes(new byte[0x2A53]);
+        target.writeZero(10835);
 
         // Equipped Character
         target.writeIntLE(67108874); // iff id
         target.writeIntLE(1); // id??
         target.writeIntLE(1); // hair color
-        target.writeBytes(new byte[0x1F7]);
+        target.writeZero(503);
 
         // Equipped Caddie
         target.writeIntLE(0); // slot
@@ -97,7 +97,7 @@ public class PlayerDataPacket implements OutboundPacket {
         // Equipped club
         target.writeIntLE(0); // slot
         target.writeIntLE(268435466); // iff id
-        target.writeBytes(new byte[0x9]);
+        target.writeZero(9);
         target.writeShortLE(0); // power upgrades
         target.writeShortLE(0); // control upgrades
         target.writeShortLE(0); // accuracy upgrades
@@ -107,8 +107,8 @@ public class PlayerDataPacket implements OutboundPacket {
         // Equipped mascot
         target.writeIntLE(0); // slot
         target.writeIntLE(0); // iff id
-        target.writeBytes(new byte[0x4]);
-        target.writeBytes(new byte[0xF]);
-        target.writeBytes(new byte[0x20]);
+        target.writeZero(4);
+        target.writeZero(15);
+        target.writeZero(32);
     }
 }

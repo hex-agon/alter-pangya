@@ -44,12 +44,12 @@ public class CharacterHosterPacket implements OutboundPacket {
         }
         // end parts unique ids
 
-        target.writeBytes(new byte[216]);
+        target.writeZero(216);
         target.writeIntLE(0);
         target.writeIntLE(0);
-        target.writeBytes(new byte[12]);
+        target.writeZero(12);
         target.writeIntLE(0);
-        target.writeBytes(new byte[12]);
+        target.writeZero(12);
         target.writeByte(8); // power
         target.writeByte(5); // control
         target.writeByte(5); // accuracy

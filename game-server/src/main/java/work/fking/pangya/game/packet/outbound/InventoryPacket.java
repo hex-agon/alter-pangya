@@ -11,8 +11,8 @@ public class InventoryPacket implements OutboundPacket {
     public void encode(ByteBuf target) {
         target.writeShortLE(ID);
 
-        target.writeShortLE(2);
-        target.writeShortLE(2);
+        target.writeShortLE(3);
+        target.writeShortLE(3);
 
         // for each item in this packet...
         target.writeIntLE(1000); // item unique id
@@ -23,6 +23,12 @@ public class InventoryPacket implements OutboundPacket {
 
         target.writeIntLE(2000); // item unique id
         target.writeIntLE(268435511); // item iff id
+        target.writeIntLE(0); // unknown
+        target.writeIntLE(0); // item quantity
+        target.writeBytes(new byte[0xb4]);
+
+        target.writeIntLE(7000); // item unique id
+        target.writeIntLE(136331265); // item iff id
         target.writeIntLE(0); // unknown
         target.writeIntLE(0); // item quantity
         target.writeBytes(new byte[0xb4]);

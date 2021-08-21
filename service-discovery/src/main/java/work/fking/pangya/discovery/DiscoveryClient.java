@@ -68,6 +68,7 @@ public class DiscoveryClient {
      */
     public List<ServerInfo> instances(ServerType serverType) {
         synchronized (knownServers) {
+            cleanup();
             return knownServers.stream()
                                .map(KnownServer::info)
                                .filter(info -> info.type() == serverType)
@@ -93,7 +94,6 @@ public class DiscoveryClient {
         try {
             ServerInfo serverInfo = serverInfoReader.readValue(message.getMessage());
             register(serverInfo);
-            cleanup();
         } catch (JsonProcessingException e) {
             LOGGER.warn("Failed to decode ServerInfo message", e);
         }

@@ -1,6 +1,7 @@
 package work.fking.pangya.login;
 
 import com.google.inject.Injector;
+import work.fking.pangya.common.server.ServerConfig;
 import work.fking.pangya.login.model.LoginSession;
 import work.fking.pangya.login.model.PlayerAccount;
 import work.fking.pangya.login.packet.handler.CheckNicknamePacketHandler;
@@ -20,6 +21,7 @@ import work.fking.pangya.networking.SimpleServer;
 import work.fking.pangya.networking.protocol.InboundPacketDispatcher;
 import work.fking.pangya.networking.protocol.Protocol;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -32,6 +34,13 @@ public class LoginServer {
     private static final int PORT = 10103;
 
     private final Map<Integer, LoginSession> sessions = new ConcurrentHashMap<>();
+
+    private final ServerConfig serverConfig;
+
+    @Inject
+    public LoginServer(ServerConfig serverConfig) {
+        this.serverConfig = serverConfig;
+    }
 
     public void register(LoginSession loginSession) {
         PlayerAccount playerAccount = loginSession.playerAccount();
@@ -86,8 +95,8 @@ public class LoginServer {
 
         SimpleServer server = SimpleServer.builder()
                                           .channelInitializer(channelInitializer)
-                                          .address(InetAddress.getByName("127.0.0.1"))
-                                          .port(PORT)
+                                          .address(InetAddress.getByName(serverConfig.bindAddress()))
+                                          .port(serverConfig.port())
                                           .build();
 
         server.start();

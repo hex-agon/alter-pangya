@@ -5,17 +5,19 @@ import at.favre.lib.crypto.bcrypt.BCrypt.Verifyer;
 import io.netty.channel.Channel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import work.fking.pangya.discovery.DiscoveryClient;
+import work.fking.pangya.discovery.ServerType;
 import work.fking.pangya.login.LoginServer;
 import work.fking.pangya.login.model.LoginRequest;
 import work.fking.pangya.login.model.LoginSession;
 import work.fking.pangya.login.model.LoginState;
 import work.fking.pangya.login.model.PlayerAccount;
 import work.fking.pangya.login.packet.outbound.ChatMacrosPacket;
+import work.fking.pangya.login.packet.outbound.GameServerListPacket;
 import work.fking.pangya.login.packet.outbound.LoginKeyPacket;
 import work.fking.pangya.login.packet.outbound.LoginResultPacket;
 import work.fking.pangya.login.packet.outbound.LoginResultPacket.Result;
 import work.fking.pangya.login.packet.outbound.MessageServerListPacket;
-import work.fking.pangya.login.packet.outbound.ServerListPacket;
 import work.fking.pangya.login.repository.PlayerAccountRepository;
 import work.fking.pangya.login.repository.PlayerProfileRepository;
 
@@ -36,13 +38,21 @@ public class LoginService {
     private final PlayerAccountRepository playerRepository;
     private final PlayerProfileRepository profileRepository;
     private final LoginServer registry;
+    private final DiscoveryClient discoveryClient;
     private final ExecutorService executorService;
 
     @Inject
-    public LoginService(PlayerAccountRepository playerRepository, PlayerProfileRepository profileRepository, LoginServer registry, @Named("shared") ExecutorService executorService) {
+    public LoginService(
+            PlayerAccountRepository playerRepository,
+            PlayerProfileRepository profileRepository,
+            LoginServer registry,
+            DiscoveryClient discoveryClient,
+            @Named("shared") ExecutorService executorService
+    ) {
         this.playerRepository = playerRepository;
         this.profileRepository = profileRepository;
         this.registry = registry;
+        this.discoveryClient = discoveryClient;
         this.executorService = executorService;
     }
 
@@ -128,11 +138,13 @@ public class LoginService {
 
         session.updateState(LoginState.LOGGED_IN);
 
+        var gameServers = discoveryClient.instances(ServerType.GAME);
+
         Channel channel = session.channel();
-        channel.write(LoginKeyPacket.create("7430F52"));
+        channel.writeAndFlush(LoginKeyPacket.create("7430F52"));
         channel.write(new ChatMacrosPacket());
         channel.write(loginResultPacket);
-        channel.write(new ServerListPacket());
+        channel.write(GameServerListPacket.create(gameServers));
         channel.write(new MessageServerListPacket());
         channel.flush();
     }

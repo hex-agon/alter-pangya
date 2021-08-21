@@ -141,7 +141,7 @@ public class LoginService {
         var gameServers = discoveryClient.instances(ServerType.GAME);
 
         Channel channel = session.channel();
-        channel.writeAndFlush(LoginKeyPacket.create("7430F52"));
+        channel.write(LoginKeyPacket.create("loginKey"));
         channel.write(new ChatMacrosPacket());
         channel.write(loginResultPacket);
         channel.write(GameServerListPacket.create(gameServers));

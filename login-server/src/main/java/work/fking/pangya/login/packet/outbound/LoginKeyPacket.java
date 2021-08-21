@@ -6,7 +6,7 @@ import work.fking.pangya.networking.protocol.ProtocolUtils;
 
 public class LoginKeyPacket implements OutboundPacket {
 
-    private static final int ID = 10;
+    private static final int ID = 0x10;
 
     private final String loginKey;
 

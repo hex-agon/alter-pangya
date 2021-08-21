@@ -6,8 +6,6 @@ import work.fking.pangya.networking.protocol.ProtocolUtils;
 
 public class HandoverJunkPacket implements OutboundPacket {
 
-    private static final int ID = 150;
-
     @Override
     public void encode(ByteBuf target) {
         // we should call it the handoverresult packet
@@ -26,31 +24,23 @@ public class HandoverJunkPacket implements OutboundPacket {
 
         //
         target.writeShortLE(0x44);
-        target.writeByte(0xD3);
+        target.writeByte(0xD3); // see table above for possible values
         target.writeByte(0);
 
-        int[] values = {0x01, 0x03, 0x1C, 0x1E, 0x20, 0x05, 0x08, 0x0B, 0x10, 0x12};
-        // progress bar
-        for (int i = 0; i < values.length; i++) {
-            target.writeShortLE(0x44);
-            target.writeByte(0xD2);
-            target.writeIntLE(values[i]);
-        }
+        // int[] values = {1};
+        // // updates the progress bar, we don't need to send this at all
+        // for (int value : values) {
+        //     target.writeShortLE(0x44);
+        //     target.writeByte(0xD2);
+        //     target.writeIntLE(value);
+        // }
 
-        //unknown
-        target.writeBytes(new byte[] {0x1F, 0x01, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00});
-
-        int[] values2 = {0x15, 0x0E, 0x14, 0x16, 0x18, 0x1A, 0x22};
-        // progress bar
-        for (int i = 0; i < values2.length; i++) {
-            target.writeShortLE(0x44);
-            target.writeByte(0xD2);
-            target.writeIntLE(values2[i]);
-        }
+        // unknown doesn't seem to be necessary
+        // target.writeBytes(new byte[] {0x1F, 0x01, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00});
 
         target.writeShortLE(0x44);
         target.writeByte(0);
-        ProtocolUtils.writePString(target, "US852");
-        ProtocolUtils.writePString(target, "hexserver_dev");
+        ProtocolUtils.writePString(target, "US852"); // server version
+        ProtocolUtils.writePString(target, "hexserver_dev"); // server name
     }
 }

@@ -1,6 +1,6 @@
 package work.fking.pangya.common.model.server;
 
-public enum GameServerBoost {
+public enum ServerBoost {
     DOUBLE_PANG(1 << 1),
     DOUBLE_EXP(1 << 2),
     ANGEL_EVENT(1 << 3),
@@ -9,7 +9,7 @@ public enum GameServerBoost {
 
     private final int value;
 
-    GameServerBoost(int value) {
+    ServerBoost(int value) {
         this.value = value;
     }
 

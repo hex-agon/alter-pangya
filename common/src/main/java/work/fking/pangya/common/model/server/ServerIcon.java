@@ -1,6 +1,6 @@
 package work.fking.pangya.common.model.server;
 
-public enum GameServerIcon {
+public enum ServerIcon {
     BLACK_PAPEL,
     PIPPIN,
     TITAN_BOO,

@@ -16,6 +16,7 @@
         <module>common</module>
         <module>game-server</module>
         <module>iff-tools</module>
+        <module>service-discovery</module>
     </modules>
 
     <name>alterorb-pangya</name>

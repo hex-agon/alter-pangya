@@ -4,7 +4,7 @@ import io.netty.channel.Channel;
 import work.fking.pangya.login.model.BasicPlayerProfile;
 import work.fking.pangya.login.model.LoginSession;
 import work.fking.pangya.login.model.NewProfileRequest;
-import work.fking.pangya.login.packet.outbound.ConfirmCharacterSelectionPacket;
+import work.fking.pangya.login.packet.outbound.ConfirmCharacterReplies;
 import work.fking.pangya.login.repository.PlayerProfileRepository;
 
 import javax.inject.Inject;
@@ -33,7 +33,7 @@ public class ProfileService {
         LoginSession session = channel.attr(LoginSession.KEY).get();
 
         boolean result = profileRepository.createProfile(session.playerAccount().id(), BasicPlayerProfile.of(request.character()));
-        channel.write(ConfirmCharacterSelectionPacket.instance());
+        channel.write(ConfirmCharacterReplies.ok());
         request.callback().accept(result);
     }
 }

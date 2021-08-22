@@ -12,12 +12,9 @@ import work.fking.pangya.login.model.LoginRequest;
 import work.fking.pangya.login.model.LoginSession;
 import work.fking.pangya.login.model.LoginState;
 import work.fking.pangya.login.model.PlayerAccount;
-import work.fking.pangya.login.packet.outbound.ChatMacrosPacket;
-import work.fking.pangya.login.packet.outbound.GameServerListPacket;
-import work.fking.pangya.login.packet.outbound.LoginKeyPacket;
-import work.fking.pangya.login.packet.outbound.LoginResultPacket;
-import work.fking.pangya.login.packet.outbound.LoginResultPacket.Result;
-import work.fking.pangya.login.packet.outbound.MessageServerListPacket;
+import work.fking.pangya.login.packet.outbound.LoginReplies;
+import work.fking.pangya.login.packet.outbound.LoginReplies.Error;
+import work.fking.pangya.login.packet.outbound.ServerListReplies;
 import work.fking.pangya.login.repository.PlayerAccountRepository;
 import work.fking.pangya.login.repository.PlayerProfileRepository;
 
@@ -95,7 +92,7 @@ public class LoginService {
         PlayerAccount playerAccount = loadAndCheckPassword(loginRequest);
 
         if (playerAccount == null) {
-            loginRequest.channel().writeAndFlush(LoginResultPacket.error(Result.INCORRECT_USERNAME_PASSWORD).build());
+            loginRequest.channel().writeAndFlush(LoginReplies.error(Error.INCORRECT_USERNAME_PASSWORD));
             return;
         }
 
@@ -130,39 +127,30 @@ public class LoginService {
 
     private void proceedToLoggedIn(LoginSession session) {
         PlayerAccount playerAccount = session.playerAccount();
-        LoginResultPacket loginResultPacket = LoginResultPacket.success()
-                                                               .userId(playerAccount.id())
-                                                               .username(playerAccount.username())
-                                                               .nickname(playerAccount.nickname())
-                                                               .build();
-
         session.updateState(LoginState.LOGGED_IN);
 
         var gameServers = discoveryClient.instances(ServerType.GAME);
+        var socialServers = discoveryClient.instances(ServerType.SOCIAL);
 
         Channel channel = session.channel();
-        channel.write(LoginKeyPacket.create("loginKey"));
-        channel.write(new ChatMacrosPacket());
-        channel.write(loginResultPacket);
-        channel.write(GameServerListPacket.create(gameServers));
-        channel.write(new MessageServerListPacket());
+        channel.write(LoginReplies.loginKey("loginKey"));
+        channel.write(LoginReplies.chatMacros());
+        channel.write(LoginReplies.success(playerAccount.id(), playerAccount.username(), playerAccount.nickname()));
+        channel.write(ServerListReplies.gameServers(gameServers));
+        channel.write(ServerListReplies.socialServers(socialServers));
         channel.flush();
     }
 
     private void proceedToCharacterSelection(LoginSession session) {
-        LoginResultPacket loginResultPacket = LoginResultPacket.error(Result.SELECT_CHARACTER).build();
-
-        session.channel().writeAndFlush(loginResultPacket);
+        session.channel().writeAndFlush(LoginReplies.selectCharacter());
     }
 
     private void proceedToNicknameCreation(LoginSession session) {
-        LoginResultPacket loginResultPacket = LoginResultPacket.error(Result.CREATE_NICKNAME).build();
-
-        session.channel().writeAndFlush(loginResultPacket);
+        session.channel().writeAndFlush(LoginReplies.createNickname());
     }
 
     private void replyAccountBanned(LoginSession loginSession) {
-        loginSession.channel().writeAndFlush(LoginResultPacket.error(Result.BANNED).build());
+        loginSession.channel().writeAndFlush(LoginReplies.error(Error.BANNED));
     }
 
     private void checkAccountSuspended(LoginSession loginSession) {
@@ -170,15 +158,12 @@ public class LoginService {
         LocalDateTime suspensionLiftDateTime = loginSession.playerAccount().suspensionLiftTimestamp();
 
         if (now.isBefore(suspensionLiftDateTime)) {
-            int hours = (int) Duration.between(now, suspensionLiftDateTime).toHours();
+            int hours = Duration.between(now, suspensionLiftDateTime).toHoursPart();
 
             if (hours < 1) {
                 hours = 1;
             }
-            LoginResultPacket build = LoginResultPacket.error(Result.ACCOUNT_SUSPENDED)
-                                                       .suspensionTime(hours)
-                                                       .build();
-            loginSession.channel().writeAndFlush(build);
+            loginSession.channel().writeAndFlush(LoginReplies.accountSuspended(hours));
         }
     }
 

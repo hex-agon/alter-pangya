@@ -15,9 +15,8 @@ public class HelloPacket implements OutboundPacket {
     }
 
     public static HelloPacket create(int cryptKey) {
-
         if (cryptKey < 0 || cryptKey > PangCrypt.CRYPT_KEY_MAX) {
-            throw new IllegalArgumentException("Invalid crypt key");
+            throw new IllegalArgumentException("Crypt key out of bounds");
         }
         return new HelloPacket(cryptKey);
     }

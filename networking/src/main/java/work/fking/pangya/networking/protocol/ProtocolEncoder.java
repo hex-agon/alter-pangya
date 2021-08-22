@@ -12,7 +12,7 @@ import work.fking.pangya.networking.lzo.MiniLZO;
 
 public class ProtocolEncoder extends MessageToByteEncoder<OutboundPacket> {
 
-    private static final Logger LOGGER = LogManager.getLogger(InboundPacketDispatcher.class);
+    private static final Logger LOGGER = LogManager.getLogger(ProtocolEncoder.class);
 
     private final byte[] lzoOutBuffer = new byte[32768];
     private final int[] lzoDict = new int[32768];

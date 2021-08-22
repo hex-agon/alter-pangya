@@ -55,7 +55,7 @@ public class LoginServer {
         PlayerAccount playerAccount = loginSession.playerAccount();
 
         if (playerAccount == null) {
-            throw new IllegalStateException("No account is currently associated with the given session");
+            return;
         }
         sessions.remove(playerAccount.id());
     }

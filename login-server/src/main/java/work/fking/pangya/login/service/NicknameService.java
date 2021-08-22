@@ -5,9 +5,10 @@ import work.fking.pangya.login.model.LoginState;
 import work.fking.pangya.login.model.NicknameCheckRequest;
 import work.fking.pangya.login.model.NicknameSetRequest;
 import work.fking.pangya.login.model.PlayerAccount;
-import work.fking.pangya.login.packet.outbound.CheckNicknameResultPacket;
-import work.fking.pangya.login.packet.outbound.CheckNicknameResultPacket.Result;
+import work.fking.pangya.login.packet.outbound.CheckNicknameReplies;
+import work.fking.pangya.login.packet.outbound.CheckNicknameReplies.Error;
 import work.fking.pangya.login.repository.PlayerAccountRepository;
+import work.fking.pangya.networking.protocol.OutboundPacket;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -40,14 +41,14 @@ public class NicknameService {
         LoginSession session = request.channel().attr(LoginSession.KEY).get();
 
         boolean exists = playerRepository.nicknameExists(request.nickname());
-        CheckNicknameResultPacket result;
+        OutboundPacket result;
 
         if (exists) {
-            result = CheckNicknameResultPacket.error(Result.IN_USE);
+            result = CheckNicknameReplies.error(Error.IN_USE);
         } else if (!NICKNAME_PATTERN.matcher(request.nickname()).matches()) {
-            result = CheckNicknameResultPacket.error(Result.INCORRECT_FORMAT_OR_LENGTH);
+            result = CheckNicknameReplies.error(Error.INCORRECT_FORMAT_OR_LENGTH);
         } else {
-            result = CheckNicknameResultPacket.available(request.nickname());
+            result = CheckNicknameReplies.available(request.nickname());
         }
         session.updateState(LoginState.SELECTED_NICKNAME);
         request.channel().writeAndFlush(result);

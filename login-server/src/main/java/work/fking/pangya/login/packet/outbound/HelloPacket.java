@@ -6,8 +6,6 @@ import work.fking.pangya.networking.protocol.OutboundPacket;
 
 public class HelloPacket implements OutboundPacket {
 
-    private final byte[] unknown = {0x00, 0x0B, 0x00, 0x00, 0x00, 0x00};
-    private final byte[] unknown2 = {0x00, 0x00, 0x00, 0x0F, 0x27, 0x00, 0x00};
     private final int cryptKey;
 
     private HelloPacket(int cryptKey) {
@@ -23,8 +21,10 @@ public class HelloPacket implements OutboundPacket {
 
     @Override
     public void encode(ByteBuf target) {
-        target.writeBytes(unknown);
+        target.writeShortLE(0xb00);
+        target.writeZero(4);
         target.writeByte(cryptKey);
-        target.writeBytes(unknown2);
+        target.writeZero(3);
+        target.writeIntLE(10101); // suspicious value, similar to ports used by login servers
     }
 }

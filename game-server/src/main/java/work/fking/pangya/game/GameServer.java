@@ -12,6 +12,7 @@ import work.fking.pangya.game.packet.handler.LoginBonusClaimPacketHandler;
 import work.fking.pangya.game.packet.handler.LoginBonusStatusPacketHandler;
 import work.fking.pangya.game.packet.handler.MyRoomOpenPacketHandler;
 import work.fking.pangya.game.packet.handler.MyRoomOpenedPacketHandler;
+import work.fking.pangya.game.packet.handler.RareShopOpenPacketHandler;
 import work.fking.pangya.game.packet.handler.SelectChannelPacketHandler;
 import work.fking.pangya.game.packet.handler.Unknown156PacketHandler;
 import work.fking.pangya.game.packet.handler.Unknown320PacketHandler;
@@ -25,6 +26,7 @@ import work.fking.pangya.game.packet.inbound.LoginBonusClaimPacket;
 import work.fking.pangya.game.packet.inbound.LoginBonusStatusPacket;
 import work.fking.pangya.game.packet.inbound.MyRoomOpenPacket;
 import work.fking.pangya.game.packet.inbound.MyRoomOpenedPacket;
+import work.fking.pangya.game.packet.inbound.RareShopOpenPacket;
 import work.fking.pangya.game.packet.inbound.SelectChannelPacket;
 import work.fking.pangya.game.packet.inbound.Unknown156Packet;
 import work.fking.pangya.game.packet.inbound.Unknown320Packet;
@@ -59,6 +61,7 @@ public class GameServer {
                        .inboundPacket(0x20, EquipmentUpdatePacket.class)
                        .inboundPacket(0x2f, UserProfileRequestPacket.class)
                        .inboundPacket(0x69, UpdateChatMacrosPacket.class)
+                       .inboundPacket(0x98, RareShopOpenPacket.class)
                        .inboundPacket(0x9C, Unknown156Packet.class)
                        .inboundPacket(0xB5, MyRoomOpenPacket.class)
                        .inboundPacket(0xB7, MyRoomOpenedPacket.class)
@@ -77,6 +80,7 @@ public class GameServer {
                                       .handler(EquipmentUpdatePacket.class, EquipmentUpdatePacketHandler.class)
                                       .handler(UserProfileRequestPacket.class, UserProfileRequestPacketHandler.class)
                                       .handler(UpdateChatMacrosPacket.class, UpdateChatMacrosPacketHandler.class)
+                                      .handler(RareShopOpenPacket.class, RareShopOpenPacketHandler.class)
                                       .handler(Unknown156Packet.class, Unknown156PacketHandler.class)
                                       .handler(MyRoomOpenPacket.class, MyRoomOpenPacketHandler.class)
                                       .handler(MyRoomOpenedPacket.class, MyRoomOpenedPacketHandler.class)

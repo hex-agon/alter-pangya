@@ -4,8 +4,8 @@ import io.netty.channel.Channel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import work.fking.pangya.game.packet.inbound.HandoverPacket;
-import work.fking.pangya.game.packet.outbound.CaddieHosterPacket;
-import work.fking.pangya.game.packet.outbound.CharacterHosterPacket;
+import work.fking.pangya.game.packet.outbound.CaddieRosterPacket;
+import work.fking.pangya.game.packet.outbound.CharacterRosterPacket;
 import work.fking.pangya.game.packet.outbound.CookieBalancePacket;
 import work.fking.pangya.game.packet.outbound.EquipmentPacket;
 import work.fking.pangya.game.packet.outbound.HandoverJunkPacket;
@@ -31,8 +31,8 @@ public class HandoverPacketHandler implements InboundPacketHandler<HandoverPacke
 
         channel.write(new HandoverJunkPacket());
         channel.writeAndFlush(new PlayerDataPacket());
-        channel.writeAndFlush(new CharacterHosterPacket()); // known ok
-        channel.writeAndFlush(new CaddieHosterPacket()); // known ok
+        channel.writeAndFlush(new CharacterRosterPacket()); // known ok
+        channel.writeAndFlush(new CaddieRosterPacket()); // known ok
         channel.writeAndFlush(new EquipmentPacket()); // known ok
         channel.writeAndFlush(new MascotRosterPacket());
         channel.writeAndFlush(new InventoryPacket());

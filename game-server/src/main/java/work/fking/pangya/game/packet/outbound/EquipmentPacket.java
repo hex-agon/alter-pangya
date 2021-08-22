@@ -1,8 +1,8 @@
 package work.fking.pangya.game.packet.outbound;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufUtil;
-import io.netty.buffer.Unpooled;
+import work.fking.pangya.game.model.PangCaddie;
+import work.fking.pangya.game.model.PangCharacter;
 import work.fking.pangya.networking.protocol.OutboundPacket;
 
 public class EquipmentPacket implements OutboundPacket {
@@ -13,8 +13,8 @@ public class EquipmentPacket implements OutboundPacket {
     public void encode(ByteBuf target) {
         target.writeShortLE(ID);
 
-        target.writeIntLE(83651); // caddie, references a unique id, not iff id
-        target.writeIntLE(262513); // character, references a unique id, not iff id
+        target.writeIntLE(PangCaddie.mock().uniqueId());
+        target.writeIntLE(PangCharacter.mock().uniqueId());
         target.writeIntLE(2000); // club, references an inventory unique id
         target.writeIntLE(335544325); // ball, iff id
 

@@ -50,7 +50,7 @@ public final class LoginReplies {
     }
 
     public static OutboundPacket error(Error error) {
-        return error(error, null);
+        return error(error, "");
     }
 
     public static OutboundPacket error(Error error, String message) {

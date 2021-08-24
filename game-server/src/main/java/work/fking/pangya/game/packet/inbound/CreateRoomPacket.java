@@ -1,10 +1,14 @@
 package work.fking.pangya.game.packet.inbound;
 
 import io.netty.buffer.ByteBuf;
+import work.fking.pangya.game.packet.handler.CreateRoomPacketHandler;
 import work.fking.pangya.networking.protocol.InboundPacket;
+import work.fking.pangya.networking.protocol.PacketHandledBy;
 import work.fking.pangya.networking.protocol.PacketId;
 import work.fking.pangya.networking.protocol.ProtocolUtils;
 
+@PacketId(0x8)
+@PacketHandledBy(CreateRoomPacketHandler.class)
 public record CreateRoomPacket(
         int shotTime,
         int gameTime,
@@ -18,7 +22,6 @@ public record CreateRoomPacket(
 
     private static final int RANDOM_COURSE = 127;
 
-    @PacketId
     public static InboundPacket decode(ByteBuf buffer) {
         buffer.skipBytes(1); // unknown
         var shotTime = buffer.readIntLE();

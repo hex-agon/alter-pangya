@@ -10,6 +10,7 @@ import work.fking.pangya.discovery.HeartbeatPublisher;
 import work.fking.pangya.discovery.ServerType;
 import work.fking.pangya.game.module.DefaultModule;
 import work.fking.pangya.game.module.RedisModule;
+import work.fking.pangya.networking.protocol.ProtocolScanner;
 
 public class Bootstrap {
 
@@ -22,11 +23,13 @@ public class Bootstrap {
             var injector = Guice.createInjector(Stage.PRODUCTION, RedisModule.create(), DefaultModule.create(serverConfig));
             var server = injector.getInstance(GameServer.class);
 
+            var scanResult = ProtocolScanner.scan(injector::getInstance);
+
             var client = injector.getInstance(DiscoveryClient.class);
             var heartbeatPublisher = HeartbeatPublisher.create(client, ServerType.GAME, serverConfig, () -> 0);
 
             heartbeatPublisher.start();
-            server.start(injector);
+            server.start(scanResult.protocol(), scanResult.packetDispatcher());
         } catch (Exception e) {
             LOGGER.fatal("Failed to bootstrap the server", e);
         }

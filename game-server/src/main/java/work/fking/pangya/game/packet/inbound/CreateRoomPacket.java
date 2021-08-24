@@ -2,7 +2,7 @@ package work.fking.pangya.game.packet.inbound;
 
 import io.netty.buffer.ByteBuf;
 import work.fking.pangya.networking.protocol.InboundPacket;
-import work.fking.pangya.networking.protocol.PacketFactory;
+import work.fking.pangya.networking.protocol.PacketId;
 import work.fking.pangya.networking.protocol.ProtocolUtils;
 
 public record CreateRoomPacket(
@@ -18,7 +18,7 @@ public record CreateRoomPacket(
 
     private static final int RANDOM_COURSE = 127;
 
-    @PacketFactory
+    @PacketId
     public static InboundPacket decode(ByteBuf buffer) {
         buffer.skipBytes(1); // unknown
         var shotTime = buffer.readIntLE();

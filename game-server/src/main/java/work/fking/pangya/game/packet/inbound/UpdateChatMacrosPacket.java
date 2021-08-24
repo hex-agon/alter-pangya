@@ -2,7 +2,7 @@ package work.fking.pangya.game.packet.inbound;
 
 import io.netty.buffer.ByteBuf;
 import work.fking.pangya.networking.protocol.InboundPacket;
-import work.fking.pangya.networking.protocol.PacketFactory;
+import work.fking.pangya.networking.protocol.PacketId;
 import work.fking.pangya.networking.protocol.ProtocolUtils;
 
 import java.util.ArrayList;
@@ -13,7 +13,7 @@ public record UpdateChatMacrosPacket(List<String> macros) implements InboundPack
     private static final int MAX_MACROS = 9;
     private static final int MACRO_LENGTH = 64;
 
-    @PacketFactory
+    @PacketId
     public static InboundPacket decode(ByteBuf buffer) {
         List<String> macros = new ArrayList<>(MAX_MACROS);
 

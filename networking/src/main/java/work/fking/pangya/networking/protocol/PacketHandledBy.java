@@ -5,11 +5,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/**
- * A simple marker annotation that marks a method as a packet factory.
- */
-@Target(ElementType.METHOD)
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface PacketFactory {
+public @interface PacketHandledBy {
 
+    Class<? extends InboundPacketHandler<? extends InboundPacket>> value();
 }

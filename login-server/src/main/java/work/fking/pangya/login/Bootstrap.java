@@ -12,6 +12,7 @@ import work.fking.pangya.discovery.ServerType;
 import work.fking.pangya.login.module.DatabaseModule;
 import work.fking.pangya.login.module.DefaultModule;
 import work.fking.pangya.login.module.RedisModule;
+import work.fking.pangya.networking.protocol.ProtocolScanner;
 
 public class Bootstrap {
 
@@ -20,16 +21,23 @@ public class Bootstrap {
     public static void main(String[] args) {
         LOGGER.info("Bootstrapping the login server...");
         try {
+            LOGGER.debug("Loading the config...");
             var serverConfig = ServerConfigLoader.load("config.toml");
+            LOGGER.debug("Creating the injector...");
             Injector injector = Guice.createInjector(Stage.PRODUCTION, RedisModule.create(), DefaultModule.create(serverConfig), new DatabaseModule());
+
+            var scanResult = ProtocolScanner.scan(injector::getInstance);
+
             LoginServer loginServer = injector.getInstance(LoginServer.class);
 
+            LOGGER.debug("Initializing service discovery...");
             var client = injector.getInstance(DiscoveryClient.class);
             var heartbeatPublisher = HeartbeatPublisher.create(client, ServerType.LOGIN, serverConfig, () -> 0);
 
             heartbeatPublisher.start();
 
-            loginServer.start(injector);
+            LOGGER.debug("Starting the login server...");
+            loginServer.start(scanResult.protocol(), scanResult.packetDispatcher());
         } catch (Exception e) {
             LOGGER.fatal("Failed to bootstrap the server", e);
         }

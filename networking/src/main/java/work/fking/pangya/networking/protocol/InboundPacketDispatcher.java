@@ -51,7 +51,7 @@ public class InboundPacketDispatcher extends SimpleChannelInboundHandler<Inbound
             this.handlerFactory = handlerFactory;
         }
 
-        public <P extends InboundPacket> Builder handler(Class<P> inboundPacketClass, Class<? extends InboundPacketHandler<P>> packetHandlerClass) {
+        public Builder handler(Class<? extends InboundPacket> inboundPacketClass, Class<? extends InboundPacketHandler<? extends InboundPacket>> packetHandlerClass) {
             handlers.put(inboundPacketClass, handlerFactory.create(packetHandlerClass));
             return this;
         }
@@ -59,5 +59,10 @@ public class InboundPacketDispatcher extends SimpleChannelInboundHandler<Inbound
         public InboundPacketDispatcher build() {
             return new InboundPacketDispatcher(handlers);
         }
+    }
+
+    public interface InboundPacketHandlerFactory {
+
+        InboundPacketHandler<? extends InboundPacket> create(Class<? extends InboundPacketHandler<? extends InboundPacket>> packetHandlerClass);
     }
 }

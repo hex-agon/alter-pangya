@@ -2,12 +2,12 @@ package work.fking.pangya.game.packet.inbound;
 
 import io.netty.buffer.ByteBuf;
 import work.fking.pangya.networking.protocol.InboundPacket;
-import work.fking.pangya.networking.protocol.PacketFactory;
+import work.fking.pangya.networking.protocol.PacketId;
 import work.fking.pangya.networking.protocol.ProtocolUtils;
 
 public record HandoverPacket(String username, int userId, String loginKey, String clientVersion, String sessionKey) implements InboundPacket {
 
-    @PacketFactory
+    @PacketId
     public static InboundPacket decode(ByteBuf buffer) {
         String username = ProtocolUtils.readPString(buffer);
         int userId = buffer.readIntLE();

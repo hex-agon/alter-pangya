@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.RedisURI;
-import io.lettuce.core.pubsub.StatefulRedisPubSubConnection;
 import io.lettuce.core.pubsub.api.reactive.ChannelMessage;
 import io.lettuce.core.pubsub.api.sync.RedisPubSubCommands;
 import org.apache.logging.log4j.LogManager;

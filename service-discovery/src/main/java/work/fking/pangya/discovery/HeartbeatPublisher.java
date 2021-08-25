@@ -19,7 +19,7 @@ public class HeartbeatPublisher {
     private static final int PUBLISH_INTERVAL_MINUTES = 1;
 
     private static final ScheduledExecutorService EXECUTOR_SERVICE = Executors.newSingleThreadScheduledExecutor(
-            (runnable) -> {
+            runnable -> {
                 var thread = new Thread(runnable);
                 thread.setDaemon(true);
                 thread.setName("HeartbeatPublisher");

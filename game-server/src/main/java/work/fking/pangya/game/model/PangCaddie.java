@@ -4,11 +4,13 @@ import io.netty.buffer.ByteBuf;
 
 public record PangCaddie(
         int iffId,
-        int uniqueId
+        int uniqueId,
+        int levelsGained,
+        int experience
 ) implements IffUniqueObject {
 
     public static PangCaddie mock() {
-        return new PangCaddie(469762083, 83651);
+        return new PangCaddie(469762083, 83651, 2, 123);
     }
 
     @Override
@@ -16,8 +18,8 @@ public record PangCaddie(
         buffer.writeIntLE(uniqueId);
         buffer.writeIntLE(iffId);
         buffer.writeIntLE(0);
-        buffer.writeByte(0);
-        buffer.writeIntLE(0);
+        buffer.writeByte(levelsGained);
+        buffer.writeIntLE(experience);
         buffer.writeLongLE(0);
     }
 }

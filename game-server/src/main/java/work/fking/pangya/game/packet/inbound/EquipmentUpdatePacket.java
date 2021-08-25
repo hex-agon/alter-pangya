@@ -1,7 +1,7 @@
 package work.fking.pangya.game.packet.inbound;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufUtil;
+import work.fking.pangya.game.model.PangCharacter;
 import work.fking.pangya.game.packet.handler.EquipmentUpdatePacketHandler;
 import work.fking.pangya.networking.protocol.InboundPacket;
 import work.fking.pangya.networking.protocol.PacketHandledBy;
@@ -32,8 +32,11 @@ public class EquipmentUpdatePacket implements InboundPacket {
     }
 
     private static InboundPacket decodeUnknown0(ByteBuf buffer) {
-        ByteBufUtil.prettyHexDump(buffer);
-        System.out.println(buffer.readableBytes());
+        var character = PangCharacter.decode(buffer);
+        System.out.println(character);
+        System.out.println(Arrays.toString(character.equipmentIffIds()));
+        System.out.println(Arrays.toString(character.equipmentUniqueIds()));
+        System.out.println(Arrays.toString(character.cardIffIds()));
         return new EquipmentUpdatePacket();
     }
 

@@ -11,26 +11,82 @@ public class InventoryPacket implements OutboundPacket {
     public void encode(ByteBuf target) {
         target.writeShortLE(ID);
 
-        target.writeShortLE(3);
-        target.writeShortLE(3);
+        target.writeShortLE(13);
+        target.writeShortLE(13);
 
         // for each item in this packet...
         target.writeIntLE(1000); // item unique id
         target.writeIntLE(335544325); // item iff id
         target.writeIntLE(0); // unknown
         target.writeIntLE(200); // item quantity
-        target.writeBytes(new byte[0xb4]);
+        target.writeZero(0xb4);
 
         target.writeIntLE(2000); // item unique id
         target.writeIntLE(268435511); // item iff id
         target.writeIntLE(0); // unknown
         target.writeIntLE(0); // item quantity
-        target.writeBytes(new byte[0xb4]);
+        target.writeZero(0xb4);
 
-        target.writeIntLE(7000); // item unique id
+        // lucia test items
+        int uniqueId = 7000;
+        target.writeIntLE(uniqueId++); // item unique id
         target.writeIntLE(136331265); // item iff id
         target.writeIntLE(0); // unknown
         target.writeIntLE(0); // item quantity
-        target.writeBytes(new byte[0xb4]);
+        target.writeZero(0xb4);
+
+        target.writeIntLE(uniqueId++); // item unique id
+        target.writeIntLE(136423465); // item iff id
+        target.writeIntLE(0); // unknown
+        target.writeIntLE(0); // item quantity
+        target.writeZero(0xb4);
+
+        target.writeIntLE(uniqueId++); // item unique id
+        target.writeIntLE(136445968); // item iff id
+        target.writeIntLE(0); // unknown
+        target.writeIntLE(0); // item quantity
+        target.writeZero(0xb4);
+
+        target.writeIntLE(uniqueId++); // item unique id
+        target.writeIntLE(136456205); // item iff id
+        target.writeIntLE(0); // unknown
+        target.writeIntLE(0); // item quantity
+        target.writeZero(0xb4);
+
+        target.writeIntLE(uniqueId++); // item unique id
+        target.writeIntLE(136456192); // item iff id
+        target.writeIntLE(0); // unknown
+        target.writeIntLE(0); // item quantity
+        target.writeZero(0xb4);
+
+        target.writeIntLE(uniqueId++); // item unique id
+        target.writeIntLE(136398858); // item iff id
+        target.writeIntLE(0); // unknown
+        target.writeIntLE(0); // item quantity
+        target.writeZero(0xb4);
+
+        target.writeIntLE(uniqueId++); // item unique id
+        target.writeIntLE(136372302); // item iff id
+        target.writeIntLE(0); // unknown
+        target.writeIntLE(0); // item quantity
+        target.writeZero(0xb4);
+
+        target.writeIntLE(uniqueId++); // item unique id
+        target.writeIntLE(136355870); // item iff id
+        target.writeIntLE(0); // unknown
+        target.writeIntLE(0); // item quantity
+        target.writeZero(0xb4);
+
+        target.writeIntLE(uniqueId++); // item unique id
+        target.writeIntLE(136347689); // item iff id
+        target.writeIntLE(0); // unknown
+        target.writeIntLE(0); // item quantity
+        target.writeZero(0xb4);
+
+        target.writeIntLE(uniqueId++); // item unique id
+        target.writeIntLE(136331362); // item iff id
+        target.writeIntLE(0); // unknown
+        target.writeIntLE(0); // item quantity
+        target.writeZero(0xb4);
     }
 }

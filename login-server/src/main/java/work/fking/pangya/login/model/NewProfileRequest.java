@@ -1,10 +1,9 @@
 package work.fking.pangya.login.model;
 
 import io.netty.channel.Channel;
-import work.fking.pangya.common.model.player.PlayerCharacter;
 
 import java.util.function.Consumer;
 
-public record NewProfileRequest(Channel channel, PlayerCharacter character, Consumer<Boolean> callback) {
+public record NewProfileRequest(Channel channel, int characterIffId, int characterHairColor, Consumer<Boolean> callback) {
 
 }

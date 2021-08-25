@@ -3,7 +3,6 @@ package work.fking.pangya.login.packet.handler;
 import io.netty.channel.Channel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import work.fking.pangya.common.model.player.PlayerCharacter;
 import work.fking.pangya.login.model.LoginSession;
 import work.fking.pangya.login.model.LoginState;
 import work.fking.pangya.login.model.NewProfileRequest;
@@ -38,6 +37,6 @@ public class SelectCharacterPacketHandler implements InboundPacketHandler<Select
             channel.disconnect();
             return;
         }
-        profileService.queueNewProfileRequest(new NewProfileRequest(channel, new PlayerCharacter(packet.characterId(), packet.hairColor()), result -> loginService.resumeLoginFlow(session)));
+        profileService.queueNewProfileRequest(new NewProfileRequest(channel, packet.characterId(), packet.hairColor(), result -> loginService.resumeLoginFlow(session)));
     }
 }

@@ -1,10 +1,8 @@
 package work.fking.pangya.login.model;
 
-import work.fking.pangya.common.model.player.PlayerCharacter;
+public record BasicPlayerProfile() {
 
-public record BasicPlayerProfile(PlayerCharacter activeCharacter) {
-
-    public static BasicPlayerProfile of(PlayerCharacter activeCharacter) {
-        return new BasicPlayerProfile(activeCharacter);
+    public static BasicPlayerProfile blank() {
+        return new BasicPlayerProfile();
     }
 }

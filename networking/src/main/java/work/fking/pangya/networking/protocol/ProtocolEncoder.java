@@ -33,15 +33,22 @@ public class ProtocolEncoder extends MessageToByteEncoder<OutboundPacket> {
         LOGGER.trace("Encoding packet={}", packet.getClass().getSimpleName());
         // TODO: Everything here is terribly inefficient
         ByteBuf pktBuffer = ctx.alloc().buffer();
-        packet.encode(pktBuffer);
+        try {
+            packet.encode(pktBuffer);
 
-        int uncompressedSize = pktBuffer.readableBytes();
-        byte[] source = new byte[uncompressedSize];
-        pktBuffer.readBytes(source);
-        MiniLZO.lzo1x_1_compress(source, source.length, lzoOutBuffer, lzoOutLength, lzoDict);
+            int uncompressedSize = pktBuffer.readableBytes();
+            byte[] source = new byte[uncompressedSize];
+            pktBuffer.readBytes(source);
+            MiniLZO.lzo1x_1_compress(source, source.length, lzoOutBuffer, lzoOutLength, lzoDict);
 
-        ByteBuf compressed = Unpooled.wrappedBuffer(lzoOutBuffer, 0, lzoOutLength.v);
-
-        PangCrypt.encrypt(buffer, compressed, uncompressedSize, cryptKey, 0);
+            ByteBuf compressed = Unpooled.wrappedBuffer(lzoOutBuffer, 0, lzoOutLength.v);
+            try {
+                PangCrypt.encrypt(buffer, compressed, uncompressedSize, cryptKey, 0);
+            } finally {
+                compressed.release();
+            }
+        } finally {
+            pktBuffer.release();
+        }
     }
 }

@@ -8,11 +8,10 @@ import work.fking.pangya.game.packet.outbound.CaddieRosterPacket;
 import work.fking.pangya.game.packet.outbound.CharacterRosterPacket;
 import work.fking.pangya.game.packet.outbound.CookieBalancePacket;
 import work.fking.pangya.game.packet.outbound.EquipmentPacket;
-import work.fking.pangya.game.packet.outbound.HandoverJunkPacket;
+import work.fking.pangya.game.packet.outbound.HandoverReplies;
 import work.fking.pangya.game.packet.outbound.InventoryPacket;
 import work.fking.pangya.game.packet.outbound.MascotRosterPacket;
 import work.fking.pangya.game.packet.outbound.PangBalancePacket;
-import work.fking.pangya.game.packet.outbound.PlayerDataPacket;
 import work.fking.pangya.game.packet.outbound.ServerChannelsPacket;
 import work.fking.pangya.networking.protocol.InboundPacketHandler;
 
@@ -29,8 +28,8 @@ public class HandoverPacketHandler implements InboundPacketHandler<HandoverPacke
 
         // https://github.com/hsreina/pangya-server/blob/449140f97592d5d403ef0df01d19ca2c6c834361/src/Server/Sync/SyncServer.pas#L430
 
-        channel.write(new HandoverJunkPacket());
-        channel.writeAndFlush(new PlayerDataPacket());
+        channel.write(HandoverReplies.ok());
+        channel.writeAndFlush(HandoverReplies.playerData());
         channel.writeAndFlush(new CharacterRosterPacket()); // known ok
         channel.writeAndFlush(new CaddieRosterPacket()); // known ok
         channel.writeAndFlush(new EquipmentPacket()); // known ok

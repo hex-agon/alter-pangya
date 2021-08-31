@@ -7,15 +7,10 @@ import com.google.inject.name.Names;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.jdbi.v3.core.Jdbi;
-import org.jdbi.v3.core.mapper.reflect.ConstructorMapper;
 import org.jdbi.v3.jackson2.Jackson2Config;
 import org.jdbi.v3.jackson2.Jackson2Plugin;
 import org.jdbi.v3.postgres.PostgresPlugin;
 import org.jdbi.v3.sqlobject.SqlObjectPlugin;
-import work.fking.pangya.login.model.BasicPlayerProfile;
-import work.fking.pangya.login.model.PlayerAccount;
-import work.fking.pangya.login.repository.PlayerAccountRepository;
-import work.fking.pangya.login.repository.PlayerProfileRepository;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -24,6 +19,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class DatabaseModule extends AbstractModule {
+
+    private DatabaseModule() {
+    }
+
+    public static DatabaseModule create() {
+        return new DatabaseModule();
+    }
 
     @Override
     protected void configure() {
@@ -59,19 +61,5 @@ public class DatabaseModule extends AbstractModule {
 
         jdbi.getConfig(Jackson2Config.class).setMapper(objectMapper);
         return jdbi;
-    }
-
-    @Provides
-    @Singleton
-    public PlayerAccountRepository providePlayerAccountRepository(Jdbi jdbi) {
-        jdbi.registerRowMapper(ConstructorMapper.factory(PlayerAccount.class));
-        return jdbi.onDemand(PlayerAccountRepository.class);
-    }
-
-    @Provides
-    @Singleton
-    public PlayerProfileRepository providePlayerProfileRepository(Jdbi jdbi) {
-        jdbi.registerRowMapper(ConstructorMapper.factory(BasicPlayerProfile.class));
-        return jdbi.onDemand(PlayerProfileRepository.class);
     }
 }

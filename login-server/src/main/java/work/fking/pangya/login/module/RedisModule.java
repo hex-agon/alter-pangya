@@ -13,6 +13,9 @@ import java.util.Map;
 
 public class RedisModule extends AbstractModule {
 
+    private RedisModule() {
+    }
+
     @Override
     protected void configure() {
         Map<String, String> properties = new HashMap<>();

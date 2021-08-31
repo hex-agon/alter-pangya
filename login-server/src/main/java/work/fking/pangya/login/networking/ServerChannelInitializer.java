@@ -1,4 +1,4 @@
-package work.fking.pangya.login;
+package work.fking.pangya.login.networking;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
@@ -11,12 +11,12 @@ public class ServerChannelInitializer extends ChannelInitializer<Channel> {
 
     private final HelloHandler helloHandler;
 
-    private ServerChannelInitializer(Protocol protocol, InboundPacketDispatcher packetDispatcher, TailHandler tailHandler) {
-        this.helloHandler = HelloHandler.create(protocol, packetDispatcher, tailHandler);
+    private ServerChannelInitializer(Protocol protocol, InboundPacketDispatcher packetDispatcher, ExceptionHandler exceptionHandler) {
+        this.helloHandler = HelloHandler.create(protocol, packetDispatcher, exceptionHandler);
     }
 
-    public static ServerChannelInitializer create(Protocol protocol, InboundPacketDispatcher packetDispatcher, TailHandler tailHandler) {
-        return new ServerChannelInitializer(protocol, packetDispatcher, tailHandler);
+    public static ServerChannelInitializer create(Protocol protocol, InboundPacketDispatcher packetDispatcher, ExceptionHandler exceptionHandler) {
+        return new ServerChannelInitializer(protocol, packetDispatcher, exceptionHandler);
     }
 
     @Override

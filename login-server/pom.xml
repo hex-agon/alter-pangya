@@ -15,7 +15,6 @@
         <postgresql.version>42.2.23</postgresql.version>
         <hikari.version>4.0.3</hikari.version>
         <jdbi.version>3.20.1</jdbi.version>
-        <bcrypt.version>0.9.0</bcrypt.version>
     </properties>
 
     <dependencies>
@@ -39,7 +38,6 @@
             <artifactId>guice</artifactId>
             <version>${guice.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
@@ -84,11 +82,6 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
             <version>${jackson.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>at.favre.lib</groupId>
-            <artifactId>bcrypt</artifactId>
-            <version>${bcrypt.version}</version>
         </dependency>
     </dependencies>
 </project>

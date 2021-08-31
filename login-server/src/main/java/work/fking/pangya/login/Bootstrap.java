@@ -21,14 +21,12 @@ public class Bootstrap {
     public static void main(String[] args) {
         LOGGER.info("Bootstrapping the login server...");
         try {
-            LOGGER.debug("Loading the config...");
+            LOGGER.debug("Loading server config...");
             var serverConfig = ServerConfigLoader.load("config.toml");
-            LOGGER.debug("Creating the injector...");
-            Injector injector = Guice.createInjector(Stage.PRODUCTION, RedisModule.create(), DefaultModule.create(serverConfig), new DatabaseModule());
+            Injector injector = Guice.createInjector(Stage.PRODUCTION, RedisModule.create(), DefaultModule.create(serverConfig), DatabaseModule.create());
 
             var scanResult = ProtocolScanner.scan(injector::getInstance);
-
-            LoginServer loginServer = injector.getInstance(LoginServer.class);
+            var loginServer = injector.getInstance(LoginServer.class);
 
             LOGGER.debug("Initializing service discovery...");
             var client = injector.getInstance(DiscoveryClient.class);

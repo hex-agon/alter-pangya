@@ -61,13 +61,13 @@ public class TGAReader {
         var green = buf.readUnsignedByte();
         var red = buf.readUnsignedByte();
         var alpha = buf.readUnsignedByte();
-        return (alpha << 24 | red << 16 | green << 8 | blue);
+        return alpha << 24 | red << 16 | green << 8 | blue;
     }
 
     private static int readRGBPixel(ByteBuf buf) {
         var blue = buf.readUnsignedByte();
         var green = buf.readUnsignedByte();
         var red = buf.readUnsignedByte();
-        return (red << 16 | green << 8 | blue);
+        return red << 16 | green << 8 | blue;
     }
 }

@@ -1,6 +1,7 @@
 package work.fking.pangya.login;
 
 import work.fking.pangya.common.server.ServerConfig;
+import work.fking.pangya.common.server.ServerThread;
 import work.fking.pangya.login.networking.ExceptionHandler;
 import work.fking.pangya.login.networking.ServerChannelInitializer;
 import work.fking.pangya.networking.SimpleServer;
@@ -32,6 +33,11 @@ public class LoginServer {
                                           .port(serverConfig.port())
                                           .build();
 
+        ServerThread.create(this::tick).start();
+
         server.start();
+    }
+
+    private void tick() {
     }
 }

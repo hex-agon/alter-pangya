@@ -37,6 +37,7 @@ public class HandoverReplies {
     }
 
     public static OutboundPacket playerData() {
+        // https://github.com/Acrisio-Filho/SuperSS-Dev/blob/747ac1615c849ed13526415105edd0b4ebd7bc6c/Server%20Lib/Game%20Server/PACKET/packet_func_sv.cpp#L6158
         return buffer -> {
             buffer.writeShortLE(PACKET_ID);
             buffer.writeByte(0);

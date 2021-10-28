@@ -11,7 +11,7 @@ public record PangCharacter(
         int[] stats,
         int masteryPoints,
         int[] cardIffIds
-) implements IffUniqueObject {
+) implements IffObject {
 
     public static PangCharacter mock() {
         return new PangCharacter(

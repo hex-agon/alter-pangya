@@ -6,5 +6,7 @@ public interface IffObject {
 
     int iffId();
 
+    int uniqueId();
+
     void encode(ByteBuf buffer);
 }

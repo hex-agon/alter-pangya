@@ -7,7 +7,7 @@ public record PangCaddie(
         int uniqueId,
         int levelsGained,
         int experience
-) implements IffUniqueObject {
+) implements IffObject {
 
     public static PangCaddie mock() {
         return new PangCaddie(469762083, 83651, 2, 123);

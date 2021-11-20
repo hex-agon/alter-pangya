@@ -7,7 +7,9 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface PacketHandledBy {
+public @interface Packet {
 
-    Class<? extends InboundPacketHandler<? extends InboundPacket>> value();
+    int id();
+
+    Class<? extends InboundPacketHandler<? extends InboundPacket>> handledBy();
 }

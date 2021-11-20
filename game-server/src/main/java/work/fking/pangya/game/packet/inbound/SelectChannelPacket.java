@@ -3,11 +3,9 @@ package work.fking.pangya.game.packet.inbound;
 import io.netty.buffer.ByteBuf;
 import work.fking.pangya.game.packet.handler.SelectChannelPacketHandler;
 import work.fking.pangya.networking.protocol.InboundPacket;
-import work.fking.pangya.networking.protocol.PacketHandledBy;
-import work.fking.pangya.networking.protocol.PacketId;
+import work.fking.pangya.networking.protocol.Packet;
 
-@PacketId(0x4)
-@PacketHandledBy(SelectChannelPacketHandler.class)
+@Packet(id = 0x4, handledBy = SelectChannelPacketHandler.class)
 public record SelectChannelPacket(int channelId) implements InboundPacket {
 
     public static InboundPacket decode(ByteBuf buffer) {

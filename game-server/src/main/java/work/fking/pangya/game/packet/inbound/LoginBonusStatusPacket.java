@@ -3,11 +3,9 @@ package work.fking.pangya.game.packet.inbound;
 import io.netty.buffer.ByteBuf;
 import work.fking.pangya.game.packet.handler.LoginBonusStatusPacketHandler;
 import work.fking.pangya.networking.protocol.InboundPacket;
-import work.fking.pangya.networking.protocol.PacketHandledBy;
-import work.fking.pangya.networking.protocol.PacketId;
+import work.fking.pangya.networking.protocol.Packet;
 
-@PacketId(0x16e)
-@PacketHandledBy(LoginBonusStatusPacketHandler.class)
+@Packet(id = 0x16e, handledBy = LoginBonusStatusPacketHandler.class)
 public record LoginBonusStatusPacket() implements InboundPacket {
 
     private static final LoginBonusStatusPacket INSTANCE = new LoginBonusStatusPacket();

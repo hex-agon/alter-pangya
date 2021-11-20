@@ -3,12 +3,10 @@ package work.fking.pangya.game.packet.inbound;
 import io.netty.buffer.ByteBuf;
 import work.fking.pangya.game.packet.handler.HandoverPacketHandler;
 import work.fking.pangya.networking.protocol.InboundPacket;
-import work.fking.pangya.networking.protocol.PacketHandledBy;
-import work.fking.pangya.networking.protocol.PacketId;
+import work.fking.pangya.networking.protocol.Packet;
 import work.fking.pangya.networking.protocol.ProtocolUtils;
 
-@PacketId(0x2)
-@PacketHandledBy(HandoverPacketHandler.class)
+@Packet(id = 0x2, handledBy = HandoverPacketHandler.class)
 public record HandoverPacket(String username, int userId, String loginKey, String clientVersion, String sessionKey) implements InboundPacket {
 
     public static InboundPacket decode(ByteBuf buffer) {

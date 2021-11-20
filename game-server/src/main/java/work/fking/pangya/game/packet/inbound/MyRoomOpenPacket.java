@@ -3,11 +3,9 @@ package work.fking.pangya.game.packet.inbound;
 import io.netty.buffer.ByteBuf;
 import work.fking.pangya.game.packet.handler.MyRoomOpenPacketHandler;
 import work.fking.pangya.networking.protocol.InboundPacket;
-import work.fking.pangya.networking.protocol.PacketHandledBy;
-import work.fking.pangya.networking.protocol.PacketId;
+import work.fking.pangya.networking.protocol.Packet;
 
-@PacketId(0xb5)
-@PacketHandledBy(MyRoomOpenPacketHandler.class)
+@Packet(id = 0xb5, handledBy = MyRoomOpenPacketHandler.class)
 public record MyRoomOpenPacket() implements InboundPacket {
 
     public static InboundPacket decode(ByteBuf buffer) {

@@ -3,12 +3,10 @@ package work.fking.pangya.game.packet.inbound;
 import io.netty.buffer.ByteBuf;
 import work.fking.pangya.game.packet.handler.CreateRoomPacketHandler;
 import work.fking.pangya.networking.protocol.InboundPacket;
-import work.fking.pangya.networking.protocol.PacketHandledBy;
-import work.fking.pangya.networking.protocol.PacketId;
+import work.fking.pangya.networking.protocol.Packet;
 import work.fking.pangya.networking.protocol.ProtocolUtils;
 
-@PacketId(0x8)
-@PacketHandledBy(CreateRoomPacketHandler.class)
+@Packet(id = 0x8, handledBy = CreateRoomPacketHandler.class)
 public record CreateRoomPacket(
         int shotTime,
         int gameTime,

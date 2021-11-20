@@ -4,14 +4,12 @@ import io.netty.buffer.ByteBuf;
 import work.fking.pangya.game.model.PangCharacter;
 import work.fking.pangya.game.packet.handler.EquipmentUpdatePacketHandler;
 import work.fking.pangya.networking.protocol.InboundPacket;
-import work.fking.pangya.networking.protocol.PacketHandledBy;
-import work.fking.pangya.networking.protocol.PacketId;
+import work.fking.pangya.networking.protocol.Packet;
 import work.fking.pangya.networking.protocol.ProtocolException;
 
 import java.util.Arrays;
 
-@PacketId(0x20)
-@PacketHandledBy(EquipmentUpdatePacketHandler.class)
+@Packet(id = 0x20, handledBy = EquipmentUpdatePacketHandler.class)
 public class EquipmentUpdatePacket implements InboundPacket {
 
     private static final int TYPE_UNKNOWN0 = 0;

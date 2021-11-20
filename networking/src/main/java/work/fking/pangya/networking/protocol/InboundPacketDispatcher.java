@@ -3,6 +3,7 @@ package work.fking.pangya.networking.protocol;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import net.jodah.typetools.TypeResolver;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -51,8 +52,21 @@ public class InboundPacketDispatcher extends SimpleChannelInboundHandler<Inbound
             this.handlerFactory = handlerFactory;
         }
 
-        public Builder handler(Class<? extends InboundPacket> inboundPacketClass, Class<? extends InboundPacketHandler<? extends InboundPacket>> packetHandlerClass) {
-            handlers.put(inboundPacketClass, handlerFactory.create(packetHandlerClass));
+        public Builder register(Class<? extends InboundPacket> inboundPacket) {
+            var packet = inboundPacket.getAnnotation(Packet.class);
+
+            if (packet == null) {
+                LOGGER.warn("InboundPacket class {} is missing the @Packet annotation, skipping registration", inboundPacket.getSimpleName());
+                return this;
+            }
+            var handlerClass = packet.handledBy();
+            var actualPacketType = TypeResolver.resolveRawArgument(InboundPacketHandler.class, handlerClass);
+
+            if (!inboundPacket.equals(actualPacketType)) {
+                LOGGER.warn("Unexpected packet type in handler {}, expected {}, got {}", handlerClass.getSimpleName(), inboundPacket.getSimpleName(), actualPacketType.getSimpleName());
+                return this;
+            }
+            handlers.put(inboundPacket, handlerFactory.create(handlerClass));
             return this;
         }
 

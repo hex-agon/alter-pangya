@@ -12,7 +12,15 @@ import work.fking.pangya.discovery.ServerType;
 import work.fking.pangya.login.module.DatabaseModule;
 import work.fking.pangya.login.module.DefaultModule;
 import work.fking.pangya.login.module.RedisModule;
-import work.fking.pangya.networking.protocol.ProtocolScanner;
+import work.fking.pangya.login.packet.inbound.CheckNicknamePacket;
+import work.fking.pangya.login.packet.inbound.GhostClientPacket;
+import work.fking.pangya.login.packet.inbound.LoginRequestPacket;
+import work.fking.pangya.login.packet.inbound.ReconnectPacket;
+import work.fking.pangya.login.packet.inbound.SelectCharacterPacket;
+import work.fking.pangya.login.packet.inbound.SelectServerPacket;
+import work.fking.pangya.login.packet.inbound.SetNicknamePacket;
+import work.fking.pangya.networking.protocol.InboundPacketDispatcher;
+import work.fking.pangya.networking.protocol.Protocol;
 
 public class Bootstrap {
 
@@ -25,7 +33,26 @@ public class Bootstrap {
             var serverConfig = ServerConfigLoader.load("config.toml");
             Injector injector = Guice.createInjector(Stage.PRODUCTION, RedisModule.create(), DefaultModule.create(serverConfig), DatabaseModule.create());
 
-            var scanResult = ProtocolScanner.scan(injector::getInstance);
+            var protocol = Protocol.builder()
+                                   .register(CheckNicknamePacket.class)
+                                   .register(GhostClientPacket.class)
+                                   .register(LoginRequestPacket.class)
+                                   .register(ReconnectPacket.class)
+                                   .register(SelectCharacterPacket.class)
+                                   .register(SelectServerPacket.class)
+                                   .register(SetNicknamePacket.class)
+                                   .build();
+
+            var dispatcher = InboundPacketDispatcher.builder(injector::getInstance)
+                                                    .register(CheckNicknamePacket.class)
+                                                    .register(GhostClientPacket.class)
+                                                    .register(LoginRequestPacket.class)
+                                                    .register(ReconnectPacket.class)
+                                                    .register(SelectCharacterPacket.class)
+                                                    .register(SelectServerPacket.class)
+                                                    .register(SetNicknamePacket.class)
+                                                    .build();
+
             var loginServer = injector.getInstance(LoginServer.class);
 
             LOGGER.debug("Initializing service discovery...");
@@ -35,7 +62,7 @@ public class Bootstrap {
             heartbeatPublisher.start();
 
             LOGGER.debug("Starting the login server...");
-            loginServer.start(scanResult.protocol(), scanResult.packetDispatcher());
+            loginServer.start(protocol, dispatcher);
         } catch (Exception e) {
             LOGGER.fatal("Failed to bootstrap the server", e);
         }

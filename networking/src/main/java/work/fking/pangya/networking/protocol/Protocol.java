@@ -1,6 +1,8 @@
 package work.fking.pangya.networking.protocol;
 
 import io.netty.buffer.ByteBuf;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
@@ -12,6 +14,8 @@ import java.util.Arrays;
  * A simple class representing a packet based protocol. This class also provides a factory method for the registered packets.
  */
 public final class Protocol {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(Protocol.class);
 
     private static final String FACTORY_METHOD_NAME = "decode";
     private static final MethodType FACTORY_METHOD_TYPE = MethodType.methodType(InboundPacket.class, ByteBuf.class);
@@ -44,14 +48,20 @@ public final class Protocol {
 
         private MethodHandle[] inboundPacketFactories = new MethodHandle[0];
 
-        public <P extends InboundPacket> Builder inboundPacket(int packetId, Class<P> packetClass) {
+        public <P extends InboundPacket> Builder register(Class<P> packetClass) {
+            var packet = packetClass.getAnnotation(Packet.class);
+
+            if (packet == null) {
+                LOGGER.warn("InboundPacket class {} is missing the @Packet annotation, skipping registration", packetClass.getSimpleName());
+                return this;
+            }
             try {
-                if (packetId >= inboundPacketFactories.length) {
-                    inboundPacketFactories = Arrays.copyOf(inboundPacketFactories, packetId + 1);
+                if (packet.id() >= inboundPacketFactories.length) {
+                    inboundPacketFactories = Arrays.copyOf(inboundPacketFactories, packet.id() + 1);
                 }
                 MethodHandle factoryHandle = LOOKUP.findStatic(packetClass, FACTORY_METHOD_NAME, FACTORY_METHOD_TYPE);
 
-                inboundPacketFactories[packetId] = factoryHandle;
+                inboundPacketFactories[packet.id()] = factoryHandle;
             } catch (NoSuchMethodException | IllegalAccessException e) {
                 throw new IllegalArgumentException("The class " + packetClass.getSimpleName() + " does not have static factory method named 'decode' that accepts a ByteBuf", e);
             }

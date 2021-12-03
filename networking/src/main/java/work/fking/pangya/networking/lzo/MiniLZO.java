@@ -1,172 +1,193 @@
 package work.fking.pangya.networking.lzo;
 
-public class MiniLZO {
+import static work.fking.pangya.networking.lzo.LZOState.*;
 
-    private static final int C_0_TOP = 1;
-    private static final int C_0_TRY_MATCH = 2;
-    private static final int C_0_LITERAL = 3;
-    private static final int C_0_MATCH = 4;
-    private static final int C_0_M_3_M_4_LEN = 5;
-    private static final int C_0_M_3_M_4_OFFSET = 6;
-    private static final int C_0_LAST = 7;
+public final class MiniLZO {
 
     private MiniLZO() {
     }
 
-    private static int _lzo1x_1_do_compress(byte[] in, int inLength, byte[] out, MInt outLength, int[] dict) {
-        int ip;
-        int in_base = 0;
-        int out_base = 0;
-        int op;
-        int in_end = in_base + inLength;
-        int ip_end = in_base + inLength - 8 - 5;
-        int ii = 0;
-        int state = C_0_TOP;
-        op = out_base;
-        ip = in_base;
+    private static int lzo1x_compress(byte[] input, int inLength, byte[] out, CompressionState state, int[] dict) {
+        state.inputPos = 4;
+        state.lzoState = TOP;
 
-        ip += 4;
-        int m_pos = in_base;
-        int m_off = in_base;
-        int m_len = 0;
-        int dindex = 0;
-
-        loop0:
-        while (true) {
-            switch (state) {
-                case C_0_TOP:
-                    dindex = 0x21 * (((in[ip + 1 + 2 + 1] & 0xff) << 6 ^ (in[ip + 1 + 1 + 1] & 0xff) << 5 ^ (in[ip + 1] & 0xff) << 5 ^ in[ip] & 0xff) >> 5) & (1 << 14) - 1;
-                    m_pos = dict[dindex];
-                    m_pos = ip - (ip - m_pos);
-                    if (m_pos <= in_base || (m_off = ip - m_pos) <= 0 || m_off > 0xbfff) {
-                        state = C_0_LITERAL;
-                        continue loop0;
-                    }
-                    if (m_off <= 0x0800 || in[m_pos + 3] == in[ip + 3]) {
-                        state = C_0_TRY_MATCH;
-                        continue loop0;
-                    }
-                    dindex = dindex & (1 << 14) - 1 & 0x7ff ^ (((1 << 14) - 1 >> 1) + 1 | 0x1f);
-
-                    m_pos = dict[dindex];
-                    if (m_pos < in_base || (m_off = ip - m_pos) <= 0 || m_off > 0xbfff) {
-                        state = C_0_LITERAL;
-                        continue loop0;
-                    }
-                    if (m_off <= 0x0800 || in[m_pos + 3] == in[ip + 3]) {
-                        state = C_0_TRY_MATCH;
-                        continue loop0;
-                    }
-                    state = C_0_LITERAL;
-                    continue loop0;
-
-                case C_0_TRY_MATCH:
-                    if (in[m_pos] == in[ip] && in[m_pos + 1] == in[ip + 1]) {
-                        if (in[m_pos + 2] == in[ip + 2]) {
-                            state = C_0_MATCH;
-                            continue loop0;
-                        }
-                    }
-
-                case C_0_LITERAL:
-                    dict[dindex] = ip;
-                    ip++;
-                    if (ip >= ip_end) {
-                        break loop0;
-                    }
-                    state = C_0_TOP;
-                    continue loop0;
-
-                case C_0_MATCH:
-                    dict[dindex] = ip;
-                    if ((ip - ii) > 0) {
-                        int t = ip - ii;
-
-                        op = getOp(out, op, t);
-                        do {
-                            out[op++] = in[ii++];
-                        } while (--t > 0);
-                    }
-
-                    ip += 3;
-                    if (in[m_pos + 3] != in[ip++] || in[m_pos + 4] != in[ip++] || in[m_pos + 5] != in[ip++] || in[m_pos + 6] != in[ip++] || in[m_pos + 7] != in[ip++] || in[m_pos + 8] != in[ip++]) {
-                        --ip;
-                        m_len = ip - ii;
-
-                        if (m_off <= 0x0800) {
-                            m_off -= 1;
-
-                            out[op++] = (byte) (((m_len - 1) << 5) | ((m_off & 7) << 2));
-                            out[op++] = (byte) (m_off >> 3);
-                        } else if (m_off <= 0x4000) {
-                            m_off -= 1;
-                            out[op++] = (byte) (32 | (m_len - 2));
-                            state = C_0_M_3_M_4_OFFSET;
-                            continue loop0;
-                        } else {
-                            m_off -= 0x4000;
-                            out[op++] = (byte) (16 | ((m_off & 0x4000) >> 11) | (m_len - 2));
-                            state = C_0_M_3_M_4_OFFSET;
-                            continue loop0;
-                        }
-                    } else {
-                        int m = m_pos + 8 + 1;
-                        while (ip < in_end && in[m] == in[ip]) {
-                            m++;
-                            ip++;
-                        }
-                        m_len = ip - ii;
-
-                        if (m_off <= 0x4000) {
-                            m_off -= 1;
-                            if (m_len <= 33) {
-                                out[op++] = (byte) (32 | (m_len - 2));
-                            } else {
-                                m_len -= 33;
-                                out[op++] = 32;
-                                state = C_0_M_3_M_4_LEN;
-                                continue loop0;
-                            }
-                        } else {
-                            m_off -= 0x4000;
-                            if (m_len <= 9) {
-                                out[op++] = (byte) (16 | ((m_off & 0x4000) >> 11) | (m_len - 2));
-                            } else {
-                                m_len -= 9;
-                                out[op++] = (byte) (16 | ((m_off & 0x4000) >> 11));
-                                while (m_len > 255) {
-                                    m_len -= 255;
-                                    out[op++] = 0;
-                                }
-                                out[op++] = (byte) m_len;
-                            }
-                        }
-                        out[op++] = (byte) ((m_off & 63) << 2);
-                        out[op++] = (byte) (m_off >> 6);
-                    }
-                    state = C_0_LAST;
-                    continue loop0;
-                case C_0_M_3_M_4_LEN:
-                    while (m_len > 255) {
-                        m_len -= 255;
-                        out[op++] = 0;
-                    }
-                    out[op++] = (byte) m_len;
-
-                case C_0_M_3_M_4_OFFSET:
-                    out[op++] = (byte) ((m_off & 63) << 2);
-                    out[op++] = (byte) (m_off >> 6);
-                case C_0_LAST:
-                    ii = ip;
-                    if (ip >= ip_end) {
-                        break loop0;
-                    }
-                    state = C_0_TOP;
+        while (state.lzoState != DONE) {
+            switch (state.lzoState) {
+                case TOP -> handleTop(input, state, dict);
+                case TRY_MATCH -> handleTryMatch(input, state);
+                case LITERAL -> handleLiteral(inLength, state, dict);
+                case MATCH -> handleMatch(input, inLength, out, state, dict);
+                case M3_M4_LEN -> handleM3M4Len(out, state);
+                case M3_M4_OFFSET -> handleM3M4Offset(out, state);
+                case LAST -> handleLast(inLength, state);
             }
         }
+        state.size = state.pos;
+        return inLength - state.ii;
+    }
 
-        outLength.v = op - out_base;
-        return in_end - ii;
+    private static void handleTop(byte[] input, CompressionState state, int[] dict) {
+        state.dictIdx = 0x21 * (
+                ((input[state.inputPos + 4] & 0xff) << 6
+                        ^ (input[state.inputPos + 3] & 0xff) << 5
+                        ^ (input[state.inputPos + 1] & 0xff) << 5
+                        ^ input[state.inputPos] & 0xff
+                ) >> 5
+        ) & 0x3fff;
+        state.m_pos = dict[state.dictIdx];
+        state.m_pos = state.inputPos - (state.inputPos - state.m_pos);
+        if (state.m_pos <= 0 || (state.m_off = state.inputPos - state.m_pos) <= 0 || state.m_off > 0xbfff) {
+            state.lzoState = LITERAL;
+            return;
+        }
+        if (state.m_off <= 0x0800 || input[state.m_pos + 3] == input[state.inputPos + 3]) {
+            state.lzoState = TRY_MATCH;
+            return;
+        }
+        state.dictIdx = state.dictIdx & 0x7ff ^ 0x201f;
+
+        state.m_pos = dict[state.dictIdx];
+        if (state.m_pos < 0 || (state.m_off = state.inputPos - state.m_pos) <= 0 || state.m_off > 0xbfff) {
+            state.lzoState = LITERAL;
+            return;
+        }
+        if (state.m_off <= 0x0800 || input[state.m_pos + 3] == input[state.inputPos + 3]) {
+            state.lzoState = TRY_MATCH;
+            return;
+        }
+        state.lzoState = LITERAL;
+    }
+
+    private static void handleTryMatch(byte[] input, CompressionState state) {
+        if (input[state.m_pos] == input[state.inputPos] && input[state.m_pos + 1] == input[state.inputPos + 1]) {
+            if (input[state.m_pos + 2] == input[state.inputPos + 2]) {
+                state.lzoState = MATCH;
+                return;
+            }
+        }
+        state.lzoState = LITERAL;
+    }
+
+    private static void handleLiteral(int inLength, CompressionState state, int[] dict) {
+        dict[state.dictIdx] = state.inputPos;
+        state.inputPos++;
+        if (state.inputPos >= inLength - 8 - 5) {
+            state.lzoState = DONE;
+            return;
+        }
+        state.lzoState = TOP;
+    }
+
+    private static void handleMatch(byte[] input, int inLength, byte[] out, CompressionState state, int[] dict) {
+        dict[state.dictIdx] = state.inputPos;
+        if ((state.inputPos - state.ii) > 0) {
+            int value = state.inputPos - state.ii;
+
+            if (value <= 3) {
+                out[state.pos - 2] |= (byte) value;
+            } else if (value <= 18) {
+                out[state.pos++] = (byte) (value - 3);
+            } else {
+                int tt = value - 18;
+                out[state.pos++] = 0;
+                while (tt > 255) {
+                    tt -= 255;
+                    out[state.pos++] = 0;
+                }
+                out[state.pos++] = (byte) tt;
+            }
+            do {
+                out[state.pos++] = input[state.ii++];
+            } while (--value > 0);
+        }
+
+        state.inputPos += 3;
+        if (input[state.m_pos + 3] != input[state.inputPos++]
+                || input[state.m_pos + 4] != input[state.inputPos++]
+                || input[state.m_pos + 5] != input[state.inputPos++]
+                || input[state.m_pos + 6] != input[state.inputPos++]
+                || input[state.m_pos + 7] != input[state.inputPos++]
+                || input[state.m_pos + 8] != input[state.inputPos++]
+        ) {
+            --state.inputPos;
+            state.m_len = state.inputPos - state.ii;
+
+            if (state.m_off <= 0x0800) {
+                state.m_off -= 1;
+
+                out[state.pos++] = (byte) (state.m_len - 1 << 5 | (state.m_off & 7) << 2);
+                out[state.pos++] = (byte) (state.m_off >> 3);
+            } else if (state.m_off <= 0x4000) {
+                state.m_off -= 1;
+                out[state.pos++] = (byte) (32 | state.m_len - 2);
+                state.lzoState = M3_M4_OFFSET;
+                return;
+            } else {
+                state.m_off -= 0x4000;
+                out[state.pos++] = (byte) (16 | (state.m_off & 0x4000) >> 11 | state.m_len - 2);
+                state.lzoState = M3_M4_OFFSET;
+                return;
+            }
+        } else {
+            int m = state.m_pos + 8 + 1;
+            while (state.inputPos < inLength && input[m] == input[state.inputPos]) {
+                m++;
+                state.inputPos++;
+            }
+            state.m_len = state.inputPos - state.ii;
+
+            if (state.m_off <= 0x4000) {
+                state.m_off -= 1;
+                if (state.m_len <= 33) {
+                    out[state.pos++] = (byte) (32 | state.m_len - 2);
+                } else {
+                    state.m_len -= 33;
+                    out[state.pos++] = 32;
+                    state.lzoState = M3_M4_LEN;
+                    return;
+                }
+            } else {
+                state.m_off -= 0x4000;
+                if (state.m_len <= 9) {
+                    out[state.pos++] = (byte) (16 | (state.m_off & 0x4000) >> 11 | state.m_len - 2);
+                } else {
+                    state.m_len -= 9;
+                    out[state.pos++] = (byte) (16 | (state.m_off & 0x4000) >> 11);
+                    while (state.m_len > 255) {
+                        state.m_len -= 255;
+                        out[state.pos++] = 0;
+                    }
+                    out[state.pos++] = (byte) state.m_len;
+                }
+            }
+            out[state.pos++] = (byte) ((state.m_off & 63) << 2);
+            out[state.pos++] = (byte) (state.m_off >> 6);
+        }
+        state.lzoState = LAST;
+    }
+
+    private static void handleM3M4Len(byte[] out, CompressionState state) {
+        while (state.m_len > 255) {
+            state.m_len -= 255;
+            out[state.pos++] = 0;
+        }
+        out[state.pos++] = (byte) state.m_len;
+        state.lzoState = M3_M4_OFFSET;
+    }
+
+    private static void handleM3M4Offset(byte[] out, CompressionState state) {
+        out[state.pos++] = (byte) ((state.m_off & 63) << 2);
+        out[state.pos++] = (byte) (state.m_off >> 6);
+        state.lzoState = LAST;
+    }
+
+    private static void handleLast(int inLength, CompressionState state) {
+        state.ii = state.inputPos;
+        if (state.inputPos >= inLength - 8 - 5) {
+            state.lzoState = DONE;
+            return;
+        }
+        state.lzoState = TOP;
     }
 
     /**
@@ -175,59 +196,69 @@ public class MiniLZO {
      * dictionary (so that user can reuse the same over multiple calls. Ensure
      * to zero out the dict contents).
      *
-     * @param in        Input byte array to be compressed
-     * @param inLength  Input length
-     * @param out       compressed output byte array. Ensure out_len =  (in_len + in_len / 16 + 64 + 3)
-     * @param outLength Compressed data length
-     * @param dict      Dictionary array. Zero out before reuse.
+     * @param in       Input byte array to be compressed
+     * @param inLength Input length
+     * @param out      compressed output byte array. Ensure out_len =  (in_len + in_len / 16 + 64 + 3)
+     * @param dict     Dictionary array. Zero out before reuse.
+     * @return
      */
-    public static void lzo1x_1_compress(byte[] in, int inLength, byte[] out, MInt outLength, int[] dict) {
-        int in_base = 0;
-        int out_base = 0;
-        int op = 0;
+    public static int lzo1x_compress(byte[] in, int inLength, byte[] out, int[] dict) {
+        int inOffset = 0;
+        int pos = 0;
         int t;
 
-        if (inLength <= 8 + 5) {
+        if (inLength <= 13) {
             t = inLength;
         } else {
-            t = _lzo1x_1_do_compress(in, inLength, out, outLength, dict);
-            op += outLength.v;
+            var compressionState = new CompressionState();
+            t = lzo1x_compress(in, inLength, out, compressionState, dict);
+            pos += compressionState.size;
         }
 
         if (t > 0) {
-            int ii = in_base + inLength - t;
+            int ii = inOffset + inLength - t;
 
-            if (op == out_base && t <= 238) {
-                out[op++] = (byte) (17 + t);
+            if (pos == 0 && t <= 238) {
+                out[pos++] = (byte) (t + 17);
             } else {
-                op = getOp(out, op, t);
+                if (t <= 3) {
+                    out[pos - 2] |= (byte) t;
+                } else if (t <= 18) {
+                    out[pos++] = (byte) (t - 3);
+                } else {
+                    int tt = t - 18;
+                    out[pos++] = 0;
+                    while (tt > 255) {
+                        tt -= 255;
+                        out[pos++] = 0;
+                    }
+                    out[pos++] = (byte) tt;
+                }
             }
-            do {
-                out[op++] = in[ii++];
-            } while (--t > 0);
+            out[pos++] = in[ii++];
+
+            while (--t > 0) {
+                out[pos++] = in[ii++];
+            }
         }
 
-        out[op++] = (byte) (16 | 1);
-        out[op++] = 0;
-        out[op++] = 0;
+        out[pos++] = (byte) 17;
+        out[pos++] = 0;
+        out[pos++] = 0;
 
-        outLength.v = op - out_base;
+        return pos;
     }
 
-    private static int getOp(byte[] out, int op, int t) {
-        if (t <= 3) {
-            out[op - 2] |= (byte) t;
-        } else if (t <= 18) {
-            out[op++] = (byte) (t - 3);
-        } else {
-            int tt = t - 18;
-            out[op++] = 0;
-            while (tt > 255) {
-                tt -= 255;
-                out[op++] = 0;
-            }
-            out[op++] = (byte) tt;
-        }
-        return op;
+    private static class CompressionState {
+
+        private LZOState lzoState;
+        private int dictIdx;
+        private int inputPos;
+        private int pos;
+        private int ii;
+        private int m_pos;
+        private int m_off;
+        private int m_len;
+        private int size;
     }
 }

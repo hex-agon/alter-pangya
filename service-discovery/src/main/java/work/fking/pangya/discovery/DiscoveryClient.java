@@ -11,8 +11,8 @@ import io.lettuce.core.pubsub.api.sync.RedisPubSubCommands;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -101,7 +101,7 @@ public class DiscoveryClient {
     private void register(ServerInfo info) {
         var knownServer = new KnownServer(LocalDateTime.now(), info);
         synchronized (knownServers) {
-            var idx = findKnownServerIndex(info.id());
+            var idx = indexByServerId(info.id());
 
             if (idx == -1) {
                 LOGGER.trace("New server discovered, {} @ {}:{}", info.name(), info.ip(), info.port());
@@ -113,7 +113,7 @@ public class DiscoveryClient {
         }
     }
 
-    private int findKnownServerIndex(int serverId) {
+    private int indexByServerId(int serverId) {
         for (int i = 0; i < knownServers.size(); i++) {
             if (knownServers.get(i).info().id() == serverId) {
                 return i;
@@ -131,7 +131,7 @@ public class DiscoveryClient {
             while (iterator.hasNext()) {
                 KnownServer server = iterator.next();
 
-                if (Duration.between(server.knownSince(), now).toMinutes() > KNOWN_SERVER_HEARTBEAT_AGE_MINUTES) {
+                if (ChronoUnit.MINUTES.between(server.knownSince(), now) > KNOWN_SERVER_HEARTBEAT_AGE_MINUTES) {
                     var info = server.info();
                     LOGGER.debug("No new heartbeats received from server {} @ {}:{}, removing it.", info.name(), info.ip(), info.port());
                     iterator.remove();
@@ -140,7 +140,7 @@ public class DiscoveryClient {
         }
     }
 
-    private static record KnownServer(
+    private record KnownServer(
             LocalDateTime knownSince,
             ServerInfo info
     ) {

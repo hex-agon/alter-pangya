@@ -76,7 +76,7 @@ public class HeartbeatPublisher {
         }
     }
 
-    private static record StaticInfo(
+    private record StaticInfo(
             ServerType type,
             int id,
             String name,

@@ -9,7 +9,6 @@ import work.fking.pangya.common.server.ServerConfigLoader;
 import work.fking.pangya.discovery.DiscoveryClient;
 import work.fking.pangya.discovery.HeartbeatPublisher;
 import work.fking.pangya.discovery.ServerType;
-import work.fking.pangya.login.module.DatabaseModule;
 import work.fking.pangya.login.module.DefaultModule;
 import work.fking.pangya.login.module.RedisModule;
 import work.fking.pangya.login.packet.inbound.CheckNicknamePacket;
@@ -31,7 +30,7 @@ public class Bootstrap {
         try {
             LOGGER.debug("Loading server config...");
             var serverConfig = ServerConfigLoader.load("config.toml");
-            Injector injector = Guice.createInjector(Stage.PRODUCTION, RedisModule.create(), DefaultModule.create(serverConfig), DatabaseModule.create());
+            Injector injector = Guice.createInjector(Stage.PRODUCTION, RedisModule.create(), DefaultModule.create(serverConfig));
 
             var protocol = Protocol.builder()
                                    .register(CheckNicknamePacket.class)

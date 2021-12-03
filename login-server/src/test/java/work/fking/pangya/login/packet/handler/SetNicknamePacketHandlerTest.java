@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import work.fking.pangya.login.networking.ConnectionState;
-import work.fking.pangya.login.packet.inbound.CheckNicknamePacket;
+import work.fking.pangya.login.packet.inbound.SetNicknamePacket;
 import work.fking.pangya.test.PacketHandlerTestUtils;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -31,24 +31,21 @@ public class SetNicknamePacketHandlerTest {
     }
 
     @Test
-    @DisplayName("Should disconnect if the state is invalid")
+    @DisplayName("Should disconnect on invalid state")
     public void test_invalid_state() {
-        var packet = new CheckNicknamePacket("testnick");
+        var packet = new SetNicknamePacket("testnick");
         channel.writeInbound(packet);
 
         assertFalse(channel.isActive());
     }
 
     @Test
-    @DisplayName("Should not disconnect and should return a response")
+    @DisplayName("Should not disconnect on valid state")
     public void test_valid_state() {
-        channel.attr(ConnectionState.KEY).set(ConnectionState.SELECTING_NICKNAME);
-        var packet = new CheckNicknamePacket("testnick");
+        channel.attr(ConnectionState.KEY).set(ConnectionState.SELECTED_NICKNAME);
+        var packet = new SetNicknamePacket("testnick");
         channel.writeInbound(packet);
 
-        var outboundPacket = channel.readOutbound();
-
         assertTrue(channel.isActive());
-        assertNotNull(outboundPacket);
     }
 }

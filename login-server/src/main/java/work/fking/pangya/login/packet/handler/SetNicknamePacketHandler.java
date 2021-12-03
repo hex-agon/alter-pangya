@@ -3,7 +3,7 @@ package work.fking.pangya.login.packet.handler;
 import io.netty.channel.Channel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import work.fking.pangya.login.model.ConnectionState;
+import work.fking.pangya.login.networking.ConnectionState;
 import work.fking.pangya.login.packet.inbound.SetNicknamePacket;
 import work.fking.pangya.networking.protocol.InboundPacketHandler;
 

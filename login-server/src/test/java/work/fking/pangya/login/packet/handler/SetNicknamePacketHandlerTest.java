@@ -7,7 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
-import work.fking.pangya.login.model.ConnectionState;
+import work.fking.pangya.login.networking.ConnectionState;
 import work.fking.pangya.login.packet.inbound.CheckNicknamePacket;
 import work.fking.pangya.test.PacketHandlerTestUtils;
 

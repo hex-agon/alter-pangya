@@ -9,8 +9,7 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import work.fking.pangya.discovery.DiscoveryClient;
 import work.fking.pangya.discovery.ServerType;
-import work.fking.pangya.login.model.ConnectionState;
-import work.fking.pangya.login.packet.inbound.CheckNicknamePacket;
+import work.fking.pangya.login.networking.ConnectionState;
 import work.fking.pangya.login.packet.inbound.LoginRequestPacket;
 import work.fking.pangya.test.PacketHandlerTestUtils;
 

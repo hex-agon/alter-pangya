@@ -5,7 +5,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import work.fking.pangya.discovery.DiscoveryClient;
 import work.fking.pangya.discovery.ServerType;
-import work.fking.pangya.login.model.ConnectionState;
+import work.fking.pangya.login.networking.ConnectionState;
 import work.fking.pangya.login.packet.inbound.LoginRequestPacket;
 import work.fking.pangya.login.packet.outbound.LoginReplies;
 import work.fking.pangya.login.packet.outbound.ServerListReplies;

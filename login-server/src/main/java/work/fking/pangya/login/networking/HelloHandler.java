@@ -7,7 +7,6 @@ import io.netty.channel.ChannelPipeline;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import work.fking.pangya.common.Rand;
-import work.fking.pangya.login.model.ConnectionState;
 import work.fking.pangya.login.packet.outbound.HelloPacket;
 import work.fking.pangya.networking.crypt.PangCrypt;
 import work.fking.pangya.networking.protocol.InboundPacketDispatcher;

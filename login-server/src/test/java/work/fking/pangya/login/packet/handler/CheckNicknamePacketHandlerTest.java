@@ -2,13 +2,12 @@ package work.fking.pangya.login.packet.handler;
 
 import io.netty.channel.embedded.EmbeddedChannel;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
-import work.fking.pangya.login.model.ConnectionState;
+import work.fking.pangya.login.networking.ConnectionState;
 import work.fking.pangya.login.packet.inbound.CheckNicknamePacket;
 import work.fking.pangya.test.PacketHandlerTestUtils;
 

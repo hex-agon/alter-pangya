@@ -2,7 +2,7 @@
 <Configuration status="warn">
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="%d{yyyy/MM/dd HH:mm:ss.SSS} %-5level [%logger{4}] - %msg%n"/>
+            <PatternLayout disableAnsi="false" pattern="%cyan{%d{yyyy/MM/dd HH:mm:ss.SSS}}  %highlight{%-5level}{STYLE=Logback} %green{[%t]} %magenta{[%logger{2}]} - %msg%n"/>
         </Console>
     </Appenders>
     <Loggers>

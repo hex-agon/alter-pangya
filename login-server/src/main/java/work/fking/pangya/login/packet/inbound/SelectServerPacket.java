@@ -1,7 +1,6 @@
 package work.fking.pangya.login.packet.inbound;
 
 import io.netty.buffer.ByteBuf;
-import work.fking.pangya.login.packet.handler.SelectCharacterPacketHandler;
 import work.fking.pangya.login.packet.handler.SelectServerPacketHandler;
 import work.fking.pangya.networking.protocol.InboundPacket;
 import work.fking.pangya.networking.protocol.Packet;

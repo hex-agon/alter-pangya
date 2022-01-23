@@ -10,7 +10,6 @@ import work.fking.pangya.discovery.HeartbeatPublisher;
 import work.fking.pangya.discovery.ServerType;
 import work.fking.pangya.game.module.DefaultModule;
 import work.fking.pangya.game.module.RedisModule;
-import work.fking.pangya.game.packet.inbound.CreateRoomPacket;
 import work.fking.pangya.game.packet.inbound.EquipmentUpdatePacket;
 import work.fking.pangya.game.packet.inbound.HandoverPacket;
 import work.fking.pangya.game.packet.inbound.LockerInventoryRequestPacket;
@@ -24,6 +23,8 @@ import work.fking.pangya.game.packet.inbound.Unknown156Packet;
 import work.fking.pangya.game.packet.inbound.Unknown320Packet;
 import work.fking.pangya.game.packet.inbound.UpdateChatMacrosPacket;
 import work.fking.pangya.game.packet.inbound.UserProfileRequestPacket;
+import work.fking.pangya.game.packet.inbound.room.CreateRoomPacket;
+import work.fking.pangya.game.packet.inbound.room.LeaveRoomPacket;
 import work.fking.pangya.networking.protocol.InboundPacketDispatcher;
 import work.fking.pangya.networking.protocol.Protocol;
 
@@ -40,6 +41,7 @@ public class Bootstrap {
 
             var protocol = Protocol.builder()
                                    .register(CreateRoomPacket.class)
+                                   .register(LeaveRoomPacket.class)
                                    .register(EquipmentUpdatePacket.class)
                                    .register(HandoverPacket.class)
                                    .register(LockerInventoryRequestPacket.class)
@@ -56,6 +58,7 @@ public class Bootstrap {
                                    .build();
             var packetDispatcher = InboundPacketDispatcher.builder(injector::getInstance)
                                                           .register(CreateRoomPacket.class)
+                                                          .register(LeaveRoomPacket.class)
                                                           .register(EquipmentUpdatePacket.class)
                                                           .register(HandoverPacket.class)
                                                           .register(LockerInventoryRequestPacket.class)

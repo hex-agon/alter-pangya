@@ -33,7 +33,7 @@ public class HelloHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
-        int cryptKey = Rand.withMax(PangCrypt.CRYPT_KEY_MAX);
+        int cryptKey = Rand.maxInclusive(PangCrypt.CRYPT_KEY_MAX);
         LOGGER.debug("New connection from {}, selected cryptKey={}", ctx.channel().remoteAddress(), cryptKey);
         ctx.writeAndFlush(HelloPacket.create(cryptKey));
         reorderPipeline(ctx.pipeline(), cryptKey);

@@ -30,10 +30,20 @@ public final class Rand {
     /**
      * Returns a value between zero and the given max value.
      *
+     * @param maximum The maximum value, exclusive.
+     * @return A value between zero and the max value.
+     */
+    public static int max(int maximum) {
+        return between(0, maximum - 1);
+    }
+
+    /**
+     * Returns a value between zero and the given max value.
+     *
      * @param maximum The maximum value, inclusive.
      * @return A value between zero and the max value.
      */
-    public static int withMax(int maximum) {
+    public static int maxInclusive(int maximum) {
         return between(0, maximum);
     }
 

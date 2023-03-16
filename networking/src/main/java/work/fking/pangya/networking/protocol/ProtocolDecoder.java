@@ -28,19 +28,6 @@ public class ProtocolDecoder extends ByteToMessageDecoder {
 
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf buffer, List<Object> out) {
-        buffer.markReaderIndex();
-        buffer.skipBytes(1); // skips the first salt byte
-        int payloadSize = buffer.readShortLE();
-        buffer.skipBytes(1); // skips the fourth unknown byte
-
-        int readableBytes = buffer.readableBytes();
-
-        if (readableBytes < payloadSize) {
-            LOGGER.trace("Insufficient amount of bytes, readable={}, needed={}", readableBytes, payloadSize);
-            buffer.resetReaderIndex();
-            return;
-        }
-        buffer.resetReaderIndex();
         PangCrypt.decrypt(buffer, cryptKey);
 
         int packetId = buffer.readShortLE();
@@ -50,8 +37,8 @@ public class ProtocolDecoder extends ByteToMessageDecoder {
             InboundPacket inboundPacket = protocol.createInboundPacket(packetId, buffer);
 
             if (inboundPacket == null) {
-                LOGGER.warn("Unknown packetId=0x{}, size={}", Integer.toHexString(packetId), payloadSize);
-                LOGGER.warn("\n{}", ByteBufUtil.prettyHexDump(buffer, 0, payloadSize));
+                LOGGER.warn("Unknown packetId=0x{}", Integer.toHexString(packetId));
+                LOGGER.warn("\n{}", ByteBufUtil.prettyHexDump(buffer));
                 buffer.clear();
                 ctx.disconnect();
                 return;

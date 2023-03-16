@@ -24,13 +24,13 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.release>17</java.release>
-        <jackson.version>2.13.0</jackson.version>
-        <guice.version>5.0.1</guice.version>
-        <netty.version>4.1.70.Final</netty.version>
-        <slf4j.version>1.7.32</slf4j.version>
-        <log4j2.version>2.17.1</log4j2.version>
-        <junit.version>5.7.2</junit.version>
-        <mockito.version>3.12.4</mockito.version>
+        <jackson.version>2.14.2</jackson.version>
+        <guice.version>5.1.0</guice.version>
+        <netty.version>4.1.90.Final</netty.version>
+        <slf4j.version>2.0.5</slf4j.version>
+        <log4j2.version>2.20.0</log4j2.version>
+        <junit.version>5.9.2</junit.version>
+        <mockito.version>5.2.0</mockito.version>
     </properties>
 
     <dependencies>
@@ -41,7 +41,7 @@
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-slf4j-impl</artifactId>
+            <artifactId>log4j-slf4j2-impl</artifactId>
             <version>${log4j2.version}</version>
         </dependency>
         <dependency>
@@ -91,7 +91,7 @@
                     <dependency>
                         <groupId>com.puppycrawl.tools</groupId>
                         <artifactId>checkstyle</artifactId>
-                        <version>8.45.1</version>
+                        <version>10.8.1</version>
                     </dependency>
                 </dependencies>
                 <configuration>

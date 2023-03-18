@@ -1,14 +1,15 @@
 package work.fking.pangya.game.packet.handler;
 
-import io.netty.channel.Channel;
-import work.fking.pangya.game.packet.inbound.LoginBonusStatusPacket;
+import io.netty.buffer.ByteBuf;
+import work.fking.pangya.game.net.ClientGamePacketHandler;
+import work.fking.pangya.game.GameServer;
+import work.fking.pangya.game.Player;
 import work.fking.pangya.game.packet.outbound.LoginBonusReplyPacket;
-import work.fking.pangya.networking.protocol.InboundPacketHandler;
 
-public class LoginBonusStatusPacketHandler implements InboundPacketHandler<LoginBonusStatusPacket> {
+public class LoginBonusStatusPacketHandler implements ClientGamePacketHandler {
 
     @Override
-    public void handle(Channel channel, LoginBonusStatusPacket packet) {
-        channel.writeAndFlush(new LoginBonusReplyPacket());
+    public void handle(GameServer server, Player player, ByteBuf packet) {
+        player.channel().writeAndFlush(new LoginBonusReplyPacket());
     }
 }

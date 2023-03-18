@@ -2,9 +2,9 @@ package work.fking.pangya.discovery;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import work.fking.pangya.common.model.server.ServerBoost;
-import work.fking.pangya.common.model.server.ServerFlag;
-import work.fking.pangya.common.model.server.ServerIcon;
+import work.fking.pangya.common.server.ServerBoost;
+import work.fking.pangya.common.server.ServerFlag;
+import work.fking.pangya.common.server.ServerIcon;
 import work.fking.pangya.common.server.ServerConfig;
 
 import java.util.List;

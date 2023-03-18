@@ -1,23 +1,21 @@
 package work.fking.pangya.login.packet.handler;
 
-import io.netty.channel.Channel;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import work.fking.pangya.login.packet.inbound.ReconnectPacket;
+import io.netty.buffer.ByteBuf;
+import work.fking.pangya.login.LoginServer;
+import work.fking.pangya.login.Player;
+import work.fking.pangya.login.net.ClientLoginPacketHandler;
 import work.fking.pangya.login.packet.outbound.LoginReplies;
 import work.fking.pangya.login.packet.outbound.LoginReplies.Error;
-import work.fking.pangya.networking.protocol.InboundPacketHandler;
+import work.fking.pangya.networking.protocol.ProtocolUtils;
 
-import javax.inject.Singleton;
-
-@Singleton
-public class ReconnectPacketHandler implements InboundPacketHandler<ReconnectPacket> {
-
-    private static final Logger LOGGER = LogManager.getLogger(ReconnectPacketHandler.class);
+public class ReconnectPacketHandler implements ClientLoginPacketHandler {
 
     @Override
-    public void handle(Channel channel, ReconnectPacket packet) {
-        LOGGER.debug(packet);
-        channel.writeAndFlush(LoginReplies.error(Error.INVALID_ID_PW));
+    public void handle(LoginServer server, Player player, ByteBuf packet) {
+        String username = ProtocolUtils.readPString(packet);
+        int userId = packet.readIntLE();
+        String loginKey = ProtocolUtils.readPString(packet);
+
+        player.channel().writeAndFlush(LoginReplies.error(Error.INVALID_ID_PW));
     }
 }

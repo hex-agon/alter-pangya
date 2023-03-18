@@ -1,14 +1,15 @@
 package work.fking.pangya.game.packet.handler;
 
-import io.netty.channel.Channel;
-import work.fking.pangya.game.packet.inbound.RareShopOpenPacket;
+import io.netty.buffer.ByteBuf;
+import work.fking.pangya.game.net.ClientGamePacketHandler;
+import work.fking.pangya.game.GameServer;
+import work.fking.pangya.game.Player;
 import work.fking.pangya.game.packet.outbound.RareShopOpenResponsePacket;
-import work.fking.pangya.networking.protocol.InboundPacketHandler;
 
-public class RareShopOpenPacketHandler implements InboundPacketHandler<RareShopOpenPacket> {
+public class RareShopOpenPacketHandler implements ClientGamePacketHandler {
 
     @Override
-    public void handle(Channel channel, RareShopOpenPacket packet) {
-        channel.writeAndFlush(new RareShopOpenResponsePacket());
+    public void handle(GameServer server, Player player, ByteBuf packet) {
+        player.channel().writeAndFlush(new RareShopOpenResponsePacket());
     }
 }

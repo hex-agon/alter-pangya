@@ -1,8 +1,6 @@
 package work.fking.pangya.login.packet.outbound;
 
 import io.netty.buffer.ByteBuf;
-import work.fking.pangya.common.model.server.ServerBoost;
-import work.fking.pangya.common.model.server.ServerFlag;
 import work.fking.pangya.discovery.ServerInfo;
 import work.fking.pangya.networking.protocol.OutboundPacket;
 import work.fking.pangya.networking.protocol.ProtocolUtils;
@@ -19,7 +17,7 @@ public class ServerListReplies {
             buffer.writeShortLE(GAME_SERVERS_PACKET_ID);
             buffer.writeByte(gameServers.size());
 
-            for (ServerInfo server : gameServers) {
+            for (var server : gameServers) {
                 encodeServerInfo(buffer, server);
             }
         };
@@ -30,7 +28,7 @@ public class ServerListReplies {
             buffer.writeShortLE(SOCIAL_SERVERS_PACKET_ID);
             buffer.writeByte(socialServers.size());
 
-            for (ServerInfo server : socialServers) {
+            for (var server : socialServers) {
                 encodeServerInfo(buffer, server);
             }
         };
@@ -39,11 +37,11 @@ public class ServerListReplies {
     private static void encodeServerInfo(ByteBuf buffer, ServerInfo server) {
         int serverFlags = 0;
 
-        for (ServerFlag flag : server.flags()) {
+        for (var flag : server.flags()) {
             serverFlags |= flag.value();
         }
         int serverBoosts = 0;
-        for (ServerBoost boost : server.boosts()) {
+        for (var boost : server.boosts()) {
             serverBoosts |= boost.value();
         }
 

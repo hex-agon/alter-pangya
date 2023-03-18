@@ -1,29 +1,29 @@
 package work.fking.pangya.login.packet.handler;
 
-import io.netty.channel.Channel;
+import io.netty.buffer.ByteBuf;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import work.fking.pangya.login.networking.ConnectionState;
-import work.fking.pangya.login.packet.inbound.CheckNicknamePacket;
+import work.fking.pangya.login.LoginServer;
+import work.fking.pangya.login.Player;
+import work.fking.pangya.login.net.ClientLoginPacketHandler;
+import work.fking.pangya.login.net.LoginState;
 import work.fking.pangya.login.packet.outbound.CheckNicknameReplies;
-import work.fking.pangya.networking.protocol.InboundPacketHandler;
+import work.fking.pangya.networking.protocol.ProtocolUtils;
 
-import javax.inject.Singleton;
-
-@Singleton
-public class CheckNicknamePacketHandler implements InboundPacketHandler<CheckNicknamePacket> {
+public class CheckNicknamePacketHandler implements ClientLoginPacketHandler {
 
     private static final Logger LOGGER = LogManager.getLogger(CheckNicknamePacketHandler.class);
 
     @Override
-    public void handle(Channel channel, CheckNicknamePacket packet) {
-        ConnectionState state = channel.attr(ConnectionState.KEY).get();
+    public void handle(LoginServer server, Player player, ByteBuf packet) {
+        var nickname = ProtocolUtils.readPString(packet);
+        var channel = player.channel();
 
-        if (state != ConnectionState.SELECTING_NICKNAME && state != ConnectionState.SELECTED_NICKNAME) {
-            LOGGER.warn("Unexpected login session state, got={}, expected=SELECTING_NICKNAME or SELECTED_NICKNAME", state);
+        if (player.loginState() != LoginState.SELECTING_NICKNAME && player.loginState() != LoginState.SELECTED_NICKNAME) {
+            LOGGER.warn("Unexpected login session state, got={}, expected=SELECTING_NICKNAME or SELECTED_NICKNAME", player.loginState());
             channel.disconnect();
             return;
         }
-        channel.writeAndFlush(CheckNicknameReplies.available(packet.nickname()));
+        channel.writeAndFlush(CheckNicknameReplies.available(nickname));
     }
 }

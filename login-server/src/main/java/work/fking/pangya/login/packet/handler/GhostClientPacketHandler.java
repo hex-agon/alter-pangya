@@ -1,20 +1,13 @@
 package work.fking.pangya.login.packet.handler;
 
-import io.netty.channel.Channel;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import work.fking.pangya.login.packet.inbound.GhostClientPacket;
-import work.fking.pangya.networking.protocol.InboundPacketHandler;
+import io.netty.buffer.ByteBuf;
+import work.fking.pangya.login.LoginServer;
+import work.fking.pangya.login.Player;
+import work.fking.pangya.login.net.ClientLoginPacketHandler;
 
-import javax.inject.Singleton;
-
-@Singleton
-public class GhostClientPacketHandler implements InboundPacketHandler<GhostClientPacket> {
-
-    private static final Logger LOGGER = LogManager.getLogger(GhostClientPacketHandler.class);
+public class GhostClientPacketHandler implements ClientLoginPacketHandler {
 
     @Override
-    public void handle(Channel channel, GhostClientPacket packet) {
-        LOGGER.debug(packet);
+    public void handle(LoginServer server, Player player, ByteBuf packet) {
     }
 }

@@ -1,17 +1,21 @@
 package work.fking.pangya.login.packet.handler;
 
-import io.netty.channel.Channel;
-import work.fking.pangya.login.packet.inbound.SelectServerPacket;
+import io.netty.buffer.ByteBuf;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import work.fking.pangya.login.LoginServer;
+import work.fking.pangya.login.Player;
+import work.fking.pangya.login.net.ClientLoginPacketHandler;
 import work.fking.pangya.login.packet.outbound.LoginReplies;
-import work.fking.pangya.networking.protocol.InboundPacketHandler;
 
-import javax.inject.Singleton;
+public class SelectServerPacketHandler implements ClientLoginPacketHandler {
 
-@Singleton
-public class SelectServerPacketHandler implements InboundPacketHandler<SelectServerPacket> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SelectServerPacketHandler.class);
 
     @Override
-    public void handle(Channel channel, SelectServerPacket packet) {
-        channel.writeAndFlush(LoginReplies.sessionKey("sessionKey"));
+    public void handle(LoginServer server, Player player, ByteBuf packet) {
+        int serverId = packet.readShortLE();
+        LOGGER.info("Player {} is being handed over to serverId={} with loginKey={} and sessionKey={}", player.id(), serverId, player.loginKey(), player.sessionKey());
+        player.channel().writeAndFlush(LoginReplies.sessionKey(player.sessionKey()));
     }
 }

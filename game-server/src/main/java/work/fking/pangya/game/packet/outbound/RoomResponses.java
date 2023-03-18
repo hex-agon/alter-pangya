@@ -1,8 +1,8 @@
 package work.fking.pangya.game.packet.outbound;
 
 import work.fking.pangya.game.model.PangCharacter;
-import work.fking.pangya.game.packet.inbound.room.CreateRoomPacket.Course;
-import work.fking.pangya.game.packet.inbound.room.CreateRoomPacket.RoomType;
+import work.fking.pangya.game.packet.handler.room.CreateRoomPacketHandler.Course;
+import work.fking.pangya.game.packet.handler.room.CreateRoomPacketHandler.RoomType;
 import work.fking.pangya.networking.protocol.OutboundPacket;
 import work.fking.pangya.networking.protocol.ProtocolUtils;
 

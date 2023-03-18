@@ -1,13 +1,15 @@
 package work.fking.pangya.game.packet.handler;
 
-import io.netty.channel.Channel;
-import work.fking.pangya.game.packet.inbound.MyRoomOpenPacket;
-import work.fking.pangya.networking.protocol.InboundPacketHandler;
+import io.netty.buffer.ByteBuf;
+import work.fking.pangya.game.net.ClientGamePacketHandler;
+import work.fking.pangya.game.GameServer;
+import work.fking.pangya.game.Player;
 
-public class MyRoomOpenPacketHandler implements InboundPacketHandler<MyRoomOpenPacket> {
+public class MyRoomOpenPacketHandler implements ClientGamePacketHandler {
 
     @Override
-    public void handle(Channel channel, MyRoomOpenPacket packet) {
-
+    public void handle(GameServer server, Player player, ByteBuf packet) {
+        var selfUserId = packet.readIntLE();
+        var targetUserId = packet.readIntLE();
     }
 }

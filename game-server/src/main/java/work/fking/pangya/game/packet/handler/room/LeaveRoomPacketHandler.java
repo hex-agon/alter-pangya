@@ -1,19 +1,21 @@
 package work.fking.pangya.game.packet.handler.room;
 
-import io.netty.channel.Channel;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import work.fking.pangya.game.packet.inbound.room.LeaveRoomPacket;
+import io.netty.buffer.ByteBuf;
+import work.fking.pangya.game.net.ClientGamePacketHandler;
+import work.fking.pangya.game.GameServer;
+import work.fking.pangya.game.Player;
 import work.fking.pangya.game.packet.outbound.RoomResponses;
-import work.fking.pangya.networking.protocol.InboundPacketHandler;
 
-public class LeaveRoomPacketHandler implements InboundPacketHandler<LeaveRoomPacket> {
-
-    private static final Logger LOGGER = LogManager.getLogger(LeaveRoomPacketHandler.class);
+public class LeaveRoomPacketHandler implements ClientGamePacketHandler {
 
     @Override
-    public void handle(Channel channel, LeaveRoomPacket packet) {
-        LOGGER.debug(packet);
-        channel.writeAndFlush(RoomResponses.leaveSuccess());
+    public void handle(GameServer server, Player player, ByteBuf packet) {
+        packet.readByte(); // unknown (either 0 or 1)
+        var roomId = packet.readShortLE();
+        packet.readIntLE(); // unknown
+        packet.readIntLE(); // unknown
+        packet.readIntLE(); // unknown
+        packet.readIntLE(); // unknown
+        player.channel().writeAndFlush(RoomResponses.leaveSuccess());
     }
 }

@@ -1,26 +1,26 @@
 package work.fking.pangya.login.packet.handler;
 
-import io.netty.channel.Channel;
+import io.netty.buffer.ByteBuf;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import work.fking.pangya.login.networking.ConnectionState;
-import work.fking.pangya.login.packet.inbound.SetNicknamePacket;
-import work.fking.pangya.networking.protocol.InboundPacketHandler;
+import work.fking.pangya.login.LoginServer;
+import work.fking.pangya.login.Player;
+import work.fking.pangya.login.net.ClientLoginPacketHandler;
+import work.fking.pangya.login.net.LoginState;
+import work.fking.pangya.networking.protocol.ProtocolUtils;
 
-import javax.inject.Singleton;
-
-@Singleton
-public class SetNicknamePacketHandler implements InboundPacketHandler<SetNicknamePacket> {
+public class SetNicknamePacketHandler implements ClientLoginPacketHandler {
 
     private static final Logger LOGGER = LogManager.getLogger(SetNicknamePacketHandler.class);
 
     @Override
-    public void handle(Channel channel, SetNicknamePacket packet) {
-        ConnectionState state = channel.attr(ConnectionState.KEY).get();
+    public void handle(LoginServer server, Player player, ByteBuf packet) {
+        var nickname = ProtocolUtils.readPString(packet);
 
-        if (state != ConnectionState.SELECTED_NICKNAME) {
-            LOGGER.warn("Unexpected login session state, got={}, expected=SELECTED_NICKNAME", state);
-            channel.disconnect();
+        if (player.loginState() != LoginState.SELECTED_NICKNAME) {
+            LOGGER.warn("Unexpected login session state, got={}, expected=SELECTED_NICKNAME", player.loginState());
+            player.channel().disconnect();
         }
+        player.setLoginState(LoginState.SELECTED_NICKNAME);
     }
 }

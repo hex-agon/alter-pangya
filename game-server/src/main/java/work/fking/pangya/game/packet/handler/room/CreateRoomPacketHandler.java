@@ -1,18 +1,14 @@
 package work.fking.pangya.game.packet.handler.room;
 
 import io.netty.buffer.ByteBuf;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import work.fking.pangya.common.Rand;
-import work.fking.pangya.game.net.ClientGamePacketHandler;
 import work.fking.pangya.game.GameServer;
 import work.fking.pangya.game.Player;
+import work.fking.pangya.game.net.ClientGamePacketHandler;
 import work.fking.pangya.game.packet.outbound.RoomResponses;
 import work.fking.pangya.networking.protocol.ProtocolUtils;
 
 public class CreateRoomPacketHandler implements ClientGamePacketHandler {
-
-    private static final Logger LOGGER = LogManager.getLogger(CreateRoomPacketHandler.class);
 
     @Override
     public void handle(GameServer server, Player player, ByteBuf packet) {
@@ -31,11 +27,12 @@ public class CreateRoomPacketHandler implements ClientGamePacketHandler {
         var unknown4 = packet.readIntLE();
 
         var channel = player.channel();
-        channel.write(RoomResponses.createSuccess(name, 22));
-        //        channel.write(RoomResponses.settings());
+        channel.write(RoomResponses.createSuccess(name, type, 22));
+        channel.write(RoomResponses.info());
+        channel.write(RoomResponses.roomInitialCensus());
+        channel.write(RoomResponses.loungePkt196());
+        channel.write(RoomResponses.loungePkt9e());
         channel.flush();
-        //        channel.writeAndFlush(RoomResponses.roomInitialCensus());
-
     }
 
     public enum RoomType {

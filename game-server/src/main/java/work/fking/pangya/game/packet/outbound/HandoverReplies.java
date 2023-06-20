@@ -5,6 +5,8 @@ import work.fking.pangya.game.model.PangCharacter;
 import work.fking.pangya.networking.protocol.OutboundPacket;
 import work.fking.pangya.networking.protocol.ProtocolUtils;
 
+import static work.fking.pangya.networking.protocol.ProtocolUtils.writeFixedSizeString;
+
 public class HandoverReplies {
 
     private static final int PACKET_ID = 0x44;
@@ -47,37 +49,21 @@ public class HandoverReplies {
             ProtocolUtils.writePString(buffer, "hexserver_dev"); // server name
 
             buffer.writeShortLE(0xFFFF); // room id?
-            ProtocolUtils.writeFixedSizeString(buffer, "hexagon", 22); // username
-            ProtocolUtils.writeFixedSizeString(buffer, "Hex agon", 22); // nickname
-            ProtocolUtils.writeFixedSizeString(buffer, "guildname", 17);
-            ProtocolUtils.writeFixedSizeString(buffer, "guildimg", 16);
-            buffer.writeByte(0); // gm flag
+
+            // User info
+            writeFixedSizeString(buffer, "hexagon", 22); // username
+            writeFixedSizeString(buffer, "Hex agon", 22); // nickname
+            writeFixedSizeString(buffer, "guildname", 17);
+            writeFixedSizeString(buffer, "guildimg", 24);
+            buffer.writeIntLE(10); // connection id?
+            buffer.writeZero(12);
             buffer.writeIntLE(0);
-            buffer.writeIntLE(1335); // player id
             buffer.writeIntLE(0);
-            buffer.writeLongLE(0);
-            buffer.writeLongLE(0); // guild id
-
-            buffer.writeShortLE(0x128);
-            buffer.writeByte(0); // channel?
-            buffer.writeByte(0); // visible?
-            buffer.writeByte(0); // whisper?
-            buffer.writeByte(1); // sex?
-            buffer.writeByte(0); // quit rate < 3?
-            buffer.writeByte(0); // angel?
-            buffer.writeByte(0); // quit rate +31%?
-            buffer.writeByte(0); // quit rate +41%?
-
-            // Papel shop info?
-            buffer.writeShortLE(0); // remaining?
-            buffer.writeShortLE(0); // current?
-            buffer.writeShortLE(0); // limit?
-
+            buffer.writeShortLE(0);
+            buffer.writeZero(6);
             buffer.writeZero(16);
-            ProtocolUtils.writeFixedSizeString(buffer, "domain", 18);
-            buffer.writeZero(110);
-
-            buffer.writeIntLE(1); // user unique id? Likely autoinc from the db
+            writeFixedSizeString(buffer, "guildimg", 128);
+            buffer.writeIntLE(1335); // player id
 
             // Player Statistics
             buffer.writeIntLE(0); // shots
@@ -105,8 +91,12 @@ public class HandoverReplies {
             buffer.writeIntLE(0); // median score?
             buffer.writeZero(5); // best per star?
             buffer.writeByte(0); // event flag?
-            buffer.writeZero(5 * 8);  // best pang per star?
-            buffer.writeLongLE(0); // pang per star total?
+            buffer.writeLongLE(0);
+            buffer.writeLongLE(0);
+            buffer.writeLongLE(0);
+            buffer.writeLongLE(0);
+            buffer.writeLongLE(0);
+            buffer.writeLongLE(0);
             buffer.writeIntLE(0); // played?
             buffer.writeIntLE(0); // team hole?
             buffer.writeIntLE(0); // team win?
@@ -119,34 +109,43 @@ public class HandoverReplies {
             buffer.writeIntLE(0); // combo?
             buffer.writeIntLE(0); // all combo?
             buffer.writeIntLE(0); // quit?
-            buffer.writeLongLE(0); // skin pang?
-            buffer.writeIntLE(0); // skin win?
-            buffer.writeIntLE(0); // skin loose?
-            buffer.writeIntLE(0); // skin sum?
-            buffer.writeIntLE(0); // skin run?
-            buffer.writeIntLE(0); // skin strike point?
-            buffer.writeIntLE(0); // disconnect?
-            buffer.writeShortLE(0); // event value?
-            buffer.writeShortLE(0);
-            // statistics - medals
-            buffer.writeByte(0); // lucky medals
-            buffer.writeByte(0); // fast medals
-            buffer.writeByte(0); // best drive medals
-            buffer.writeByte(0); // best chipin medals
-            buffer.writeByte(0); // best puttin medals
-            buffer.writeByte(0); // best recovery medals
-
+            buffer.writeIntLE(0);
+            buffer.writeIntLE(0);
+            buffer.writeIntLE(0);
+            buffer.writeIntLE(0);
+            buffer.writeIntLE(0);
+            buffer.writeIntLE(0);
+            buffer.writeZero(10);
             buffer.writeIntLE(0); // game count
+            buffer.writeZero(8);
 
-            // Trohpies
+            // trophies
+            // Starting from Amateur 6 to Amateur 1 repeat qualities gold, silver, bronze
+            // Then from pro 1 to pro 7 repeat qualities gold, silver bronze
             buffer.writeShortLE(1);
-            buffer.writeZero(74);
+            buffer.writeZero(76);
 
             // Player equipment
             new EquipmentPacket().encode(buffer);
 
-            // unknown
-            buffer.writeZero(0x2a54);
+            // Season historical stats
+            for (int i = 0; i < 12; i++) { // for each season...
+                for (int j = 0; j < 21; j++) { // for each course...
+                    buffer.writeByte(j);
+                    buffer.writeIntLE(0);
+                    buffer.writeIntLE(0);
+                    buffer.writeIntLE(0);
+                    buffer.writeIntLE(0);
+                    buffer.writeIntLE(0);
+                    buffer.writeIntLE(0);
+                    buffer.writeIntLE(0);
+                    buffer.writeByte(0);
+                    buffer.writeIntLE(0);
+                    buffer.writeIntLE(0);
+                    buffer.writeIntLE(0);
+                    buffer.writeByte(0);
+                }
+            }
 
             // Active Character
             PangCharacter.mock().encode(buffer);
@@ -157,23 +156,23 @@ public class HandoverReplies {
             // Active Clubset
             buffer.writeIntLE(2000); // item unique id
             buffer.writeIntLE(268435511); // item iff id
-            buffer.writeByte(5); // power slot
-            buffer.writeByte(4); // control slot
-            buffer.writeByte(3); // accuracy slot
-            buffer.writeByte(2); // spin slot
-            buffer.writeByte(1); // curve slot
+            buffer.writeShortLE(5); // power slot
+            buffer.writeShortLE(4); // control slot
+            buffer.writeShortLE(3); // accuracy slot
+            buffer.writeShortLE(2); // spin slot
+            buffer.writeShortLE(1); // curve slot
             buffer.writeShortLE(1); // power upgrades?
-            buffer.writeShortLE(1); // control upgrades?
-            buffer.writeShortLE(1); // accuracy upgrades?
-            buffer.writeShortLE(1); // spin upgrades?
-            buffer.writeShortLE(1); // curve upgrades?
+            buffer.writeShortLE(2); // control upgrades?
+            buffer.writeShortLE(3); // accuracy upgrades?
+            buffer.writeShortLE(4); // spin upgrades?
+            buffer.writeShortLE(5); // curve upgrades?
 
             // Active Mascot
             buffer.writeIntLE(0); // item unique id
             buffer.writeIntLE(0); // item iff id
             buffer.writeZero(5);
-            buffer.writeZero(0x10);
-            buffer.writeZero(0x21);
+            writeFixedSizeString(buffer, "mascot1", 16);
+            buffer.writeZero(33);
         };
     }
 

@@ -11,6 +11,7 @@ import work.fking.pangya.game.packet.handler.PapelShopPlayPacketHandler;
 import work.fking.pangya.game.packet.handler.RareShopOpenPacketHandler;
 import work.fking.pangya.game.packet.handler.SelectChannelPacketHandler;
 import work.fking.pangya.game.packet.handler.UpdateChatMacrosPacketHandler;
+import work.fking.pangya.game.packet.handler.UserProfileRequestPacketHandler;
 import work.fking.pangya.game.packet.handler.room.CreateRoomPacketHandler;
 import work.fking.pangya.game.packet.handler.room.LeaveRoomPacketHandler;
 
@@ -21,7 +22,7 @@ public enum ClientGamePacketType {
     ROOM_CREATE(0x8, new CreateRoomPacketHandler()),
     ROOM_LEAVE(0xf, new LeaveRoomPacketHandler()),
     EQUIPMENT_UPDATE(0x20, new EquipmentUpdatePacketHandler()),
-    USER_PROFILE_REQUEST(0x2f),
+    USER_PROFILE_REQUEST(0x2f, new UserProfileRequestPacketHandler()),
     UPDATE_MACROS(0x69, new UpdateChatMacrosPacketHandler()),
     RARE_SHOP_OPEN(0x98, new RareShopOpenPacketHandler()),
     MY_ROOM_OPEN(0xb5, new MyRoomOpenPacketHandler()),

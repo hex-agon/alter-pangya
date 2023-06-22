@@ -1,7 +1,12 @@
 package work.fking.pangya.game.packet.outbound;
 
+import work.fking.pangya.game.model.CourseStatistics;
 import work.fking.pangya.game.model.PangCaddie;
 import work.fking.pangya.game.model.PangCharacter;
+import work.fking.pangya.game.model.PlayerBasicInfo;
+import work.fking.pangya.game.model.PlayerStatistic;
+import work.fking.pangya.game.model.PlayerTrophies;
+import work.fking.pangya.game.packet.handler.room.CreateRoomPacketHandler.Course;
 import work.fking.pangya.networking.protocol.OutboundPacket;
 import work.fking.pangya.networking.protocol.ProtocolUtils;
 
@@ -41,91 +46,23 @@ public class HandoverReplies {
         };
     }
 
-    public static OutboundPacket playerData() {
+    public static OutboundPacket handoverReply() {
         return buffer -> {
             buffer.writeShortLE(PACKET_ID);
-            buffer.writeByte(0);
+            buffer.writeByte(0); // sub packet type
 
             // Server Info
             ProtocolUtils.writePString(buffer, "US852"); // server version
             ProtocolUtils.writePString(buffer, "hexserver_dev"); // server name
 
-            buffer.writeShortLE(0xFFFF); // room id?
-
             // User info
-            writeFixedSizeString(buffer, "hexagon", 22); // username
-            writeFixedSizeString(buffer, "Hex agon", 22); // nickname
-            writeFixedSizeString(buffer, "guildname", 17);
-            writeFixedSizeString(buffer, "guildimg", 24);
-            buffer.writeIntLE(10); // connection id?
-            buffer.writeZero(12);
-            buffer.writeIntLE(0);
-            buffer.writeIntLE(0);
-            buffer.writeShortLE(0);
-            buffer.writeZero(6);
-            buffer.writeZero(16);
-            writeFixedSizeString(buffer, "guildimg", 128);
-            buffer.writeIntLE(1335); // player id
+            PlayerBasicInfo.mock().encode(buffer);
 
             // Player Statistics
-            buffer.writeIntLE(0); // shots
-            buffer.writeIntLE(0); // putt
-            buffer.writeIntLE(0); // time
-            buffer.writeIntLE(0); // time per shot
-            buffer.writeFloatLE(0); // longest shot
-            buffer.writeIntLE(0); // pangya rate
-            buffer.writeIntLE(0); // timeouts
-            buffer.writeIntLE(0); // out of bounds
-            buffer.writeIntLE(0); // out of bounds
-            buffer.writeIntLE(0); // total distance
-            buffer.writeIntLE(0); // holes
-            buffer.writeIntLE(0); // hole in ones
-            buffer.writeShortLE(0); // bunker?
-            buffer.writeIntLE(0); // fairway
-            buffer.writeIntLE(0); // albatross
-            buffer.writeIntLE(0); // ?
-            buffer.writeIntLE(0); // putt in
-            buffer.writeFloatLE(0); // longest putt
-            buffer.writeFloatLE(0); // best chip in
-            buffer.writeIntLE(0); // experience
-            buffer.writeByte(5); // level
-            buffer.writeLongLE(4456); // pang earned
-            buffer.writeIntLE(0); // median score?
-            buffer.writeZero(5); // best per star?
-            buffer.writeByte(0); // event flag?
-            buffer.writeLongLE(0);
-            buffer.writeLongLE(0);
-            buffer.writeLongLE(0);
-            buffer.writeLongLE(0);
-            buffer.writeLongLE(0);
-            buffer.writeLongLE(0);
-            buffer.writeIntLE(0); // played?
-            buffer.writeIntLE(0); // team hole?
-            buffer.writeIntLE(0); // team win?
-            buffer.writeIntLE(0); // team game?
-            buffer.writeIntLE(0); // ladder point?
-            buffer.writeIntLE(0); // ladder hole?
-            buffer.writeIntLE(0); // ladder win?
-            buffer.writeIntLE(0); // ladder lose?
-            buffer.writeIntLE(0); // ladder draw?
-            buffer.writeIntLE(0); // combo?
-            buffer.writeIntLE(0); // all combo?
-            buffer.writeIntLE(0); // quit?
-            buffer.writeIntLE(0);
-            buffer.writeIntLE(0);
-            buffer.writeIntLE(0);
-            buffer.writeIntLE(0);
-            buffer.writeIntLE(0);
-            buffer.writeIntLE(0);
-            buffer.writeZero(10);
-            buffer.writeIntLE(0); // game count
-            buffer.writeZero(8);
+            PlayerStatistic.mock().encode(buffer);
 
             // trophies
-            // Starting from Amateur 6 to Amateur 1 repeat qualities gold, silver, bronze
-            // Then from pro 1 to pro 7 repeat qualities gold, silver bronze
-            buffer.writeShortLE(1);
-            buffer.writeZero(76);
+            PlayerTrophies.mock().encode(buffer);
 
             // Player equipment
             new EquipmentPacket().encode(buffer);
@@ -133,19 +70,7 @@ public class HandoverReplies {
             // Season historical stats
             for (int i = 0; i < 12; i++) { // for each season...
                 for (int j = 0; j < 21; j++) { // for each course...
-                    buffer.writeByte(j);
-                    buffer.writeIntLE(0);
-                    buffer.writeIntLE(0);
-                    buffer.writeIntLE(0);
-                    buffer.writeIntLE(0);
-                    buffer.writeIntLE(0);
-                    buffer.writeIntLE(0);
-                    buffer.writeIntLE(0);
-                    buffer.writeByte(0);
-                    buffer.writeIntLE(0);
-                    buffer.writeIntLE(0);
-                    buffer.writeIntLE(0);
-                    buffer.writeByte(0);
+                    CourseStatistics.blank(Course.BLUE_LAGOON).serialize(buffer);
                 }
             }
 

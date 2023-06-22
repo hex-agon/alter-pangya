@@ -39,7 +39,7 @@ public class HandoverPacketHandler implements ClientGamePacketHandler {
 
         var channel = player.channel();
         channel.write(HandoverReplies.ok());
-        channel.writeAndFlush(HandoverReplies.playerData());
+        channel.writeAndFlush(HandoverReplies.handoverReply());
         channel.writeAndFlush(new CharacterRosterPacket()); // known ok
         channel.writeAndFlush(new CaddieRosterPacket()); // known ok
         channel.writeAndFlush(new EquipmentPacket()); // known ok

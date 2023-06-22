@@ -39,6 +39,7 @@ public class GameProtocolDecoder extends ByteToMessageDecoder {
             LOGGER.warn("Unknown packetId=0x{}", Integer.toHexString(packetId));
             LOGGER.warn("\n{}", ByteBufUtil.prettyHexDump(buffer));
             ctx.disconnect();
+            buffer.clear();
             return;
         }
         out.add(new ClientGamePacket(packetType, buffer.readRetainedSlice(buffer.readableBytes())));

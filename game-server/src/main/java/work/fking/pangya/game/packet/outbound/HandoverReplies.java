@@ -5,6 +5,8 @@ import work.fking.pangya.game.model.PangCharacter;
 import work.fking.pangya.networking.protocol.OutboundPacket;
 import work.fking.pangya.networking.protocol.ProtocolUtils;
 
+import java.time.LocalDateTime;
+
 import static work.fking.pangya.networking.protocol.ProtocolUtils.writeFixedSizeString;
 
 public class HandoverReplies {
@@ -86,7 +88,7 @@ public class HandoverReplies {
             buffer.writeFloatLE(0); // longest putt
             buffer.writeFloatLE(0); // best chip in
             buffer.writeIntLE(0); // experience
-            buffer.writeByte(0); // level
+            buffer.writeByte(5); // level
             buffer.writeLongLE(4456); // pang earned
             buffer.writeIntLE(0); // median score?
             buffer.writeZero(5); // best per star?
@@ -170,9 +172,50 @@ public class HandoverReplies {
             // Active Mascot
             buffer.writeIntLE(0); // item unique id
             buffer.writeIntLE(0); // item iff id
-            buffer.writeZero(5);
+            buffer.writeByte(0); // level
+            buffer.writeIntLE(0); // experience
             writeFixedSizeString(buffer, "mascot1", 16);
             buffer.writeZero(33);
+
+            // Server Time
+            var now = LocalDateTime.now();
+            buffer.writeShortLE(now.getYear());
+            buffer.writeShortLE(now.getMonthValue());
+            buffer.writeShortLE(now.getDayOfWeek().getValue());
+            buffer.writeShortLE(now.getDayOfMonth());
+            buffer.writeShortLE(now.getHour());
+            buffer.writeShortLE(now.getMinute());
+            buffer.writeShortLE(now.getSecond());
+            buffer.writeShortLE(0); // milliseconds
+
+            buffer.writeShortLE(0); // unknown
+
+            // Papel shop info?
+            buffer.writeShortLE(3);
+            buffer.writeShortLE(2);
+            buffer.writeShortLE(5);
+
+            buffer.writeIntLE(0); // unknown
+            buffer.writeLongLE(1 << 2); // disabled server features, 0x4 = disables mail
+
+            buffer.writeIntLE(0); // unknown, ss = login count
+            buffer.writeIntLE(0); // ss = server flags
+
+            // guild info
+            buffer.writeZero(277);
+
+            // Remaining unknown data (321 bytes)
+            // buffer.writeZero(321);
+
+            // Based on acrisio's:
+            // current server time (SYSTEMTIME 8 * 2 bytes)
+            // short - unknown
+            // papel shop info: short short short
+            // int unknown
+            // disabled server features: long
+            // login count? int
+            // GuildInfo, 277 bytes
+
         };
     }
 

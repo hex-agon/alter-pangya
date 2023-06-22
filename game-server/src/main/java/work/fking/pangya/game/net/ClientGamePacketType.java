@@ -7,6 +7,7 @@ import work.fking.pangya.game.packet.handler.LoginBonusClaimPacketHandler;
 import work.fking.pangya.game.packet.handler.LoginBonusStatusPacketHandler;
 import work.fking.pangya.game.packet.handler.MyRoomOpenPacketHandler;
 import work.fking.pangya.game.packet.handler.MyRoomOpenedPacketHandler;
+import work.fking.pangya.game.packet.handler.PapelShopPlayPacketHandler;
 import work.fking.pangya.game.packet.handler.RareShopOpenPacketHandler;
 import work.fking.pangya.game.packet.handler.SelectChannelPacketHandler;
 import work.fking.pangya.game.packet.handler.UpdateChatMacrosPacketHandler;
@@ -26,8 +27,11 @@ public enum ClientGamePacketType {
     MY_ROOM_OPEN(0xb5, new MyRoomOpenPacketHandler()),
     MY_ROOM_OPENED(0xb7, new MyRoomOpenedPacketHandler()),
     UNKNOWN_9C(0x9c),
+    UNKNOWN_C1(0xC1),
     LOCKER_INVENTORY_REQUEST(0xd3, new LockerInventoryRequestPacketHandler()),
     UNKNOWN_140(0x140),
+    ACHIEVEMENT_STATUS_REQUEST(0x157),
+    PAPEL_SHOP_PLAY(0x14b, new PapelShopPlayPacketHandler()),
     LOGIN_BONUS_INFO(0x16e, new LoginBonusStatusPacketHandler()),
     LOGIN_BONUS_CLAIM(0x16f, new LoginBonusClaimPacketHandler());
 

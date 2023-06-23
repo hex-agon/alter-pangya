@@ -15,20 +15,20 @@ public class CreateRoomPacketHandler implements ClientGamePacketHandler {
         var unknown = packet.readByte();
         var shotTime = packet.readIntLE();
         var gameTime = packet.readIntLE();
-        var size = packet.readByte();
-        var typeId = packet.readByte();
-        var type = RoomType.forId(typeId);
+        var maxPlayers = packet.readByte();
+        var roomType = RoomType.forId(packet.readByte());
         var holeCount = packet.readByte();
         var course = Course.forId(packet.readByte());
-        var unknown2 = packet.readByte();
+        var holeMode = HoleMode.forId(packet.readByte());
         var unknown3 = packet.readIntLE();
         var name = ProtocolUtils.readPString(packet);
         var password = ProtocolUtils.readPString(packet);
-        var unknown4 = packet.readIntLE();
+        var artifactId = packet.readIntLE();
 
         var channel = player.channel();
-        channel.write(RoomResponses.createSuccess(name, type, 22));
-        channel.write(RoomResponses.info());
+        channel.write(RoomResponses.createSuccess(name, roomType, Rand.maxInclusive(127)));
+        channel.write(RoomResponses.roomInfo(roomType, name, course, holeMode, holeCount, maxPlayers, shotTime, gameTime));
+
         channel.write(RoomResponses.roomInitialCensus());
         channel.write(RoomResponses.loungePkt196());
         channel.write(RoomResponses.loungePkt9e());
@@ -61,6 +61,24 @@ public class CreateRoomPacketHandler implements ClientGamePacketHandler {
 
         public int id() {
             return id;
+        }
+    }
+
+    public enum HoleMode {
+        FRONT,
+        BACK,
+        RANDOM,
+        SHUFFLE,
+        REPEAT,
+        SUFFLE_COURSE;
+
+        private static final HoleMode[] VALUES = values();
+
+        public static HoleMode forId(int id) {
+            if (id < VALUES.length) {
+                return VALUES[id];
+            }
+            return null;
         }
     }
 

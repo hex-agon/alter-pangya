@@ -2,6 +2,7 @@ package work.fking.pangya.game.net;
 
 import work.fking.pangya.game.packet.handler.EquipmentUpdatePacketHandler;
 import work.fking.pangya.game.packet.handler.HandoverPacketHandler;
+import work.fking.pangya.game.packet.handler.LeaveLobbyPacketHandler;
 import work.fking.pangya.game.packet.handler.LockerInventoryRequestPacketHandler;
 import work.fking.pangya.game.packet.handler.LoginBonusClaimPacketHandler;
 import work.fking.pangya.game.packet.handler.LoginBonusStatusPacketHandler;
@@ -23,7 +24,9 @@ public enum ClientGamePacketType {
     ROOM_LEAVE(0xf, new LeaveRoomPacketHandler()),
     EQUIPMENT_UPDATE(0x20, new EquipmentUpdatePacketHandler()),
     USER_PROFILE_REQUEST(0x2f, new UserProfileRequestPacketHandler()),
+    LOUNGE_USER_ACTION(0x63),
     UPDATE_MACROS(0x69, new UpdateChatMacrosPacketHandler()),
+    LEAVE_LOBBY(0x82, new LeaveLobbyPacketHandler()),
     RARE_SHOP_OPEN(0x98, new RareShopOpenPacketHandler()),
     MY_ROOM_OPEN(0xb5, new MyRoomOpenPacketHandler()),
     MY_ROOM_OPENED(0xb7, new MyRoomOpenedPacketHandler()),

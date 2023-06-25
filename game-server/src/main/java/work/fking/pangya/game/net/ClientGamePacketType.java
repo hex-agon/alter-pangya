@@ -1,7 +1,6 @@
 package work.fking.pangya.game.net;
 
 import work.fking.pangya.game.packet.handler.EquipmentUpdatePacketHandler;
-import work.fking.pangya.game.packet.handler.HandoverPacketHandler;
 import work.fking.pangya.game.packet.handler.LeaveLobbyPacketHandler;
 import work.fking.pangya.game.packet.handler.LockerInventoryRequestPacketHandler;
 import work.fking.pangya.game.packet.handler.LoginBonusClaimPacketHandler;
@@ -18,7 +17,6 @@ import work.fking.pangya.game.packet.handler.room.LeaveRoomPacketHandler;
 
 public enum ClientGamePacketType {
 
-    HANDOVER(0x2, new HandoverPacketHandler()),
     SELECT_CHANNEL(0x4, new SelectChannelPacketHandler()),
     ROOM_CREATE(0x8, new CreateRoomPacketHandler()),
     ROOM_LEAVE(0xf, new LeaveRoomPacketHandler()),

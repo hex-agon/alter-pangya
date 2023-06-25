@@ -10,12 +10,12 @@ public class ServerChannelInitializer extends ChannelInitializer<Channel> {
 
     private final HelloHandler helloHandler;
 
-    private ServerChannelInitializer(ClientGameProtocol protocol, GameServer gameServer) {
-        this.helloHandler = HelloHandler.create(protocol, gameServer);
+    private ServerChannelInitializer(GameServer gameServer) {
+        this.helloHandler = HelloHandler.create(gameServer);
     }
 
-    public static ServerChannelInitializer create(ClientGameProtocol protocol, GameServer gameServer) {
-        return new ServerChannelInitializer(protocol, gameServer);
+    public static ServerChannelInitializer create(GameServer gameServer) {
+        return new ServerChannelInitializer(gameServer);
     }
 
     @Override

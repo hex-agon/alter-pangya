@@ -3,9 +3,8 @@ package work.fking.pangya.game.packet.handler;
 import io.netty.buffer.ByteBuf;
 import work.fking.pangya.game.net.ClientGamePacketHandler;
 import work.fking.pangya.game.GameServer;
-import work.fking.pangya.game.Player;
-import work.fking.pangya.game.model.PangCharacter;
-import work.fking.pangya.networking.protocol.ProtocolException;
+import work.fking.pangya.game.player.Player;
+import work.fking.pangya.game.player.Character;
 
 import java.util.Arrays;
 
@@ -29,10 +28,10 @@ public class EquipmentUpdatePacketHandler implements ClientGamePacketHandler {
     }
 
     private static void decodeUnknown0(ByteBuf buffer) {
-        var character = PangCharacter.decode(buffer);
+        var character = Character.decode(buffer);
         System.out.println(character);
-        System.out.println(Arrays.toString(character.equipmentIffIds()));
-        System.out.println(Arrays.toString(character.equipmentUniqueIds()));
+        System.out.println(Arrays.toString(character.partIffIds()));
+        System.out.println(Arrays.toString(character.partUids()));
         System.out.println(Arrays.toString(character.cardIffIds()));
     }
 

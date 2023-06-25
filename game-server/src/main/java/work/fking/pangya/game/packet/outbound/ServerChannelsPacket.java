@@ -4,6 +4,8 @@ import io.netty.buffer.ByteBuf;
 import work.fking.pangya.networking.protocol.OutboundPacket;
 import work.fking.pangya.networking.protocol.ProtocolUtils;
 
+import static work.fking.pangya.networking.protocol.ProtocolUtils.writeFixedSizeString;
+
 public class ServerChannelsPacket implements OutboundPacket {
 
     private static final int ID = 0x4d;
@@ -13,10 +15,10 @@ public class ServerChannelsPacket implements OutboundPacket {
         target.writeShortLE(ID);
         target.writeByte(1); // Server count
 
-        ProtocolUtils.writeFixedSizeString(target, "ServerChannel", 64);
-        target.writeBytes(new byte[47]);
+        writeFixedSizeString(target, "ServerChannel", 64);
+        target.writeShortLE(20);
+        target.writeShortLE(19);
         target.writeByte(1); // channelId
-        target.writeIntLE(0);
         target.writeIntLE(0);
     }
 }

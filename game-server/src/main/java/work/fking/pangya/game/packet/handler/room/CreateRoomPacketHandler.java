@@ -3,9 +3,9 @@ package work.fking.pangya.game.packet.handler.room;
 import io.netty.buffer.ByteBuf;
 import work.fking.pangya.common.Rand;
 import work.fking.pangya.game.GameServer;
-import work.fking.pangya.game.Player;
 import work.fking.pangya.game.net.ClientGamePacketHandler;
 import work.fking.pangya.game.packet.outbound.RoomResponses;
+import work.fking.pangya.game.player.Player;
 import work.fking.pangya.networking.protocol.ProtocolUtils;
 
 public class CreateRoomPacketHandler implements ClientGamePacketHandler {
@@ -23,7 +23,7 @@ public class CreateRoomPacketHandler implements ClientGamePacketHandler {
         var unknown3 = packet.readIntLE();
         var name = ProtocolUtils.readPString(packet);
         var password = ProtocolUtils.readPString(packet);
-        var artifactId = packet.readIntLE();
+        var artifactIffId = packet.readIntLE();
 
         var channel = player.channel();
         channel.write(RoomResponses.createSuccess(name, roomType, Rand.maxInclusive(127)));
@@ -95,10 +95,12 @@ public class CreateRoomPacketHandler implements ClientGamePacketHandler {
         WHITE_WIZ,
         SHINING_SAND,
         PINK_WIND,
+        UNKNOWN_12,
         DEEP_INFERNO,
         ICE_SPA,
         LOST_SEAWAY,
         EASTERN_VALLEY,
+        UNKNOWN_17,
         ICE_INFERNO,
         WIZ_CITY,
         ABBOT_MINE;

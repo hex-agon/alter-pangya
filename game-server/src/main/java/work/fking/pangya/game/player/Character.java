@@ -1,30 +1,37 @@
-package work.fking.pangya.game.model;
+package work.fking.pangya.game.player;
 
 import io.netty.buffer.ByteBuf;
+import work.fking.pangya.common.Rand;
+import work.fking.pangya.game.model.IffObject;
+import work.fking.pangya.game.model.Stat;
 
-public record PangCharacter(
+public record Character(
+        int uid,
         int iffId,
-        int uniqueId,
         int hairColor,
-        int[] equipmentIffIds,
-        int[] equipmentUniqueIds,
+        int[] partIffIds,
+        int[] partUids,
         int[] stats,
         int masteryPoints,
         int[] cardIffIds
 ) implements IffObject {
 
-    public static PangCharacter mock() {
-        return new PangCharacter(
+    private static final int PARTS = 24;
+    private static final int STATS = 5;
+    private static final int CARDS = 10;
+
+    public static Character mock() {
+        return new Character(
+                Rand.max(30000),
                 67108872,
-                262513,
                 2,
                 new int[] {
-                        0, 0, 136331362, 136340480, 136347689, 0, 136364603, 136372302, 0, 0, 136398858, 0, 0, 136423465, 0, 0, 136445968, 136456205, 0, 0, 0, 0, 0, 0
+                        136315904, 136324096, 136332288, 136340480, 136348672, 136356864, 136365056, 136373248, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
                 },
                 new int[] {
-                        0, 0, 7009, 0, 7008, 0, 7006, 7006, 0, 0, 7005, 0, 0, 7001, 0, 0, 7002, 7003, 0, 0, 0, 0, 0, 0
+                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
                 },
-                new int[] {8, 5, 4, 2, 1},
+                new int[] {10, 11, 9, 2, 3},
                 0,
                 new int[10]
         );
@@ -34,18 +41,18 @@ public record PangCharacter(
         return stats[stat.ordinal()];
     }
 
-    public static PangCharacter decode(ByteBuf buffer) {
+    public static Character decode(ByteBuf buffer) {
         var iffId = buffer.readIntLE();
-        var uniqueId = buffer.readIntLE();
+        var uid = buffer.readIntLE();
         var hairColor = buffer.readIntLE();
 
-        var equipmentIffIds = new int[24];
-        for (int i = 0; i < equipmentIffIds.length; i++) {
-            equipmentIffIds[i] = buffer.readIntLE();
+        var partIffIds = new int[PARTS];
+        for (int i = 0; i < PARTS; i++) {
+            partIffIds[i] = buffer.readIntLE();
         }
-        var equipmentUniqueIds = new int[24];
-        for (int i = 0; i < equipmentUniqueIds.length; i++) {
-            equipmentUniqueIds[i] = buffer.readIntLE();
+        var partUids = new int[PARTS];
+        for (int i = 0; i < PARTS; i++) {
+            partUids[i] = buffer.readIntLE();
         }
         buffer.skipBytes(216);
         buffer.skipBytes(4);
@@ -54,25 +61,25 @@ public record PangCharacter(
         buffer.skipBytes(4);
         buffer.skipBytes(12);
 
-        var stats = new int[5];
+        var stats = new int[STATS];
         for (int i = 0; i < stats.length; i++) {
             stats[i] = buffer.readByte();
         }
         var masteryPoints = buffer.readByte();
         buffer.skipBytes(3);
 
-        var cardIffIds = new int[10];
+        var cardIffIds = new int[CARDS];
         for (int i = 0; i < cardIffIds.length; i++) {
             cardIffIds[i] = buffer.readIntLE();
         }
         buffer.skipBytes(8);
 
-        return new PangCharacter(
+        return new Character(
+                uid,
                 iffId,
-                uniqueId,
                 hairColor,
-                equipmentIffIds,
-                equipmentUniqueIds,
+                partIffIds,
+                partUids,
                 stats,
                 masteryPoints,
                 cardIffIds
@@ -82,13 +89,13 @@ public record PangCharacter(
     @Override
     public void encode(ByteBuf buffer) {
         buffer.writeIntLE(iffId);
-        buffer.writeIntLE(uniqueId);
+        buffer.writeIntLE(uid);
         buffer.writeIntLE(hairColor);
 
-        for (int iffId : equipmentIffIds) {
+        for (int iffId : partIffIds) {
             buffer.writeIntLE(iffId);
         }
-        for (int uniqueId : equipmentUniqueIds) {
+        for (int uniqueId : partUids) {
             buffer.writeIntLE(uniqueId);
         }
         buffer.writeZero(216);

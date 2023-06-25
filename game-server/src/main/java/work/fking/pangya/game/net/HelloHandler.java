@@ -19,16 +19,14 @@ public class HelloHandler extends ChannelInboundHandlerAdapter {
 
     private static final Logger LOGGER = LogManager.getLogger(HelloHandler.class);
 
-    private final ClientGameProtocol protocol;
     private final GameServer gameServer;
 
-    private HelloHandler(ClientGameProtocol protocol, GameServer gameServer) {
-        this.protocol = protocol;
+    private HelloHandler(GameServer gameServer) {
         this.gameServer = gameServer;
     }
 
-    public static HelloHandler create(ClientGameProtocol protocol, GameServer gameServer) {
-        return new HelloHandler(protocol, gameServer);
+    public static HelloHandler create(GameServer gameServer) {
+        return new HelloHandler(gameServer);
     }
 
     @Override
@@ -39,12 +37,9 @@ public class HelloHandler extends ChannelInboundHandlerAdapter {
         ctx.writeAndFlush(HelloPacket.create(cryptKey));
         var pipeline = ctx.pipeline();
 
-        var player = gameServer.registerPlayer(channel);
-
         pipeline.remove(this);
         pipeline.replace("encoder", "encoder", ProtocolEncoder.create(cryptKey));
         pipeline.addLast("framer", new LengthFieldBasedFrameDecoder(ByteOrder.LITTLE_ENDIAN, 10000, 1, 2, 1, 0, true));
-        pipeline.addLast("decoder", GameProtocolDecoder.create(protocol, cryptKey));
-        pipeline.addLast("packetDispatcher", ClientGamePacketDispatcher.create(gameServer, player, protocol.handlers()));
+        pipeline.addLast("handoverHandler", HandoverHandler.create(gameServer, cryptKey));
     }
 }

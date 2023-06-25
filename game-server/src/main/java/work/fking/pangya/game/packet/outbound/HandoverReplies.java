@@ -1,8 +1,7 @@
 package work.fking.pangya.game.packet.outbound;
 
+import work.fking.pangya.game.player.Player;
 import work.fking.pangya.game.model.CourseStatistics;
-import work.fking.pangya.game.model.PangCaddie;
-import work.fking.pangya.game.model.PangCharacter;
 import work.fking.pangya.game.model.PlayerBasicInfo;
 import work.fking.pangya.game.model.PlayerStatistic;
 import work.fking.pangya.game.model.PlayerTrophies;
@@ -28,6 +27,7 @@ public class HandoverReplies {
         return buffer -> {
             buffer.writeShortLE(PACKET_ID);
             buffer.writeShortLE(TYPE_LOGIN_OK);
+            buffer.writeByte(0);
         };
     }
 
@@ -38,6 +38,9 @@ public class HandoverReplies {
         };
     }
 
+    /**
+     * @param value Accepted values are between 0 and 15 inclusive
+     */
     public static OutboundPacket updateProgressBar(int value) {
         return buffer -> {
             buffer.writeShortLE(PACKET_ID);
@@ -46,7 +49,7 @@ public class HandoverReplies {
         };
     }
 
-    public static OutboundPacket handoverReply() {
+    public static OutboundPacket handoverReply(Player player) {
         return buffer -> {
             buffer.writeShortLE(PACKET_ID);
             buffer.writeByte(0); // sub packet type
@@ -65,7 +68,7 @@ public class HandoverReplies {
             PlayerTrophies.mock().encode(buffer);
 
             // Player equipment
-            new EquipmentPacket().encode(buffer);
+            player.equipment().encode(buffer);
 
             // Season historical stats
             for (int i = 0; i < 12; i++) { // for each season...
@@ -75,10 +78,10 @@ public class HandoverReplies {
             }
 
             // Active Character
-            PangCharacter.mock().encode(buffer);
+            player.activeCharacter().encode(buffer);
 
             // Active Caddie
-            PangCaddie.mock().encode(buffer);
+            player.activeCaddie().encode(buffer);
 
             // Active Clubset
             buffer.writeIntLE(2000); // item unique id

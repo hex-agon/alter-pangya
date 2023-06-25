@@ -75,6 +75,7 @@
                 <version>3.11.0</version>
                 <configuration>
                     <release>${java.release}</release>
+                    <compilerArgs>--enable-preview</compilerArgs>
                 </configuration>
             </plugin>
             <plugin>

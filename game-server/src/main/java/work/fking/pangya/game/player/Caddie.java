@@ -1,21 +1,22 @@
-package work.fking.pangya.game.model;
+package work.fking.pangya.game.player;
 
 import io.netty.buffer.ByteBuf;
+import work.fking.pangya.game.model.IffObject;
 
-public record PangCaddie(
+public record Caddie(
+        int uid,
         int iffId,
-        int uniqueId,
         int levelsGained,
         int experience
 ) implements IffObject {
 
-    public static PangCaddie mock() {
-        return new PangCaddie(469762083, 83651, 2, 123);
+    public static Caddie mock() {
+        return new Caddie(83651, 469762083, 2, 123);
     }
 
     @Override
     public void encode(ByteBuf buffer) {
-        buffer.writeIntLE(uniqueId);
+        buffer.writeIntLE(uid);
         buffer.writeIntLE(iffId);
         buffer.writeIntLE(0);
         buffer.writeByte(levelsGained);

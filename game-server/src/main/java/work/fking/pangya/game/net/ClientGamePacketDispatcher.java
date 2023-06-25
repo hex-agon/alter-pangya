@@ -5,7 +5,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import work.fking.pangya.game.GameServer;
-import work.fking.pangya.game.Player;
+import work.fking.pangya.game.player.Player;
 
 public class ClientGamePacketDispatcher extends SimpleChannelInboundHandler<ClientGamePacket> {
 

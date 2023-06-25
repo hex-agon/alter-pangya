@@ -1,8 +1,8 @@
 package work.fking.pangya.game.packet.outbound;
 
+import work.fking.pangya.game.player.Player;
 import work.fking.pangya.game.model.CourseStatistics;
-import work.fking.pangya.game.model.PangCharacter;
-import work.fking.pangya.game.model.PangEquipment;
+import work.fking.pangya.game.player.Character;
 import work.fking.pangya.game.model.PlayerBasicInfo;
 import work.fking.pangya.game.model.PlayerStatistic;
 import work.fking.pangya.game.model.PlayerTrophies;
@@ -28,17 +28,17 @@ public class UserStatisticsReplies {
             buffer.writeShortLE(0x15e);
             buffer.writeIntLE(userId);
 
-            PangCharacter.mock().encode(buffer);
+            Character.mock().encode(buffer);
         };
     }
 
-    public static OutboundPacket equipment(int requestType, int userId) {
+    public static OutboundPacket equipment(int requestType, Player player) {
         return buffer -> {
             buffer.writeShortLE(0x156);
             buffer.writeByte(requestType);
-            buffer.writeIntLE(userId);
+            buffer.writeIntLE(player.uid());
 
-            PangEquipment.mock().encode(buffer);
+            player.equipment().encode(buffer);
         };
     }
 

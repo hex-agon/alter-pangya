@@ -1,6 +1,6 @@
 package work.fking.pangya.game.packet.outbound;
 
-import work.fking.pangya.game.model.PangCharacter;
+import work.fking.pangya.game.player.Character;
 import work.fking.pangya.game.packet.handler.room.CreateRoomPacketHandler.Course;
 import work.fking.pangya.game.packet.handler.room.CreateRoomPacketHandler.HoleMode;
 import work.fking.pangya.game.packet.handler.room.CreateRoomPacketHandler.RoomType;
@@ -79,7 +79,7 @@ public final class RoomResponses {
             buffer.writeByte(1); // player count
 
             // user info
-            var mock = PangCharacter.mock();
+            var mock = Character.mock();
 
             buffer.writeIntLE(10); // connectionId
             writeFixedSizeString(buffer, "Beep", 22);

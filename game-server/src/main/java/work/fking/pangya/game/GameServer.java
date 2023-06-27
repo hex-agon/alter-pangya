@@ -19,13 +19,15 @@ public class GameServer {
     private final ExecutorService executorService = Executors.newVirtualThreadPerTaskExecutor();
     private final AtomicInteger connectionIdSequence = new AtomicInteger();
     private final ServerConfig serverConfig;
+    private final SessionClient sessionClient;
 
-    public GameServer(ServerConfig serverConfig) {
+    public GameServer(ServerConfig serverConfig, SessionClient sessionClient) {
         this.serverConfig = serverConfig;
+        this.sessionClient = sessionClient;
     }
 
-    public Player registerPlayer(Channel channel) {
-        var player = new Player(Rand.max(10000), connectionIdSequence.incrementAndGet(), channel);
+    public Player registerPlayer(Channel channel, int uid, String nickname) {
+        var player = new Player(channel, uid, connectionIdSequence.incrementAndGet(), nickname);
 
         var characterRoster = player.characterRoster();
         characterRoster.unlockCharacter(67108872);
@@ -52,6 +54,10 @@ public class GameServer {
         equipment.equipComet(inventory.findByIffId(335544382));
 
         return player;
+    }
+
+    public SessionClient sessionClient() {
+        return sessionClient;
     }
 
     public void submitTask(Runnable runnable) {

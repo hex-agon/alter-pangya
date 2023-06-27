@@ -47,8 +47,9 @@ public final class ProtocolUtils {
     }
 
     public static void writePString(ByteBuf buffer, String string) {
-        buffer.writeShortLE(string.length());
-        buffer.writeBytes(string.getBytes(StandardCharsets.US_ASCII));
+        var bytes = string.getBytes(StandardCharsets.US_ASCII);
+        buffer.writeShortLE(bytes.length);
+        buffer.writeBytes(bytes);
     }
 
     public static void writeFixedSizeString(ByteBuf buffer, String string, int size) {

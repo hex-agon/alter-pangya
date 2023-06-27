@@ -1,5 +1,6 @@
 package work.fking.pangya.game.player;
 
+import work.fking.pangya.common.Rand;
 import work.fking.pangya.game.model.IffContainer;
 
 import java.util.ArrayList;
@@ -26,9 +27,26 @@ public class CharacterRoster implements IffContainer<Character> {
             throw new IllegalArgumentException("iffId is not a character");
         }
         var character = switch (iffId) {
-            case LUCIA -> Character.mock();
+            case LUCIA -> createBaseLucia();
             default -> throw new IllegalArgumentException("unsupported character iffId=" + iffId);
         };
         characters.add(character);
+    }
+
+    private Character createBaseLucia() {
+        return new Character(
+                Rand.max(30000),
+                67108872,
+                2,
+                new int[] {
+                        136315904, 136324096, 136332288, 136340480, 136348672, 136356864, 136365056, 136373248, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+                },
+                new int[] {
+                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+                },
+                new int[] {10, 11, 9, 2, 3},
+                0,
+                new int[10]
+        );
     }
 }

@@ -5,12 +5,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import work.fking.pangya.login.LoginServer;
 import work.fking.pangya.login.Player;
-import work.fking.pangya.login.net.ClientLoginPacketHandler;
+import work.fking.pangya.login.net.ClientPacketHandler;
 import work.fking.pangya.login.net.LoginState;
 import work.fking.pangya.login.packet.outbound.CheckNicknameReplies;
 import work.fking.pangya.networking.protocol.ProtocolUtils;
 
-public class CheckNicknamePacketHandler implements ClientLoginPacketHandler {
+public class CheckNicknamePacketHandler implements ClientPacketHandler {
 
     private static final Logger LOGGER = LogManager.getLogger(CheckNicknamePacketHandler.class);
 

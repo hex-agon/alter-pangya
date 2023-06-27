@@ -17,10 +17,13 @@ public class Bootstrap {
         LOGGER.info("Bootstrapping the game server server...");
         try {
             var serverConfig = ServerConfigLoader.load("config.toml");
-            var server = new GameServer(serverConfig);
 
             var redisClient = RedisClient.create(RedisURI.create(System.getenv("REDIS_URI")));
             var discoveryClient = DiscoveryClient.create(redisClient);
+            var sessionClient = SessionClient.create(redisClient);
+
+            var server = new GameServer(serverConfig, sessionClient);
+
             var heartbeatPublisher = HeartbeatPublisher.create(discoveryClient, ServerType.GAME, serverConfig, () -> 0);
 
             heartbeatPublisher.start();

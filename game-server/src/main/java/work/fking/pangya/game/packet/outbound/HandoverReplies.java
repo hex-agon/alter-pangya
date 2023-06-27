@@ -1,11 +1,11 @@
 package work.fking.pangya.game.packet.outbound;
 
-import work.fking.pangya.game.player.Player;
+import work.fking.pangya.game.model.Course;
 import work.fking.pangya.game.model.CourseStatistics;
 import work.fking.pangya.game.model.PlayerBasicInfo;
 import work.fking.pangya.game.model.PlayerStatistic;
 import work.fking.pangya.game.model.PlayerTrophies;
-import work.fking.pangya.game.packet.handler.room.CreateRoomPacketHandler.Course;
+import work.fking.pangya.game.player.Player;
 import work.fking.pangya.networking.protocol.OutboundPacket;
 import work.fking.pangya.networking.protocol.ProtocolUtils;
 
@@ -78,7 +78,7 @@ public class HandoverReplies {
             }
 
             // Active Character
-            player.activeCharacter().encode(buffer);
+            player.equippedCharacter().encode(buffer);
 
             // Active Caddie
             player.activeCaddie().encode(buffer);
@@ -131,19 +131,6 @@ public class HandoverReplies {
 
             // guild info
             buffer.writeZero(277);
-
-            // Remaining unknown data (321 bytes)
-            // buffer.writeZero(321);
-
-            // Based on acrisio's:
-            // current server time (SYSTEMTIME 8 * 2 bytes)
-            // short - unknown
-            // papel shop info: short short short
-            // int unknown
-            // disabled server features: long
-            // login count? int
-            // GuildInfo, 277 bytes
-
         };
     }
 
@@ -153,12 +140,10 @@ public class HandoverReplies {
         // 5 = this id has been permanently blocked, contact support...
         // 7 = this id has been blocked, contact support...
         // 9 = reconnects too
-        // 11 = Server version missmatch
+        // 11 = Server version miss match
         // 14, 15 = only certain allowed users may join this server.
         // 16, 17 = pangya is not available in your area
         // 19...31 = Account has been transferred
-        // 210 = updates progress bar
-        // 211 = login ok?
         RECONNECT_LOGIN_SERVER(1),
         CANNOT_CONNECT_LOGIN_SERVER(3),
         ID_PERMANENTLY_BLOCKED(5),
@@ -166,8 +151,7 @@ public class HandoverReplies {
         SERVER_VERSION_MISSMATCH(11),
         NON_WHITELISTED_USER(14),
         GEO_BLOCKED(16),
-        ACCOUNT_TRANSFERRED(19),
-        ;
+        ACCOUNT_TRANSFERRED(19);
 
         private final int code;
 

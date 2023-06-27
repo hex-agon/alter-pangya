@@ -19,25 +19,21 @@ public class HelloHandler extends ChannelInboundHandlerAdapter {
 
     private static final Logger LOGGER = LogManager.getLogger(HelloHandler.class);
 
-    private final ClientLoginProtocol protocol;
     private final LoginServer loginServer;
 
-    private HelloHandler(ClientLoginProtocol protocol, LoginServer loginServer) {
-        this.protocol = protocol;
+    private HelloHandler(LoginServer loginServer) {
         this.loginServer = loginServer;
     }
 
-    public static HelloHandler create(ClientLoginProtocol protocol, LoginServer loginServer) {
-        return new HelloHandler(protocol, loginServer);
+    public static HelloHandler create(LoginServer loginServer) {
+        return new HelloHandler(loginServer);
     }
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
         var channel = ctx.channel();
         int cryptKey = Rand.maxInclusive(PangCrypt.CRYPT_KEY_MAX);
-        LOGGER.trace("New connection from {}, selected cryptKey={}", channel.remoteAddress(), cryptKey);
-
-        var player = loginServer.registerPlayer(channel);
+        LOGGER.debug("New connection from {}, selected cryptKey={}", channel.remoteAddress(), cryptKey);
 
         ctx.writeAndFlush(HelloPacket.create(cryptKey));
         var pipeline = channel.pipeline();
@@ -45,7 +41,6 @@ public class HelloHandler extends ChannelInboundHandlerAdapter {
         pipeline.remove(this);
         pipeline.replace("encoder", "encoder", ProtocolEncoder.create(cryptKey));
         pipeline.addLast("framer", new LengthFieldBasedFrameDecoder(ByteOrder.LITTLE_ENDIAN, 10000, 1, 2, 1, 0, true));
-        pipeline.addLast("decoder", GameProtocolDecoder.create(protocol, cryptKey));
-        pipeline.addLast("packetDispatcher", ClientLoginPacketDispatcher.create(loginServer, player, protocol.handlers()));
+        pipeline.addLast("loginHandler", LoginHandler.create(loginServer, cryptKey));
     }
 }

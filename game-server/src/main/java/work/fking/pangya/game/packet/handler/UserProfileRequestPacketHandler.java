@@ -16,7 +16,7 @@ public class UserProfileRequestPacketHandler implements ClientGamePacketHandler 
         var channel = player.channel();
         if (type == 5) {
             channel.write(UserStatisticsReplies.username(type, userId));
-            channel.write(UserStatisticsReplies.character(userId));
+            channel.write(UserStatisticsReplies.character(player));
             channel.write(UserStatisticsReplies.equipment(type, player));
         }
         channel.write(UserStatisticsReplies.userStatistic(type, userId));

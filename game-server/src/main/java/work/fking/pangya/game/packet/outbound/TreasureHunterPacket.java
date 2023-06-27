@@ -1,7 +1,7 @@
 package work.fking.pangya.game.packet.outbound;
 
 import io.netty.buffer.ByteBuf;
-import work.fking.pangya.game.packet.handler.room.CreateRoomPacketHandler.Course;
+import work.fking.pangya.game.model.Course;
 import work.fking.pangya.networking.protocol.OutboundPacket;
 
 public class TreasureHunterPacket implements OutboundPacket {

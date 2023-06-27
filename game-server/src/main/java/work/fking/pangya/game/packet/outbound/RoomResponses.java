@@ -1,9 +1,9 @@
 package work.fking.pangya.game.packet.outbound;
 
-import work.fking.pangya.game.player.Character;
-import work.fking.pangya.game.packet.handler.room.CreateRoomPacketHandler.Course;
-import work.fking.pangya.game.packet.handler.room.CreateRoomPacketHandler.HoleMode;
-import work.fking.pangya.game.packet.handler.room.CreateRoomPacketHandler.RoomType;
+import work.fking.pangya.game.model.Course;
+import work.fking.pangya.game.model.HoleMode;
+import work.fking.pangya.game.model.RoomType;
+import work.fking.pangya.game.player.Player;
 import work.fking.pangya.networking.protocol.OutboundPacket;
 
 import static work.fking.pangya.networking.protocol.ProtocolUtils.writeFixedSizeString;
@@ -63,13 +63,13 @@ public final class RoomResponses {
             buffer.writeZero(2);
             buffer.writeIntLE(shotTime); // shot time
             buffer.writeIntLE(gameTime); // game time
-            buffer.writeIntLE(0); // 00,00,00,00 in VS and Chat, 00,00,03,2C in Tournament and Battle, probably the trophy
+            buffer.writeIntLE(0);
             buffer.writeByte(1); // is room owner
             writePString(buffer, name);
         };
     }
 
-    public static OutboundPacket roomInitialCensus() {
+    public static OutboundPacket roomInitialCensus(Player player) {
         return buffer -> {
             buffer.writeShortLE(CENSUS_ID);
             buffer.writeByte(0); // initial room census
@@ -78,16 +78,13 @@ public final class RoomResponses {
 
             buffer.writeByte(1); // player count
 
-            // user info
-            var mock = Character.mock();
-
             buffer.writeIntLE(10); // connectionId
-            writeFixedSizeString(buffer, "Beep", 22);
+            writeFixedSizeString(buffer, player.nickname(), 22);
             writeFixedSizeString(buffer, "", 17); // guildName
-            buffer.writeByte(2); // room slot, starting at 1
+            buffer.writeByte(1); // room slot, starting at 1
             buffer.writeIntLE(0); // unknown
             buffer.writeIntLE(0); // title
-            buffer.writeIntLE(mock.iffId()); // character iff
+            buffer.writeIntLE(player.equipment().equippedCharacterUid()); // character iff
             buffer.writeIntLE(0); // skin id background
             buffer.writeIntLE(0); // skin id frame
             buffer.writeIntLE(0); // skin id sticker
@@ -97,14 +94,14 @@ public final class RoomResponses {
 
             buffer.writeShortLE(8); // unknown
 
-            buffer.writeByte(10); // possibly the user rank
+            buffer.writeByte(player.rank());
             buffer.writeZero(3);
             buffer.writeByte(0);
             buffer.writeShortLE(0);
             buffer.writeIntLE(0); // guild id
             writeFixedSizeString(buffer, "", 12);
             buffer.writeByte(0); // guild emblem id
-            buffer.writeIntLE(1335); // player id?
+            buffer.writeIntLE(player.uid());
             buffer.writeIntLE(0);
             buffer.writeShortLE(0);
             buffer.writeIntLE(0);
@@ -124,11 +121,11 @@ public final class RoomResponses {
             buffer.writeZero(106);
 
             buffer.writeByte(0); // invited?
-
             buffer.writeFloatLE(0); // avg score
+            player.equippedCharacter().encode(buffer);
+            // end room player entry
 
-            // user character
-            mock.encode(buffer);
+            buffer.writeByte(0);
         };
     }
 

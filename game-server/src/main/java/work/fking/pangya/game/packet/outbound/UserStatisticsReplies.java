@@ -6,7 +6,7 @@ import work.fking.pangya.game.player.Character;
 import work.fking.pangya.game.model.PlayerBasicInfo;
 import work.fking.pangya.game.model.PlayerStatistic;
 import work.fking.pangya.game.model.PlayerTrophies;
-import work.fking.pangya.game.packet.handler.room.CreateRoomPacketHandler.Course;
+import work.fking.pangya.game.model.Course;
 import work.fking.pangya.networking.protocol.OutboundPacket;
 
 public class UserStatisticsReplies {
@@ -23,12 +23,12 @@ public class UserStatisticsReplies {
         };
     }
 
-    public static OutboundPacket character(int userId) {
+    public static OutboundPacket character(Player player) {
         return buffer -> {
             buffer.writeShortLE(0x15e);
-            buffer.writeIntLE(userId);
+            buffer.writeIntLE(player.uid());
 
-            Character.mock().encode(buffer);
+            player.equippedCharacter().encode(buffer);
         };
     }
 

@@ -22,6 +22,14 @@ public class Equipment {
         this.player = player;
     }
 
+    public int equippedCharacterUid() {
+        return equippedCharacterUid;
+    }
+
+    public int equippedCaddieUid() {
+        return equippedCaddieUid;
+    }
+
     public void updateEquippedItems(int[] itemIffIds) {
         if (itemIffIds.length != EQUIPPED_ITEMS_SIZE) {
             throw new IllegalArgumentException("Equipped item iff ids invalid length");

@@ -31,8 +31,8 @@ public final class PangCrypt {
         }
         int salt = buffer.readUnsignedByte();
         int payloadSize = buffer.readUnsignedShortLE();
-        int unknown = buffer.readByte();
-        LOGGER.trace("Decrypt salt={}, payloadSize={}, unknown={}", salt, payloadSize, unknown);
+        int sequence = buffer.readUnsignedByte();
+        LOGGER.trace("Decrypt salt={}, payloadSize={}, sequence={}", salt, payloadSize, sequence);
         int cryptByte = PangCryptTables.SECOND[(key << 8) + salt];
 
         buffer.setByte(buffer.readerIndex(), cryptByte); // set the 5th header byte as the cryptByte

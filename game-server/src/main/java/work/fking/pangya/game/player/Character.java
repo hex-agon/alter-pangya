@@ -1,7 +1,6 @@
 package work.fking.pangya.game.player;
 
 import io.netty.buffer.ByteBuf;
-import work.fking.pangya.common.Rand;
 import work.fking.pangya.game.model.IffObject;
 import work.fking.pangya.game.model.Stat;
 
@@ -19,23 +18,6 @@ public record Character(
     private static final int PARTS = 24;
     private static final int STATS = 5;
     private static final int CARDS = 10;
-
-    public static Character mock() {
-        return new Character(
-                Rand.max(30000),
-                67108872,
-                2,
-                new int[] {
-                        136315904, 136324096, 136332288, 136340480, 136348672, 136356864, 136365056, 136373248, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-                },
-                new int[] {
-                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-                },
-                new int[] {10, 11, 9, 2, 3},
-                0,
-                new int[10]
-        );
-    }
 
     public int stat(Stat stat) {
         return stats[stat.ordinal()];

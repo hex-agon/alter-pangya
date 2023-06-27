@@ -5,10 +5,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import work.fking.pangya.login.LoginServer;
 import work.fking.pangya.login.Player;
-import work.fking.pangya.login.net.ClientLoginPacketHandler;
+import work.fking.pangya.login.net.ClientPacketHandler;
 import work.fking.pangya.login.net.LoginState;
 
-public class SelectCharacterPacketHandler implements ClientLoginPacketHandler {
+public class SelectCharacterPacketHandler implements ClientPacketHandler {
 
     private static final Logger LOGGER = LogManager.getLogger(SelectCharacterPacketHandler.class);
 

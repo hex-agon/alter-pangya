@@ -3,6 +3,9 @@ package work.fking.pangya.login.packet.outbound;
 import work.fking.pangya.networking.protocol.OutboundPacket;
 import work.fking.pangya.networking.protocol.ProtocolUtils;
 
+import static work.fking.pangya.networking.protocol.ProtocolUtils.writeFixedSizeString;
+import static work.fking.pangya.networking.protocol.ProtocolUtils.writePString;
+
 public final class LoginReplies {
 
     private static final int RESULT_PACKET_ID = 0x1;
@@ -16,7 +19,7 @@ public final class LoginReplies {
     public static OutboundPacket loginKey(String loginKey) {
         return buffer -> {
             buffer.writeShortLE(LOGIN_KEY_PACKET_ID);
-            ProtocolUtils.writePString(buffer, loginKey);
+            writePString(buffer, loginKey);
         };
     }
 
@@ -24,7 +27,7 @@ public final class LoginReplies {
         return buffer -> {
             buffer.writeShortLE(SESSION_KEY_PACKET_ID);
             buffer.writeZero(4);
-            ProtocolUtils.writePString(buffer, sessionKey);
+            writePString(buffer, sessionKey);
         };
     }
 
@@ -33,19 +36,19 @@ public final class LoginReplies {
             buffer.writeShortLE(CHAT_MACROS_PACKET_ID);
 
             for (int i = 0; i < 9; i++) {
-                ProtocolUtils.writeFixedSizeString(buffer, "Welcome to PangYa!", 64);
+                writeFixedSizeString(buffer, "Welcome to PangYa!", 64);
             }
         };
     }
 
-    public static OutboundPacket success(int userId, String username, String nickname) {
+    public static OutboundPacket success(int uid, String username, String nickname) {
         return buffer -> {
             buffer.writeShortLE(RESULT_PACKET_ID);
             buffer.writeByte(0); // success
-            ProtocolUtils.writePString(buffer, username);
-            buffer.writeIntLE(userId);
+            writePString(buffer, username);
+            buffer.writeIntLE(uid);
             buffer.writeZero(14);
-            ProtocolUtils.writePString(buffer, nickname);
+            writePString(buffer, nickname);
         };
     }
 
@@ -59,7 +62,7 @@ public final class LoginReplies {
             buffer.writeByte(error.code);
 
             if (message != null) {
-                ProtocolUtils.writePString(buffer, message);
+                writePString(buffer, message);
             }
         };
     }

@@ -1,7 +1,6 @@
 package work.fking.pangya.game.model;
 
 import io.netty.buffer.ByteBuf;
-import work.fking.pangya.game.packet.handler.room.CreateRoomPacketHandler.Course;
 
 public class CourseStatistics {
 

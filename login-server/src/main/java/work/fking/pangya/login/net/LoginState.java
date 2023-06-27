@@ -2,10 +2,6 @@ package work.fking.pangya.login.net;
 
 public enum LoginState {
     /**
-     * Initial state, authentication must be processed.
-     */
-    AUTHENTICATING,
-    /**
      * Player is now authenticated, he may now proceed to pick a nickname and base character, if needed.
      */
     AUTHENTICATED,
@@ -28,7 +24,6 @@ public enum LoginState {
 
     public boolean validTransition(LoginState to) {
         return switch (this) {
-            case AUTHENTICATING -> to == AUTHENTICATED;
             case AUTHENTICATED -> to == SELECTING_NICKNAME || to == SELECTING_CHARACTER || to == LOGGED_IN;
             case SELECTING_NICKNAME -> to == SELECTED_NICKNAME;
             case SELECTED_NICKNAME -> to == LOGGED_IN || to == SELECTING_CHARACTER;

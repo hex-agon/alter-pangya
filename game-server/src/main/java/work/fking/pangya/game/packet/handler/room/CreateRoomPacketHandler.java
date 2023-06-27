@@ -3,6 +3,9 @@ package work.fking.pangya.game.packet.handler.room;
 import io.netty.buffer.ByteBuf;
 import work.fking.pangya.common.Rand;
 import work.fking.pangya.game.GameServer;
+import work.fking.pangya.game.model.Course;
+import work.fking.pangya.game.model.HoleMode;
+import work.fking.pangya.game.model.RoomType;
 import work.fking.pangya.game.net.ClientGamePacketHandler;
 import work.fking.pangya.game.packet.outbound.RoomResponses;
 import work.fking.pangya.game.player.Player;
@@ -29,90 +32,9 @@ public class CreateRoomPacketHandler implements ClientGamePacketHandler {
         channel.write(RoomResponses.createSuccess(name, roomType, Rand.maxInclusive(127)));
         channel.write(RoomResponses.roomInfo(roomType, name, course, holeMode, holeCount, maxPlayers, shotTime, gameTime));
 
-        channel.write(RoomResponses.roomInitialCensus());
+        channel.write(RoomResponses.roomInitialCensus(player));
         channel.write(RoomResponses.loungePkt196());
         channel.write(RoomResponses.loungePkt9e());
         channel.flush();
-    }
-
-    public enum RoomType {
-        VERSUS(0),
-        CHAT(2),
-        TOURNAMENT(4),
-        PANG_BATTLE(10),
-        PRACTICE(19);
-
-        private final int id;
-
-        RoomType(int id) {
-            this.id = id;
-        }
-
-        public static RoomType forId(int id) {
-            return switch (id) {
-                case 0 -> VERSUS;
-                case 2 -> CHAT;
-                case 4 -> TOURNAMENT;
-                case 10 -> PANG_BATTLE;
-                case 19 -> PRACTICE;
-                default -> null;
-            };
-        }
-
-        public int id() {
-            return id;
-        }
-    }
-
-    public enum HoleMode {
-        FRONT,
-        BACK,
-        RANDOM,
-        SHUFFLE,
-        REPEAT,
-        SUFFLE_COURSE;
-
-        private static final HoleMode[] VALUES = values();
-
-        public static HoleMode forId(int id) {
-            if (id < VALUES.length) {
-                return VALUES[id];
-            }
-            return null;
-        }
-    }
-
-    public enum Course {
-        BLUE_LAGOON,
-        BLUE_WATER,
-        SEPIA_WIND,
-        WIND_HILL,
-        WIZ_WIZ,
-        WEST_WIZ,
-        BLUE_MOON,
-        SILVIA_CANNON,
-        ICE_CANNON,
-        WHITE_WIZ,
-        SHINING_SAND,
-        PINK_WIND,
-        UNKNOWN_12,
-        DEEP_INFERNO,
-        ICE_SPA,
-        LOST_SEAWAY,
-        EASTERN_VALLEY,
-        UNKNOWN_17,
-        ICE_INFERNO,
-        WIZ_CITY,
-        ABBOT_MINE;
-
-        public static Course forId(int id) {
-            var values = values();
-
-            if (id < values.length) {
-                return values[id];
-            } else { // anything else or random (id == 127)
-                return values[Rand.max(values.length)];
-            }
-        }
     }
 }

@@ -6,7 +6,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import work.fking.pangya.game.GameServer;
-import work.fking.pangya.game.task.LoginTask;
+import work.fking.pangya.game.task.HandoverTask;
 import work.fking.pangya.networking.crypt.PangCrypt;
 
 import static work.fking.pangya.networking.protocol.ProtocolUtils.readPString;
@@ -50,6 +50,6 @@ public class HandoverHandler extends SimpleChannelInboundHandler<ByteBuf> {
 
         LOGGER.info("Successful handover username={}, uid={}, clientVersion={}, loginKey={}, sessionKey={}", username, uid, clientVersion, loginKey, sessionKey);
 
-        gameServer.submitTask(new LoginTask(gameServer, ctx.channel(), cryptKey));
+        gameServer.submitTask(new HandoverTask(gameServer, ctx.channel(), cryptKey, sessionKey));
     }
 }

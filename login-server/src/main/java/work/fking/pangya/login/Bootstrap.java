@@ -8,6 +8,8 @@ import work.fking.pangya.common.server.ServerConfigLoader;
 import work.fking.pangya.discovery.DiscoveryClient;
 import work.fking.pangya.discovery.HeartbeatPublisher;
 import work.fking.pangya.discovery.ServerType;
+import work.fking.pangya.login.auth.Authenticator;
+import work.fking.pangya.login.auth.SessionClient;
 
 public class Bootstrap {
 
@@ -18,9 +20,10 @@ public class Bootstrap {
         try {
             var redisClient = RedisClient.create(RedisURI.create(System.getenv("REDIS_URI")));
             var discoveryClient = DiscoveryClient.create(redisClient);
+            var sessionClient = SessionClient.create(redisClient);
 
             var serverConfig = ServerConfigLoader.load("config.toml");
-            var loginServer = new LoginServer(discoveryClient, serverConfig);
+            var loginServer = new LoginServer(discoveryClient, serverConfig, sessionClient, Authenticator.NOOP_AUTHENTICATOR);
 
             LOGGER.debug("Initializing service discovery...");
             var heartbeatPublisher = HeartbeatPublisher.create(discoveryClient, ServerType.LOGIN, serverConfig, () -> 0);

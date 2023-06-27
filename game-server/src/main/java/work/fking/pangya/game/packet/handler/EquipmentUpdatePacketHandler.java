@@ -1,14 +1,14 @@
 package work.fking.pangya.game.packet.handler;
 
 import io.netty.buffer.ByteBuf;
-import work.fking.pangya.game.net.ClientGamePacketHandler;
+import work.fking.pangya.game.net.ClientPacketHandler;
 import work.fking.pangya.game.GameServer;
 import work.fking.pangya.game.player.Player;
 import work.fking.pangya.game.player.Character;
 
 import java.util.Arrays;
 
-public class EquipmentUpdatePacketHandler implements ClientGamePacketHandler {
+public class EquipmentUpdatePacketHandler implements ClientPacketHandler {
 
     private static final int TYPE_UNKNOWN0 = 0;
     private static final int TYPE_CONSUMABLES = 2;

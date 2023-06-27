@@ -14,15 +14,15 @@ public class GameProtocolDecoder extends ByteToMessageDecoder {
 
     private static final Logger LOGGER = LogManager.getLogger(GameProtocolDecoder.class);
 
-    private final ClientGameProtocol protocol;
+    private final ClientProtocol protocol;
     private final int cryptKey;
 
-    private GameProtocolDecoder(ClientGameProtocol protocol, int cryptKey) {
+    private GameProtocolDecoder(ClientProtocol protocol, int cryptKey) {
         this.protocol = protocol;
         this.cryptKey = cryptKey;
     }
 
-    public static GameProtocolDecoder create(ClientGameProtocol protocol, int cryptKey) {
+    public static GameProtocolDecoder create(ClientProtocol protocol, int cryptKey) {
         return new GameProtocolDecoder(protocol, cryptKey);
     }
 
@@ -42,6 +42,6 @@ public class GameProtocolDecoder extends ByteToMessageDecoder {
             buffer.clear();
             return;
         }
-        out.add(new ClientGamePacket(packetType, buffer.readRetainedSlice(buffer.readableBytes())));
+        out.add(new ClientPacket(packetType, buffer.readRetainedSlice(buffer.readableBytes())));
     }
 }

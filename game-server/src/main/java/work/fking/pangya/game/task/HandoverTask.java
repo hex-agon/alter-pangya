@@ -5,9 +5,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import work.fking.pangya.game.GameServer;
 import work.fking.pangya.game.SessionClient.SessionInfo;
-import work.fking.pangya.game.net.ClientGamePacketDispatcher;
-import work.fking.pangya.game.net.ClientGamePacketType;
-import work.fking.pangya.game.net.ClientGameProtocol;
+import work.fking.pangya.game.net.ClientPacketDispatcher;
+import work.fking.pangya.game.net.ClientPacketType;
+import work.fking.pangya.game.net.ClientProtocol;
 import work.fking.pangya.game.net.GameProtocolDecoder;
 import work.fking.pangya.game.packet.outbound.CookieBalancePacket;
 import work.fking.pangya.game.packet.outbound.EquipmentPacket;
@@ -22,7 +22,7 @@ import work.fking.pangya.game.packet.outbound.TreasureHunterPacket;
 public class HandoverTask implements Runnable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HandoverTask.class);
-    private static final ClientGameProtocol PROTOCOL = ClientGameProtocol.create(ClientGamePacketType.values());
+    private static final ClientProtocol PROTOCOL = ClientProtocol.create(ClientPacketType.values());
 
     private final GameServer gameServer;
     private final Channel channel;
@@ -71,7 +71,7 @@ public class HandoverTask implements Runnable {
         var pipeline = channel.pipeline();
         pipeline.remove("handoverHandler");
         pipeline.addLast("decoder", GameProtocolDecoder.create(PROTOCOL, cryptKey));
-        pipeline.addLast("packetDispatcher", ClientGamePacketDispatcher.create(gameServer, player, PROTOCOL.handlers()));
+        pipeline.addLast("packetDispatcher", ClientPacketDispatcher.create(gameServer, player, PROTOCOL.handlers()));
 
         channel.write(HandoverReplies.handoverReply(player));
         IffContainerChunkPacket.create(0x70, player.characterRoster()).forEach(channel::write);

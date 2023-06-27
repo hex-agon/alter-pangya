@@ -15,7 +15,7 @@ import work.fking.pangya.game.packet.handler.UserProfileRequestPacketHandler;
 import work.fking.pangya.game.packet.handler.room.CreateRoomPacketHandler;
 import work.fking.pangya.game.packet.handler.room.LeaveRoomPacketHandler;
 
-public enum ClientGamePacketType {
+public enum ClientPacketType {
 
     SELECT_CHANNEL(0x4, new SelectChannelPacketHandler()),
     ROOM_CREATE(0x8, new CreateRoomPacketHandler()),
@@ -38,14 +38,14 @@ public enum ClientGamePacketType {
     LOGIN_BONUS_CLAIM(0x16f, new LoginBonusClaimPacketHandler());
 
     private final int id;
-    private final ClientGamePacketHandler handler;
+    private final ClientPacketHandler handler;
 
-    ClientGamePacketType(int id) {
+    ClientPacketType(int id) {
         this(id, (server, player, packet) -> {
         }); // discard packet
     }
 
-    ClientGamePacketType(int id, ClientGamePacketHandler handler) {
+    ClientPacketType(int id, ClientPacketHandler handler) {
         this.id = id;
         this.handler = handler;
     }
@@ -54,7 +54,7 @@ public enum ClientGamePacketType {
         return id;
     }
 
-    public ClientGamePacketHandler handler() {
+    public ClientPacketHandler handler() {
         return handler;
     }
 }

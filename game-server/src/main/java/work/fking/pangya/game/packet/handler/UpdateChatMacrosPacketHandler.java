@@ -1,12 +1,12 @@
 package work.fking.pangya.game.packet.handler;
 
 import io.netty.buffer.ByteBuf;
-import work.fking.pangya.game.net.ClientGamePacketHandler;
+import work.fking.pangya.game.net.ClientPacketHandler;
 import work.fking.pangya.game.GameServer;
 import work.fking.pangya.game.player.Player;
 import work.fking.pangya.networking.protocol.ProtocolUtils;
 
-public class UpdateChatMacrosPacketHandler implements ClientGamePacketHandler {
+public class UpdateChatMacrosPacketHandler implements ClientPacketHandler {
 
     private static final int MAX_MACROS = 9;
     private static final int MACRO_LENGTH = 64;

@@ -4,7 +4,7 @@ import io.netty.buffer.ByteBuf;
 import work.fking.pangya.game.GameServer;
 import work.fking.pangya.game.player.Player;
 
-public interface ClientGamePacketHandler {
+public interface ClientPacketHandler {
 
     void handle(GameServer server, Player player, ByteBuf packet);
 }

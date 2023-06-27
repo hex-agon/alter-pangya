@@ -6,12 +6,12 @@ import work.fking.pangya.game.GameServer;
 import work.fking.pangya.game.model.Course;
 import work.fking.pangya.game.model.HoleMode;
 import work.fking.pangya.game.model.RoomType;
-import work.fking.pangya.game.net.ClientGamePacketHandler;
+import work.fking.pangya.game.net.ClientPacketHandler;
 import work.fking.pangya.game.packet.outbound.RoomResponses;
 import work.fking.pangya.game.player.Player;
 import work.fking.pangya.networking.protocol.ProtocolUtils;
 
-public class CreateRoomPacketHandler implements ClientGamePacketHandler {
+public class CreateRoomPacketHandler implements ClientPacketHandler {
 
     @Override
     public void handle(GameServer server, Player player, ByteBuf packet) {

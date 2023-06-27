@@ -1,11 +1,11 @@
 package work.fking.pangya.game.packet.handler;
 
 import io.netty.buffer.ByteBuf;
-import work.fking.pangya.game.net.ClientGamePacketHandler;
+import work.fking.pangya.game.net.ClientPacketHandler;
 import work.fking.pangya.game.GameServer;
 import work.fking.pangya.game.player.Player;
 
-public class MyRoomOpenedPacketHandler implements ClientGamePacketHandler {
+public class MyRoomOpenedPacketHandler implements ClientPacketHandler {
 
 
     @Override

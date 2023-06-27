@@ -7,26 +7,26 @@ import org.slf4j.LoggerFactory;
 import work.fking.pangya.game.GameServer;
 import work.fking.pangya.game.player.Player;
 
-public class ClientGamePacketDispatcher extends SimpleChannelInboundHandler<ClientGamePacket> {
+public class ClientPacketDispatcher extends SimpleChannelInboundHandler<ClientPacket> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ClientGamePacketDispatcher.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClientPacketDispatcher.class);
 
     private final GameServer gameServer;
     private final Player player;
-    private final ClientGamePacketHandler[] handlers;
+    private final ClientPacketHandler[] handlers;
 
-    private ClientGamePacketDispatcher(GameServer gameServer, Player player, ClientGamePacketHandler[] handlers) {
+    private ClientPacketDispatcher(GameServer gameServer, Player player, ClientPacketHandler[] handlers) {
         this.gameServer = gameServer;
         this.player = player;
         this.handlers = handlers;
     }
 
-    public static ClientGamePacketDispatcher create(GameServer gameServer, Player player, ClientGamePacketHandler[] handlers) {
-        return new ClientGamePacketDispatcher(gameServer, player, handlers);
+    public static ClientPacketDispatcher create(GameServer gameServer, Player player, ClientPacketHandler[] handlers) {
+        return new ClientPacketDispatcher(gameServer, player, handlers);
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, ClientGamePacket packet) {
+    protected void channelRead0(ChannelHandlerContext ctx, ClientPacket packet) {
         var packetId = packet.type().id();
         var handler = handlers[packetId];
 

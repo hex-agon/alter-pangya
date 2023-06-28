@@ -1,7 +1,8 @@
 package work.fking.pangya.game;
 
 import io.netty.channel.Channel;
-import work.fking.pangya.common.Rand;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import work.fking.pangya.common.server.ServerConfig;
 import work.fking.pangya.game.net.ServerChannelInitializer;
 import work.fking.pangya.game.player.Item;
@@ -10,20 +11,59 @@ import work.fking.pangya.networking.SimpleServer;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class GameServer {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(GameServer.class);
+
     private final ExecutorService executorService = Executors.newVirtualThreadPerTaskExecutor();
     private final AtomicInteger connectionIdSequence = new AtomicInteger();
+    private final AtomicInteger playerCount = new AtomicInteger();
+    private final Map<Integer, Player> players = new ConcurrentHashMap<>();
     private final ServerConfig serverConfig;
     private final SessionClient sessionClient;
+    private final List<ServerChannel> serverChannels;
 
-    public GameServer(ServerConfig serverConfig, SessionClient sessionClient) {
+    public GameServer(ServerConfig serverConfig, SessionClient sessionClient, List<ServerChannel> serverChannels) {
         this.serverConfig = serverConfig;
         this.sessionClient = sessionClient;
+        this.serverChannels = serverChannels;
+    }
+
+    public int playerCount() {
+        return playerCount.get();
+    }
+
+    public List<ServerChannel> serverChannels() {
+        return Collections.unmodifiableList(serverChannels);
+    }
+
+    public ServerChannel serverChannelById(int id) {
+        for (var serverChannel : serverChannels) {
+            if (serverChannel.id() == id) {
+                return serverChannel;
+            }
+        }
+        return null;
+    }
+
+    public SessionClient sessionClient() {
+        return sessionClient;
+    }
+
+    public void submitTask(Runnable runnable) {
+        executorService.execute(runnable);
+    }
+
+    public Player findPlayer(int connectionId) {
+        return players.get(connectionId);
     }
 
     public Player registerPlayer(Channel channel, int uid, String nickname) {
@@ -53,15 +93,21 @@ public class GameServer {
         equipment.equipClubSet(inventory.findByIffId(268435511));
         equipment.equipComet(inventory.findByIffId(335544382));
 
+        players.put(player.connectionId(), player);
+        playerCount.incrementAndGet();
+        channel.closeFuture().addListener(v -> onPlayerDisconnect(player));
         return player;
     }
 
-    public SessionClient sessionClient() {
-        return sessionClient;
-    }
+    private void onPlayerDisconnect(Player player) {
+        var channel = player.currentChannel();
 
-    public void submitTask(Runnable runnable) {
-        executorService.execute(runnable);
+        if (channel != null) {
+            channel.removePlayer(player);
+        }
+        players.remove(player.connectionId());
+        playerCount.decrementAndGet();
+        LOGGER.debug("{} disconnected", player.nickname());
     }
 
     public void start() throws IOException, InterruptedException {

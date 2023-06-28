@@ -82,6 +82,6 @@ public class HandoverTask implements Runnable {
         channel.write(new MascotRosterPacket());
         channel.write(CookieBalancePacket.create(player));
         channel.write(PangBalancePacket.create(player));
-        channel.writeAndFlush(new ServerChannelsPacket());
+        channel.writeAndFlush(new ServerChannelsPacket(gameServer.serverChannels()));
     }
 }

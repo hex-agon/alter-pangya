@@ -19,6 +19,7 @@ public enum ClientPacketType {
 
     SELECT_CHANNEL(0x4, new SelectChannelPacketHandler()),
     ROOM_CREATE(0x8, new CreateRoomPacketHandler()),
+    ROOM_SETTINGS_UPDATE(0xa),
     ROOM_LEAVE(0xf, new LeaveRoomPacketHandler()),
     EQUIPMENT_UPDATE(0x20, new EquipmentUpdatePacketHandler()),
     USER_PROFILE_REQUEST(0x2f, new UserProfileRequestPacketHandler()),

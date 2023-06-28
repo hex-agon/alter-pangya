@@ -1,6 +1,9 @@
 package work.fking.pangya.game.player;
 
 import io.netty.channel.Channel;
+import work.fking.pangya.game.ServerChannel;
+
+import java.util.Objects;
 
 public class Player {
 
@@ -15,11 +18,12 @@ public class Player {
     private final CharacterRoster characterRoster = new CharacterRoster();
     private final CaddieRoster caddieRoster = new CaddieRoster();
 
-    private int rank;
+    private int rank = 30;
     private int experience;
-
     private int pangBalance = 10000;
     private int cookieBalance;
+
+    private ServerChannel currentChannel;
 
     public Player(Channel channel, int uid, int connectionId, String nickname) {
         this.channel = channel;
@@ -91,11 +95,39 @@ public class Player {
         cookieBalance += delta;
     }
 
+    public ServerChannel currentChannel() {
+        return currentChannel;
+    }
+
+    public void setCurrentChannel(ServerChannel currentChannel) {
+        if (this.currentChannel != null) {
+            throw new IllegalArgumentException("Player is already in a channel");
+        }
+        this.currentChannel = currentChannel;
+    }
+
     public Character equippedCharacter() {
         return characterRoster.findByUid(equipment.equippedCharacterUid());
     }
 
     public Caddie activeCaddie() {
         return caddieRoster.findByUid(equipment.equippedCaddieUid());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Player player = (Player) o;
+        return uid == player.uid;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(uid);
     }
 }

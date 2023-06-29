@@ -23,6 +23,11 @@
             <version>${jackson.version}</version>
         </dependency>
         <dependency>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-kotlin</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
             <groupId>fking.work.pangya</groupId>
             <artifactId>networking</artifactId>
             <version>${project.version}</version>

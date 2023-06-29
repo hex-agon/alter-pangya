@@ -12,10 +12,22 @@
     <artifactId>networking</artifactId>
 
     <properties>
-        <typetools.version>0.6.3</typetools.version>
+        <pangya.lzo.version>1.0.0</pangya.lzo.version>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>github</id>
+            <url>https://maven.pkg.github.com/hex-agon/pangya-lzo</url>
+        </repository>
+    </repositories>
+
     <dependencies>
+        <dependency>
+            <groupId>dev.pangya</groupId>
+            <artifactId>pangya-lzo</artifactId>
+            <version>${pangya.lzo.version}</version>
+        </dependency>
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-handler</artifactId>

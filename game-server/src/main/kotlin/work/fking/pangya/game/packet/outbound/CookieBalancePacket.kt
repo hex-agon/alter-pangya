@@ -10,8 +10,8 @@ class CookieBalancePacket(
 
     constructor(player: Player) : this(player.cookieBalance())
 
-    override fun encode(target: ByteBuf) {
-        target.writeShortLE(0x96)
-        target.writeLongLE(balance.toLong())
+    override fun encode(buffer: ByteBuf) {
+        buffer.writeShortLE(0x96)
+        buffer.writeLongLE(balance.toLong())
     }
 }

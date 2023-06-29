@@ -14,9 +14,9 @@ class HelloPacket(
 
     private val unknown = byteArrayOf(0x06, 0x00, 0x00, 0x3F, 0x00, 0x01, 0x01)
 
-    override fun encode(target: ByteBuf) {
-        target.writeByte(0)
-        target.writeBytes(unknown)
-        target.writeByte(cryptKey)
+    override fun encode(buffer: ByteBuf) {
+        buffer.writeByte(0)
+        buffer.writeBytes(unknown)
+        buffer.writeByte(cryptKey)
     }
 }

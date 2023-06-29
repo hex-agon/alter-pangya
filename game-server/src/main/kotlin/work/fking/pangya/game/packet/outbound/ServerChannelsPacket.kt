@@ -10,17 +10,17 @@ class ServerChannelsPacket(
     private val serverChannels: List<ServerChannel>
 ) : OutboundPacket {
 
-    override fun encode(target: ByteBuf) {
-        target.writeShortLE(0x4d)
-        target.writeByte(serverChannels.size)
+    override fun encode(buffer: ByteBuf) {
+        buffer.writeShortLE(0x4d)
+        buffer.writeByte(serverChannels.size)
 
         for (channel in serverChannels) {
-            target.writeFixedSizeString(channel.name(), 64)
-            target.writeShortLE(channel.capacity())
-            target.writeShortLE(channel.playerCount())
-            target.writeShortLE(channel.id())
-            target.writeShortLE(pack(channel.restrictions()))
-            target.writeZero(5)
+            buffer.writeFixedSizeString(channel.name(), 64)
+            buffer.writeShortLE(channel.capacity())
+            buffer.writeShortLE(channel.playerCount())
+            buffer.writeShortLE(channel.id())
+            buffer.writeShortLE(pack(channel.restrictions()))
+            buffer.writeZero(5)
         }
     }
 

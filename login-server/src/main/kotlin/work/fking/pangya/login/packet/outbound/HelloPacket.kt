@@ -12,11 +12,11 @@ class HelloPacket(
         require(!(cryptKey < 0 || cryptKey > PangCrypt.CRYPT_KEY_MAX)) { "Crypt key out of bounds" }
     }
 
-    override fun encode(target: ByteBuf) {
-        target.writeShortLE(0xb00)
-        target.writeZero(4)
-        target.writeByte(cryptKey)
-        target.writeZero(3)
-        target.writeIntLE(10101) // suspicious value, similar to ports used by login servers
+    override fun encode(buffer: ByteBuf) {
+        buffer.writeShortLE(0xb00)
+        buffer.writeZero(4)
+        buffer.writeByte(cryptKey)
+        buffer.writeZero(3)
+        buffer.writeIntLE(10101) // suspicious value, similar to ports used by login servers
     }
 }

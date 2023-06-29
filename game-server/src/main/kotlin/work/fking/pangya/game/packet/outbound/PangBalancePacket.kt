@@ -10,8 +10,8 @@ class PangBalancePacket(
 
     constructor(player: Player) : this(player.pangBalance())
 
-    override fun encode(target: ByteBuf) {
-        target.writeShortLE(0xc8)
-        target.writeLongLE(balance.toLong())
+    override fun encode(buffer: ByteBuf) {
+        buffer.writeShortLE(0xc8)
+        buffer.writeLongLE(balance.toLong())
     }
 }

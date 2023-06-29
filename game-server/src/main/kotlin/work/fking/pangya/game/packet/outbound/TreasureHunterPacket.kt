@@ -6,12 +6,12 @@ import work.fking.pangya.networking.protocol.OutboundPacket
 
 class TreasureHunterPacket : OutboundPacket {
 
-    override fun encode(target: ByteBuf) {
-        target.writeShortLE(0x131)
-        target.writeByte(1)
-        target.writeByte(1) // entry count
+    override fun encode(buffer: ByteBuf) {
+        buffer.writeShortLE(0x131)
+        buffer.writeByte(1)
+        buffer.writeByte(1) // entry count
 
-        target.writeByte(Course.BLUE_LAGOON.ordinal)
-        target.writeIntLE(900)
+        buffer.writeByte(Course.BLUE_LAGOON.ordinal)
+        buffer.writeIntLE(900)
     }
 }

@@ -23,7 +23,7 @@ class IffContainerChunkPacket<I : IffObject>(
 
     companion object {
         private const val CHUNK_SIZE = 50
-        fun <I : IffObject> create(packetId: Int, container: IffContainer<I>): List<IffContainerChunkPacket<I>> {
+        fun <I : IffObject> chunk(packetId: Int, container: IffContainer<I>): List<IffContainerChunkPacket<I>> {
 
             return container.entries
                 .chunked(CHUNK_SIZE)

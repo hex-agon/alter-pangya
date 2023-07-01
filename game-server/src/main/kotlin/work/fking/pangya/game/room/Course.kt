@@ -1,4 +1,4 @@
-package work.fking.pangya.game.model
+package work.fking.pangya.game.room
 
 import work.fking.pangya.common.Rand
 

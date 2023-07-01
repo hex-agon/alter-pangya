@@ -1,4 +1,4 @@
-package work.fking.pangya.game.model
+package work.fking.pangya.game.room
 
 enum class HoleMode {
     FRONT,
@@ -10,10 +10,11 @@ enum class HoleMode {
 
     companion object {
         private val VALUES = values()
-        fun forId(id: Byte): HoleMode? {
+
+        fun forId(id: Byte): HoleMode {
             return if (id < VALUES.size) {
                 VALUES[id.toInt()]
-            } else null
+            } else FRONT
         }
     }
 }

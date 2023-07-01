@@ -35,7 +35,7 @@ class Equipment(private val player: Player) {
     fun equipClubSet(clubSet: Item) {
         require(clubSet.iffTypeId() == IffObject.TYPE_CLUBSET) { "Item is not a clubSet" }
         // sanity check to see if we actually own the item
-        if (player.inventory().existsByUid(clubSet.uid)) {
+        if (player.inventory.existsByUid(clubSet.uid)) {
             equippedClubSetUid = clubSet.uid
         }
     }
@@ -43,7 +43,7 @@ class Equipment(private val player: Player) {
     fun equipComet(comet: Item) {
         require(comet.iffTypeId() == IffObject.TYPE_BALL) { "Item is not a comet" }
         // sanity check to see if we actually own the item
-        if (player.inventory().existsByUid(comet.uid)) {
+        if (player.inventory.existsByUid(comet.uid)) {
             equippedCometIffId = comet.iffId
         }
     }

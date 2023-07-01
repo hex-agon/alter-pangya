@@ -1,6 +1,6 @@
 package work.fking.pangya.game.packet.outbound
 
-import work.fking.pangya.game.model.Course
+import work.fking.pangya.game.room.Course
 import work.fking.pangya.game.model.CourseStatistics
 import work.fking.pangya.game.model.PlayerBasicInfo
 import work.fking.pangya.game.model.PlayerStatistic
@@ -52,7 +52,7 @@ object HandoverReplies {
             buffer.writePString("hexserver_dev") // server name
 
             // User info
-            PlayerBasicInfo().encode(buffer)
+            PlayerBasicInfo().encode(buffer, player)
 
             // Player Statistics
             PlayerStatistic().encode(buffer)
@@ -61,7 +61,7 @@ object HandoverReplies {
             PlayerTrophies().encode(buffer)
 
             // Player equipment
-            player.equipment().encode(buffer)
+            player.equipment.encode(buffer)
 
             // Season historical stats
             for (i in 0..11) { // for each season...

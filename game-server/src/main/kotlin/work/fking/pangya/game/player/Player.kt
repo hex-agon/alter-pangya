@@ -2,89 +2,49 @@ package work.fking.pangya.game.player
 
 import io.netty.channel.Channel
 import work.fking.pangya.game.ServerChannel
+import work.fking.pangya.game.room.Room
 import java.util.Objects
+import kotlin.math.max
 
-class Player(private val channel: Channel, private val uid: Int, private val connectionId: Int, private val nickname: String) {
-    private val inventory = Inventory()
-    private val equipment = Equipment(this)
-    private val characterRoster = CharacterRoster()
-    private val caddieRoster = CaddieRoster()
+class Player(
+    private val channel: Channel,
+    val uid: Int,
+    val connectionId: Int,
+    val username: String,
+    val nickname: String
+) {
+    val inventory = Inventory()
+    val equipment = Equipment(this)
+    val characterRoster = CharacterRoster()
+    val caddieRoster = CaddieRoster()
 
-    private val rank = 30
-    private var experience = 0
-    private var pangBalance = 10000
-    private var cookieBalance = 0
-    private var currentChannel: ServerChannel? = null
+    var rank = 0
+        private set
+    var experience = 0
+        set(value) {
+            require(value >= 0) { "Cannot add negative experience" }
+            field += value
+        }
 
-    fun channel(): Channel {
-        return channel
-    }
+    var pangBalance = 10000
+        set(value) {
+            field = max(0, value)
+        }
+    var cookieBalance = 0
+        set(value) {
+            field = max(0, value)
+        }
 
-    fun uid(): Int {
-        return uid
-    }
-
-    fun connectionId(): Int {
-        return connectionId
-    }
-
-    fun nickname(): String {
-        return nickname
-    }
-
-    fun inventory(): Inventory {
-        return inventory
-    }
-
-    fun equipment(): Equipment {
-        return equipment
-    }
-
-    fun characterRoster(): CharacterRoster {
-        return characterRoster
-    }
-
-    fun caddieRoster(): CaddieRoster {
-        return caddieRoster
-    }
-
-    fun rank(): Int {
-        return rank
-    }
-
-    fun experience(): Int {
-        return experience
-    }
-
-    fun addExperience(amount: Int) {
-        require(amount >= 0) { "Cannot add negative experience" }
-        experience += amount
-    }
-
-    fun pangBalance(): Int {
-        return pangBalance
-    }
-
-    fun updatePangBalance(delta: Int) {
-        pangBalance += delta
-    }
-
-    fun cookieBalance(): Int {
-        return cookieBalance
-    }
-
-    fun updateCookieBalance(delta: Int) {
-        cookieBalance += delta
-    }
-
-    fun currentChannel(): ServerChannel? {
-        return currentChannel
-    }
-
-    fun setCurrentChannel(currentChannel: ServerChannel) {
-        require(this.currentChannel == null) { "Player is already in a channel" }
-        this.currentChannel = currentChannel
-    }
+    var currentChannel: ServerChannel? = null
+        set(value) {
+            require(this.currentChannel == null) { "Player is already in a channel" }
+            field = value
+        }
+    var currentRoom: Room? = null
+        set(value) {
+            if (value != null) require(this.currentRoom == null) { "Player is already in a room" }
+            field = value
+        }
 
     fun equippedCharacter(): Character {
         return characterRoster.findByUid(equipment.equippedCharacterUid()) ?: throw IllegalStateException("Player does not have a equipped character")
@@ -92,6 +52,18 @@ class Player(private val channel: Channel, private val uid: Int, private val con
 
     fun activeCaddie(): Caddie? {
         return caddieRoster.findByUid(equipment.equippedCaddieUid())
+    }
+
+    fun write(message: Any) {
+        channel.write(message)
+    }
+
+    fun writeAndFlush(message: Any) {
+        channel.writeAndFlush(message)
+    }
+
+    fun flush() {
+        channel.flush()
     }
 
     override fun equals(other: Any?): Boolean {

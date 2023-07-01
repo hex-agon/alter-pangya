@@ -8,6 +8,6 @@ import work.fking.pangya.game.player.Player
 
 class RareShopOpenPacketHandler : ClientPacketHandler {
     override fun handle(server: GameServer, player: Player, packet: ByteBuf) {
-        player.channel().writeAndFlush(RareShopOpenResponsePacket())
+        player.writeAndFlush(RareShopOpenResponsePacket())
     }
 }

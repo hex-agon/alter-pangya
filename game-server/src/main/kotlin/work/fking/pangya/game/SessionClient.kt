@@ -1,6 +1,7 @@
 package work.fking.pangya.game
 
-import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import io.lettuce.core.RedisClient
 import io.lettuce.core.api.sync.RedisCommands
 
@@ -9,11 +10,11 @@ class SessionClient(
 ) {
     constructor(redisClient: RedisClient) : this(redisClient.connect().sync())
 
-    private val objectMapper = ObjectMapper()
+    private val objectMapper = jacksonObjectMapper()
 
     fun loadSession(sessionKey: String): SessionInfo? {
         val json = redisCommands[sessionKey] ?: return null
-        return objectMapper.readValue(json, SessionInfo::class.java)
+        return objectMapper.readValue<SessionInfo>(json)
     }
 
     @JvmRecord

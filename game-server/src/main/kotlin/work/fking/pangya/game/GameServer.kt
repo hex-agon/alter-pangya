@@ -21,7 +21,10 @@ class GameServer(
     private val sessionClient: SessionClient,
     private val serverChannels: List<ServerChannel>
 ) {
-    private val logger = LoggerFactory.getLogger(GameServer::class.java)
+    private companion object {
+        @JvmStatic
+        private val LOGGER = LoggerFactory.getLogger(GameServer::class.java)
+    }
 
     private val executorService = Executors.newVirtualThreadPerTaskExecutor()
     private val connectionIdSequence = AtomicInteger()
@@ -38,7 +41,7 @@ class GameServer(
 
     fun serverChannelById(id: Int): ServerChannel? {
         for (serverChannel in serverChannels) {
-            if (serverChannel.id() == id) {
+            if (serverChannel.id == id) {
                 return serverChannel
             }
         }
@@ -57,13 +60,15 @@ class GameServer(
         return players[connectionId]
     }
 
-    fun registerPlayer(channel: Channel, uid: Int, nickname: String): Player {
-        val player = Player(channel, uid, connectionIdSequence.incrementAndGet(), nickname)
-        val characterRoster = player.characterRoster()
+    fun registerPlayer(channel: Channel, uid: Int, username: String, nickname: String): Player {
+        val player = Player(channel, uid, connectionIdSequence.incrementAndGet(), username, nickname)
+        val characterRoster = player.characterRoster
         characterRoster.unlockCharacter(67108872)
-        val caddieRoster = player.caddieRoster()
+
+        val caddieRoster = player.caddieRoster
         caddieRoster.unlockCaddie(469762048)
-        val inventory = player.inventory()
+
+        val inventory = player.inventory
         inventory.add(Item(iffId = 268435511)) // clubset
         inventory.add(Item(iffId = 335544382, quantity = 100)) // comets
         inventory.add(Item(iffId = 436207656, quantity = 100)) // papel shop coupons
@@ -73,26 +78,25 @@ class GameServer(
         inventory.add(Item(iffId = 136423465))
         inventory.add(Item(iffId = 136456205))
         inventory.add(Item(iffId = 136456192))
-        val equipment = player.equipment()
 
+        val equipment = player.equipment
         characterRoster.findByIffId(67108872)?.let(equipment::equipCharacter)
-
         caddieRoster.findByIffId(469762048)?.let(equipment::equipCaddie)
         inventory.findByIffId(268435511)?.let(equipment::equipClubSet)
         inventory.findByIffId(335544382)?.let(equipment::equipComet)
 
-        players[player.connectionId()] = player
+        players[player.connectionId] = player
         playerCount.incrementAndGet()
         channel.closeFuture().addListener { onPlayerDisconnect(player) }
         return player
     }
 
     private fun onPlayerDisconnect(player: Player) {
-        val channel = player.currentChannel()
+        val channel = player.currentChannel
         channel?.removePlayer(player)
-        players.remove(player.connectionId())
+        players.remove(player.connectionId)
         playerCount.decrementAndGet()
-        logger.debug("{} disconnected", player.nickname())
+        LOGGER.debug("{} disconnected", player.nickname)
     }
 
     fun start() {
@@ -105,13 +109,13 @@ class GameServer(
             .childOption(ChannelOption.TCP_NODELAY, true)
             .childHandler(ServerChannelInitializer(this))
 
-        logger.info("Binding to port {}...", serverConfig.port)
+        LOGGER.info("Binding to port {}...", serverConfig.port)
         try {
             val inetAddress = InetAddress.getByName(serverConfig.bindAddress)
             val channel = bootstrap.bind(inetAddress, serverConfig.port)
                 .sync()
                 .channel()
-            logger.info("Successfully bound to port {}, server bootstrap completed!", serverConfig.port)
+            LOGGER.info("Successfully bound to port {}, server bootstrap completed!", serverConfig.port)
             channel.closeFuture().sync()
         } finally {
             bossGroup.shutdownGracefully()

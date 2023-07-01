@@ -14,13 +14,10 @@ class SelectChannelPacketHandler : ClientPacketHandler {
 
     override fun handle(server: GameServer, player: Player, packet: ByteBuf) {
         val channelId = packet.readUnsignedByte()
-        val channel = server.serverChannelById(channelId.toInt())
-        if (channel == null) {
-            LOGGER.warn("Player {} tried to join an unknown channel {}", player.nickname(), channelId)
-            return
-        }
-        LOGGER.info("Player {} joined channel {}", player.nickname(), channel.name())
-        player.channel().writeAndFlush(SelectChannelResultPacket())
+        val channel = server.serverChannelById(channelId.toInt()) ?: throw IllegalStateException("unknown serverChannelId=$channelId")
+        channel.addPlayer(player)
+        LOGGER.info("Player {} joined channel {}", player.nickname, channel.name)
+        player.writeAndFlush(SelectChannelResultPacket())
     }
 
 }

@@ -14,6 +14,7 @@ import work.fking.pangya.game.packet.handler.UpdateChatMacrosPacketHandler
 import work.fking.pangya.game.packet.handler.UserProfileRequestPacketHandler
 import work.fking.pangya.game.packet.handler.room.CreateRoomPacketHandler
 import work.fking.pangya.game.packet.handler.room.LeaveRoomPacketHandler
+import work.fking.pangya.game.packet.handler.room.RoomSettingsUpdatePacketHandler
 
 enum class ClientPacketType(
     private val id: Int,
@@ -21,7 +22,7 @@ enum class ClientPacketType(
 ) {
     SELECT_CHANNEL(0x4, SelectChannelPacketHandler()),
     ROOM_CREATE(0x8, CreateRoomPacketHandler()),
-    ROOM_SETTINGS_UPDATE(0xa),
+    ROOM_SETTINGS_UPDATE(0xa, RoomSettingsUpdatePacketHandler()),
     ROOM_LEAVE(0xf, LeaveRoomPacketHandler()),
     EQUIPMENT_UPDATE(0x20, EquipmentUpdatePacketHandler()),
     USER_PROFILE_REQUEST(0x2f, UserProfileRequestPacketHandler()),

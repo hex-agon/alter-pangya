@@ -9,7 +9,7 @@ class EquipmentPacket(
     private val equipment: Equipment
 ) : OutboundPacket {
 
-    constructor(player: Player) : this(player.equipment())
+    constructor(player: Player) : this(player.equipment)
 
     override fun encode(buffer: ByteBuf) {
         buffer.writeShortLE(0x72)

@@ -15,11 +15,11 @@ class ServerChannelsPacket(
         buffer.writeByte(serverChannels.size)
 
         for (channel in serverChannels) {
-            buffer.writeFixedSizeString(channel.name(), 64)
-            buffer.writeShortLE(channel.capacity())
+            buffer.writeFixedSizeString(channel.name, 64)
+            buffer.writeShortLE(channel.capacity)
             buffer.writeShortLE(channel.playerCount())
-            buffer.writeShortLE(channel.id())
-            buffer.writeShortLE(pack(channel.restrictions()))
+            buffer.writeShortLE(channel.id)
+            buffer.writeShortLE(pack(channel.restrictions))
             buffer.writeZero(5)
         }
     }

@@ -1,4 +1,4 @@
-package work.fking.pangya.game.net
+package work.fking.pangya.login.net
 
 import io.netty.buffer.ByteBuf
 import io.netty.buffer.ByteBufUtil
@@ -7,13 +7,13 @@ import io.netty.handler.codec.ByteToMessageDecoder
 import org.apache.logging.log4j.LogManager
 import work.fking.pangya.networking.crypt.PangCrypt
 
-class GameProtocolDecoder(
+class ProtocolDecoder(
     private val protocol: ClientProtocol,
     private val cryptKey: Int
 ) : ByteToMessageDecoder() {
 
     companion object {
-        private val LOGGER = LogManager.getLogger(GameProtocolDecoder::class.java)
+        private val LOGGER = LogManager.getLogger(ProtocolDecoder::class.java)
     }
 
     override fun decode(ctx: ChannelHandlerContext, buffer: ByteBuf, out: MutableList<Any>) {
@@ -32,3 +32,4 @@ class GameProtocolDecoder(
         out.add(ClientPacket(packetType, buffer.readRetainedSlice(buffer.readableBytes())))
     }
 }
+

@@ -9,7 +9,11 @@ import work.fking.pangya.login.packet.outbound.LoginReplies
 
 class SelectServerPacketHandler : ClientPacketHandler {
 
-    // TODO: move out of eventloop
+    companion object {
+        @JvmStatic
+        private val LOGGER = LoggerFactory.getLogger(SelectServerPacketHandler::class.java)
+    }
+
     override fun handle(server: LoginServer, player: Player, packet: ByteBuf) {
         val serverId = packet.readShortLE().toInt()
         LOGGER.info("Player {} is being handed over to serverId={} with loginKey={} and sessionKey={}", player.uid, serverId, player.loginKey, player.sessionKey)
@@ -17,7 +21,4 @@ class SelectServerPacketHandler : ClientPacketHandler {
         player.channel.writeAndFlush(LoginReplies.sessionKey(player.sessionKey))
     }
 
-    companion object {
-        private val LOGGER = LoggerFactory.getLogger(SelectServerPacketHandler::class.java)
-    }
 }

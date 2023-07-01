@@ -46,8 +46,8 @@ class PlayerStatistic {
         buffer.writeIntLE(0) // ladder win?
         buffer.writeIntLE(0) // ladder lose?
         buffer.writeIntLE(0) // ladder draw?
-        buffer.writeIntLE(1) // combo numerator !
-        buffer.writeIntLE(2) // combo denominator !
+        buffer.writeIntLE(1) // game combo current streak !
+        buffer.writeIntLE(2) // game combo best streak !
         buffer.writeIntLE(3) // total games quit (used for quit rate) !
         buffer.writeIntLE(540) // total pangs won in pang battle !
         buffer.writeIntLE(0)

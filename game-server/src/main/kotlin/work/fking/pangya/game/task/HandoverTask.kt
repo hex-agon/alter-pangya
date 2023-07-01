@@ -7,7 +7,7 @@ import work.fking.pangya.game.SessionClient
 import work.fking.pangya.game.net.ClientPacketDispatcher
 import work.fking.pangya.game.net.ClientPacketType
 import work.fking.pangya.game.net.ClientProtocol
-import work.fking.pangya.game.net.GameProtocolDecoder
+import work.fking.pangya.game.net.ProtocolDecoder
 import work.fking.pangya.game.packet.outbound.CookieBalancePacket
 import work.fking.pangya.game.packet.outbound.EquipmentPacket
 import work.fking.pangya.game.packet.outbound.HandoverReplies
@@ -59,19 +59,19 @@ class HandoverTask(
             }
         }
         // if no error, register it
-        val player = gameServer.registerPlayer(channel, sessionInfo.uid, sessionInfo.nickname)
+        val player = gameServer.registerPlayer(channel, sessionInfo.uid, sessionInfo.username, sessionInfo.nickname)
 
         // modify the pipeline
         val pipeline = channel.pipeline()
         pipeline.remove("handoverHandler")
-        pipeline.addLast("decoder", GameProtocolDecoder(PROTOCOL, cryptKey))
+        pipeline.addLast("decoder", ProtocolDecoder(PROTOCOL, cryptKey))
         pipeline.addLast("packetDispatcher", ClientPacketDispatcher(gameServer, player, PROTOCOL.handlers()))
 
         channel.write(HandoverReplies.handoverReply(player))
-        IffContainerChunkPacket.create(0x70, player.characterRoster()).forEach(channel::write)
-        IffContainerChunkPacket.create(0x71, player.caddieRoster()).forEach(channel::write)
+        IffContainerChunkPacket.chunk(0x70, player.characterRoster).forEach(channel::write)
+        IffContainerChunkPacket.chunk(0x71, player.caddieRoster).forEach(channel::write)
         channel.write(EquipmentPacket(player))
-        IffContainerChunkPacket.create(0x73, player.inventory()).forEach(channel::write)
+        IffContainerChunkPacket.chunk(0x73, player.inventory).forEach(channel::write)
         channel.write(TreasureHunterPacket())
         channel.write(MascotRosterPacket())
         channel.write(CookieBalancePacket(player))

@@ -1,6 +1,7 @@
 package work.fking.pangya.game.model
 
 import io.netty.buffer.ByteBuf
+import work.fking.pangya.game.room.Course
 
 class CourseStatistics(
     private val course: Course

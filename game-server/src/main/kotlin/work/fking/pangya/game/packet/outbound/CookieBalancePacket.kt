@@ -8,7 +8,7 @@ class CookieBalancePacket(
     private val balance: Int
 ) : OutboundPacket {
 
-    constructor(player: Player) : this(player.cookieBalance())
+    constructor(player: Player) : this(player.cookieBalance)
 
     override fun encode(buffer: ByteBuf) {
         buffer.writeShortLE(0x96)

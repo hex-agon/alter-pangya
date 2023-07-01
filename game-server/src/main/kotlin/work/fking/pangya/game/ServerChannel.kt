@@ -1,15 +1,18 @@
 package work.fking.pangya.game
 
 import work.fking.pangya.game.player.Player
+import work.fking.pangya.game.room.RoomManager
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicInteger
 
 class ServerChannel(
-    private val id: Int,
-    private val name: String,
-    private val capacity: Int,
-    private val restrictions: List<Restriction>
+    val id: Int,
+    val name: String,
+    val capacity: Int,
+    val restrictions: List<Restriction>
 ) {
+    val roomManager: RoomManager = RoomManager()
+
     private val playerCount = AtomicInteger()
     private val players: MutableMap<Int, Player> = ConcurrentHashMap()
 
@@ -18,35 +21,19 @@ class ServerChannel(
     }
 
     fun addPlayer(player: Player) {
-        players[player.connectionId()] = player
+        player.currentChannel = this
+        players[player.connectionId] = player
         playerCount.incrementAndGet()
     }
 
     fun removePlayer(player: Player) {
-        players.remove(player.connectionId())
+        players.remove(player.connectionId)
         playerCount.decrementAndGet()
-    }
-
-    fun id(): Int {
-        return id
-    }
-
-    fun name(): String {
-        return name
-    }
-
-    fun capacity(): Int {
-        return capacity
-    }
-
-    fun restrictions(): List<Restriction> {
-        return restrictions
     }
 
     fun playerCount(): Int {
         return playerCount.get()
     }
-
 
     override fun toString(): String {
         return "ServerChannel[" +

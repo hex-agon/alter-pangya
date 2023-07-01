@@ -8,7 +8,7 @@ import work.fking.pangya.login.auth.UserInfo
 import work.fking.pangya.login.net.ClientPacketDispatcher
 import work.fking.pangya.login.net.ClientPacketType
 import work.fking.pangya.login.net.ClientProtocol
-import work.fking.pangya.login.net.GameProtocolDecoder
+import work.fking.pangya.login.net.ProtocolDecoder
 import work.fking.pangya.login.net.LoginState
 import work.fking.pangya.login.packet.outbound.LoginReplies
 import work.fking.pangya.login.packet.outbound.ServerListReplies
@@ -44,7 +44,7 @@ class LoginTask(
 
         val pipeline = channel.pipeline()
         pipeline.remove("loginHandler")
-        pipeline.addLast("decoder", GameProtocolDecoder(PROTOCOL, cryptKey))
+        pipeline.addLast("decoder", ProtocolDecoder(PROTOCOL, cryptKey))
         pipeline.addLast("packetDispatcher", ClientPacketDispatcher(loginServer, player, PROTOCOL.handlers()))
 
         channel.write(LoginReplies.loginKey(player.loginKey))

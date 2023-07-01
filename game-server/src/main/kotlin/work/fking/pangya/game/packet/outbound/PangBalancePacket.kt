@@ -8,7 +8,7 @@ class PangBalancePacket(
     private val balance: Int
 ) : OutboundPacket {
 
-    constructor(player: Player) : this(player.pangBalance())
+    constructor(player: Player) : this(player.pangBalance)
 
     override fun encode(buffer: ByteBuf) {
         buffer.writeShortLE(0xc8)

@@ -31,6 +31,8 @@ class Room(
                 ownerUid = findNewOwner()
                 LOGGER.debug("Room $id had no owner, ${player.nickname} is now the owner ($ownerUid)")
             }
+            // for a practice room...
+            player.write(RoomReplies.roomSettings(this))
             player.write(RoomReplies.joinAck(this))
             player.writeAndFlush(RoomReplies.roomCensusList(players))
         }
@@ -84,9 +86,9 @@ class Room(
 
     fun encodeInfo(buffer: ByteBuf) {
         buffer.writeFixedSizeString(settings.name, 64)
-        buffer.writeByte(if (settings.password != null) 1 else 0)
-        buffer.writeByte(1)
-        buffer.writeByte(0)
+        buffer.writeByte(if (settings.password == null) 1 else 0) // public room
+        buffer.writeByte(1) // room in 'waiting' mode
+        buffer.writeByte(0) // joinable after start
         buffer.writeByte(settings.maxPlayers)
         buffer.writeByte(playerCount())
         buffer.writeZero(17)
@@ -101,8 +103,8 @@ class Room(
         buffer.writeIntLE(settings.trophyIffId())
         buffer.writeShortLE(0)
         buffer.writeZero(66) // guildInfo
-        buffer.writeIntLE(0)
-        buffer.writeIntLE(0)
+        buffer.writeIntLE(100)
+        buffer.writeIntLE(100)
         buffer.writeIntLE(ownerUid)
         buffer.writeByte(settings.type.id)
         buffer.writeIntLE(settings.artifactIffId)

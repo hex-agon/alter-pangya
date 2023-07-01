@@ -43,6 +43,7 @@ object RoomReplies {
     }
 
     fun roomCensusList(roomPlayers: List<RoomPlayer>): OutboundPacket {
+        // it seems like this packet can be chunked
         return OutboundPacket { buffer ->
             buffer.writeShortLE(PACKET_CENSUS)
             buffer.writeByte(CENSUS_LIST)

@@ -1,4 +1,4 @@
-package work.fking.pangya.game.model
+package work.fking.pangya.game.player
 
 import io.netty.buffer.ByteBuf
 import work.fking.pangya.game.player.Player

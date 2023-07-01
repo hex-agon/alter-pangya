@@ -48,8 +48,8 @@ object HandoverReplies {
             buffer.writeByte(0) // sub packet type
 
             // Server Info
-            buffer.writePString("US852") // server version
-            buffer.writePString("hexserver_dev") // server name
+            buffer.writePString("852.00") // server version
+            buffer.writePString("alter-pangya") // server name
 
             // User info
             PlayerBasicInfo().encode(buffer, player)

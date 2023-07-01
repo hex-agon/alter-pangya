@@ -10,7 +10,7 @@ import work.fking.pangya.networking.protocol.readPString
 class ReconnectPacketHandler : ClientPacketHandler {
     override fun handle(server: LoginServer, player: Player, packet: ByteBuf) {
         val username = packet.readPString()
-        val userId = packet.readIntLE()
+        val playerUid = packet.readIntLE()
         val loginKey = packet.readPString()
 
         player.channel.writeAndFlush(error(LoginReplies.Error.INVALID_ID_PW))

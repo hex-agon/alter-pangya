@@ -34,7 +34,7 @@ class Room(
             // for a practice room...
             player.write(RoomReplies.roomSettings(this))
             player.write(RoomReplies.joinAck(this))
-            player.writeAndFlush(RoomReplies.roomCensusList(players))
+            player.writeAndFlush(RoomReplies.roomCensusList(players, settings.type.extendedInfo))
         }
     }
 
@@ -87,7 +87,7 @@ class Room(
     fun encodeInfo(buffer: ByteBuf) {
         buffer.writeFixedSizeString(settings.name, 64)
         buffer.writeByte(if (settings.password == null) 1 else 0) // public room
-        buffer.writeByte(1) // room in 'waiting' mode
+        buffer.writeByte(1) // room is joinable, game hasn't started, if 0 it is not possible to join unless the byte below is on
         buffer.writeByte(0) // joinable after start
         buffer.writeByte(settings.maxPlayers)
         buffer.writeByte(playerCount())

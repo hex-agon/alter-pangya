@@ -9,7 +9,7 @@ import work.fking.pangya.game.player.Player
 class UserProfileRequestPacketHandler : ClientPacketHandler {
 
     override fun handle(server: GameServer, player: Player, packet: ByteBuf) {
-        val userId = packet.readIntLE()
+        val playerUid = packet.readIntLE()
         val type = packet.readByte()
 
         if (type.toInt() == 5) {
@@ -17,10 +17,10 @@ class UserProfileRequestPacketHandler : ClientPacketHandler {
             player.write(UserStatisticsReplies.character(player))
             player.write(UserStatisticsReplies.equipment(type.toInt(), player))
         }
-        player.write(UserStatisticsReplies.userStatistic(type.toInt(), userId))
-        player.write(UserStatisticsReplies.courseStatistic(type.toInt(), userId))
-        player.write(UserStatisticsReplies.trophies(type.toInt(), userId))
-        player.write(UserStatisticsReplies.ack(true, type.toInt(), userId))
+        player.write(UserStatisticsReplies.userStatistic(type.toInt(), playerUid))
+        player.write(UserStatisticsReplies.courseStatistic(type.toInt(), playerUid))
+        player.write(UserStatisticsReplies.trophies(type.toInt(), playerUid))
+        player.write(UserStatisticsReplies.ack(true, type.toInt(), playerUid))
         player.flush()
     }
 }

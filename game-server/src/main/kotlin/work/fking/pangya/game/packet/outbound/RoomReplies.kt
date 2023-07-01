@@ -5,10 +5,11 @@ import work.fking.pangya.game.room.RoomPlayer
 import work.fking.pangya.networking.protocol.OutboundPacket
 
 object RoomReplies {
+    private const val PACKET_LIST = 0x47
+    private const val PACKET_PLAYER_CENSUS = 0x48
     private const val PACKET_JOIN = 0x49
     private const val PACKET_ROOM_SETTINGS = 0x4a
     private const val PACKET_LEAVE = 0x4c
-    private const val PACKET_CENSUS = 0x48
 
     private const val CENSUS_LIST = 0
     private const val CENSUS_ADD = 1
@@ -18,6 +19,31 @@ object RoomReplies {
     private const val JOIN_SUCCESS = 0
     private const val JOIN_ALREADY_STARTED = 8
     private const val JOIN_CANNOT_CREATE = 18
+
+    fun list(rooms: List<Room>): OutboundPacket {
+        return OutboundPacket { buffer ->
+            buffer.writeShortLE(PACKET_LIST)
+            buffer.writeByte(rooms.size)
+            buffer.writeByte(0)
+
+            buffer.writeShortLE(-1)
+            rooms.forEach { it.encodeInfo(buffer) }
+        }
+    }
+
+    fun joinAlreadyStarted(): OutboundPacket {
+        return OutboundPacket { buffer ->
+            buffer.writeShortLE(PACKET_JOIN)
+            buffer.writeByte(JOIN_ALREADY_STARTED)
+        }
+    }
+
+    fun joinCannotCreate(): OutboundPacket {
+        return OutboundPacket { buffer ->
+            buffer.writeShortLE(PACKET_JOIN)
+            buffer.writeByte(JOIN_CANNOT_CREATE)
+        }
+    }
 
     fun joinAck(room: Room): OutboundPacket {
         return OutboundPacket { buffer ->
@@ -42,40 +68,40 @@ object RoomReplies {
         }
     }
 
-    fun roomCensusList(roomPlayers: List<RoomPlayer>): OutboundPacket {
+    fun roomCensusList(roomPlayers: List<RoomPlayer>, extendedInfo: Boolean): OutboundPacket {
         // it seems like this packet can be chunked
         return OutboundPacket { buffer ->
-            buffer.writeShortLE(PACKET_CENSUS)
+            buffer.writeShortLE(PACKET_PLAYER_CENSUS)
             buffer.writeByte(CENSUS_LIST)
             buffer.writeShortLE(-1)
             buffer.writeByte(roomPlayers.size)
-            roomPlayers.forEach { it.encode(buffer) }
+            roomPlayers.forEach { it.encode(buffer, extendedInfo) }
             buffer.writeByte(0)
         }
     }
 
-    fun roomCensusAdd(player: RoomPlayer): OutboundPacket {
+    fun roomCensusAdd(player: RoomPlayer, extendedInfo: Boolean): OutboundPacket {
         return OutboundPacket { buffer ->
-            buffer.writeShortLE(PACKET_CENSUS)
+            buffer.writeShortLE(PACKET_PLAYER_CENSUS)
             buffer.writeByte(CENSUS_ADD)
-            player.encode(buffer)
+            player.encode(buffer, extendedInfo)
         }
     }
 
     fun roomCensusRemove(player: RoomPlayer): OutboundPacket {
         return OutboundPacket { buffer ->
-            buffer.writeShortLE(PACKET_CENSUS)
+            buffer.writeShortLE(PACKET_PLAYER_CENSUS)
             buffer.writeByte(CENSUS_REMOVE)
             buffer.writeIntLE(player.connectionId)
         }
     }
 
-    fun roomCensusUpdate(player: RoomPlayer): OutboundPacket {
+    fun roomCensusUpdate(player: RoomPlayer, extendedInfo: Boolean): OutboundPacket {
         return OutboundPacket { buffer ->
-            buffer.writeShortLE(PACKET_CENSUS)
+            buffer.writeShortLE(PACKET_PLAYER_CENSUS)
             buffer.writeByte(CENSUS_UPDATE)
             buffer.writeIntLE(player.connectionId) // intentionally duplicated
-            player.encode(buffer)
+            player.encode(buffer, extendedInfo)
         }
     }
 
@@ -90,25 +116,11 @@ object RoomReplies {
         }
     }
 
-    fun loungePkt9e(): OutboundPacket {
+    fun loungeUpdateWeather(): OutboundPacket {
         return OutboundPacket { buffer ->
             buffer.writeShortLE(0x9e)
             buffer.writeShortLE(0) // weather
             buffer.writeIntLE(1)
-        }
-    }
-
-    fun alreadyStarted(): OutboundPacket {
-        return OutboundPacket { buffer ->
-            buffer.writeShortLE(PACKET_JOIN)
-            buffer.writeByte(JOIN_ALREADY_STARTED)
-        }
-    }
-
-    fun cannotCreate(): OutboundPacket {
-        return OutboundPacket { buffer ->
-            buffer.writeShortLE(PACKET_JOIN)
-            buffer.writeByte(JOIN_CANNOT_CREATE)
         }
     }
 }

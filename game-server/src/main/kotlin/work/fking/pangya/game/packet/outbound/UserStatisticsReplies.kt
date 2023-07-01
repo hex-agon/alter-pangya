@@ -37,20 +37,20 @@ object UserStatisticsReplies {
         }
     }
 
-    fun userStatistic(requestType: Int, userId: Int): OutboundPacket {
+    fun userStatistic(requestType: Int, playerUid: Int): OutboundPacket {
         return OutboundPacket { buffer ->
             buffer.writeShortLE(0x158)
             buffer.writeByte(requestType)
-            buffer.writeIntLE(userId)
+            buffer.writeIntLE(playerUid)
             PlayerStatistic().encode(buffer)
         }
     }
 
-    fun courseStatistic(requestType: Int, userId: Int): OutboundPacket {
+    fun courseStatistic(requestType: Int, playerUid: Int): OutboundPacket {
         return OutboundPacket { buffer ->
             buffer.writeShortLE(0x15c)
             buffer.writeByte(requestType)
-            buffer.writeIntLE(userId)
+            buffer.writeIntLE(playerUid)
 
             // standard mode count
             buffer.writeIntLE(3)
@@ -64,21 +64,21 @@ object UserStatisticsReplies {
         }
     }
 
-    fun trophies(requestType: Int, userId: Int): OutboundPacket {
+    fun trophies(requestType: Int, playerUid: Int): OutboundPacket {
         return OutboundPacket { buffer ->
             buffer.writeShortLE(0x159)
             buffer.writeByte(requestType)
-            buffer.writeIntLE(userId)
+            buffer.writeIntLE(playerUid)
             PlayerTrophies().encode(buffer)
         }
     }
 
-    fun ack(valid: Boolean, requestType: Int, userId: Int): OutboundPacket {
+    fun ack(valid: Boolean, requestType: Int, playerUid: Int): OutboundPacket {
         return OutboundPacket { buffer ->
             buffer.writeShortLE(0x89)
             buffer.writeIntLE(if (valid) 1 else 2) // 1 = valid, 2 = error
             buffer.writeByte(requestType)
-            buffer.writeIntLE(userId)
+            buffer.writeIntLE(playerUid)
         }
     }
 }

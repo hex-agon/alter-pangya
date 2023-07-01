@@ -9,7 +9,7 @@ class RoomPlayer(
 ) {
     val connectionId: Int = player.connectionId
 
-    fun encode(buffer: ByteBuf) {
+    fun encode(buffer: ByteBuf, extendedInfo: Boolean) {
         buffer.writeIntLE(player.connectionId)
         buffer.writeFixedSizeString(player.nickname, 22)
         buffer.writeFixedSizeString("", 17) // guildName
@@ -23,9 +23,9 @@ class RoomPlayer(
         buffer.writeIntLE(0) // skin id slot
         buffer.writeIntLE(0) // unknown
         buffer.writeIntLE(0) // duplicate skin id title
-        buffer.writeShortLE(8) // room status (master, away, ready)
+        buffer.writeShortLE(520) // room status (master, away, ready)
         buffer.writeByte(player.rank)
-        buffer.writeShortLE(0)
+        buffer.writeShortLE(0x2560)
         buffer.writeIntLE(0) // guild id
         buffer.writeFixedSizeString("", 12)
         buffer.writeIntLE(player.uid)
@@ -54,7 +54,10 @@ class RoomPlayer(
         buffer.writeByte(0) // invited?
         buffer.writeFloatLE(0f) // avg score
         buffer.writeFloatLE(0f)
-        player.equippedCharacter().encode(buffer)
+
+        if (extendedInfo) {
+            player.equippedCharacter().encode(buffer)
+        }
     }
 }
 

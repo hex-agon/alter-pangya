@@ -1,6 +1,7 @@
 package work.fking.pangya.game.net
 
 import work.fking.pangya.game.packet.handler.EquipmentUpdatePacketHandler
+import work.fking.pangya.game.packet.handler.JoinLobbyPacketHandler
 import work.fking.pangya.game.packet.handler.LeaveLobbyPacketHandler
 import work.fking.pangya.game.packet.handler.LockerInventoryRequestPacketHandler
 import work.fking.pangya.game.packet.handler.LoginBonusClaimPacketHandler
@@ -28,6 +29,7 @@ enum class ClientPacketType(
     USER_PROFILE_REQUEST(0x2f, UserProfileRequestPacketHandler()),
     LOUNGE_USER_ACTION(0x63),
     UPDATE_MACROS(0x69, UpdateChatMacrosPacketHandler()),
+    JOIN_LOBBY(0x81, JoinLobbyPacketHandler()),
     LEAVE_LOBBY(0x82, LeaveLobbyPacketHandler()),
     RARE_SHOP_OPEN(0x98, RareShopOpenPacketHandler()),
     MY_ROOM_OPEN(0xb5, MyRoomOpenPacketHandler()),

@@ -25,7 +25,7 @@ object Bootstrap {
             ServerChannel(1, "Rookies", 20, listOf(Restriction.ROOKIES_ONLY)),
             ServerChannel(2, "Beginners & Juniors", 20, listOf(Restriction.BEGINNERS_AND_JUNIORS_ONLY)),
             ServerChannel(3, "Juniors & Seniors", 20, listOf(Restriction.JUNIORS_AND_SENIORS_ONLY)),
-            ServerChannel(4, "Everyone", 20, listOf())
+            ServerChannel(4, "Free", 20, listOf())
         )
 
         val server = GameServer(serverConfig, sessionClient, serverChannels)

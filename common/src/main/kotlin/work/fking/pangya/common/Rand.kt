@@ -20,6 +20,10 @@ class Rand private constructor() {
             return builder.toString()
         }
 
+        fun nextInt(): Int {
+            return RANDOM.nextInt()
+        }
+
         fun nextLong(): Long {
             return RANDOM.nextLong()
         }

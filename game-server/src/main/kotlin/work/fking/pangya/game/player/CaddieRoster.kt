@@ -9,7 +9,7 @@ class CaddieRoster(override val entries: MutableList<Caddie> = ArrayList()) : If
 
     fun unlockCaddie(iffId: Int) {
         require(iffTypeFromId(iffId) == IffObject.TYPE_CADDIE) { "iffId is not a caddie" }
-        val caddie = Caddie(uid = Rand.max(10000), iffId = iffId, levelsGained = 0, experience = 0)
+        val caddie = Caddie(uid = Rand.max(10000), iffId = iffId, levelsGained = 4, experience = 1000)
         entries.add(caddie)
     }
 }

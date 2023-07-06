@@ -2,21 +2,25 @@ package work.fking.pangya.game.room
 
 import io.netty.buffer.ByteBuf
 import org.slf4j.LoggerFactory
+import work.fking.pangya.game.packet.outbound.MatchReplies
 import work.fking.pangya.game.packet.outbound.RoomReplies
 import work.fking.pangya.game.player.Player
+import work.fking.pangya.game.room.match.MatchEvent
 import work.fking.pangya.networking.protocol.writeFixedSizeString
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
 
 class Room(
     val id: Int,
-    private val settings: RoomSettings
+    val settings: RoomSettings,
+    private val playerLeaveListener: PlayerLeaveRoomListener
 ) {
     companion object {
         @JvmStatic
         private val LOGGER = LoggerFactory.getLogger(Room::class.java)
     }
 
+    private var state: RoomState = RoomState.LOBBY
     private var ownerUid = -1
 
     private val playersLock = ReentrantLock()
@@ -41,12 +45,14 @@ class Room(
     fun removePlayer(player: Player) {
         playersLock.withLock {
             player.currentRoom = null
-            players.remove(findSelf(player))
+            val roomPlayer = findSelf(player)
+            players.remove(roomPlayer)
 
             if (ownerUid == player.uid) {
                 ownerUid = findNewOwner()
                 LOGGER.debug("${player.nickname} was the owner of room $id, new owner is now $ownerUid")
             }
+            playerLeaveListener.onPlayerLeave(this, roomPlayer)
         }
     }
 
@@ -56,7 +62,11 @@ class Room(
         }
     }
 
-    private fun findSelf(player: Player): RoomPlayer {
+    fun isEmpty(): Boolean {
+        return playerCount() == 0
+    }
+
+    fun findSelf(player: Player): RoomPlayer {
         playersLock.withLock {
             return players.firstOrNull { it.player == player } ?: throw IllegalStateException("Player ${player.nickname} was not found in room $id")
         }
@@ -68,8 +78,16 @@ class Room(
         }
     }
 
+    fun handleMatchEvent(event: MatchEvent) {
+        LOGGER.debug("Room $id handling event {}", event)
+        settings.type.matchDirector.handleMatchEvent(event)
+    }
+
     fun handleUpdates(updates: List<RoomUpdate>) {
-        LOGGER.debug("Updating room $id with $updates")
+        if (state != RoomState.LOBBY) {
+            throw IllegalStateException("Cannot handle room update, room $id is $state")
+        }
+        LOGGER.debug("Updating room {} with {}", id, updates)
         updates.forEach { settings.handleUpdate(it) }
         broadcast(RoomReplies.roomSettings(this))
     }
@@ -80,15 +98,28 @@ class Room(
         }
     }
 
+    fun startGame() {
+        playersLock.withLock {
+            state = RoomState.IN_GAME
+            players.forEach { player ->
+                player.write(MatchReplies.start230())
+                player.write(MatchReplies.start231())
+                player.write(MatchReplies.start77())
+                player.write(MatchReplies.start76(this))
+                player.writeAndFlush(MatchReplies.start52(this))
+            }
+        }
+    }
+
     fun encodeSettings(buffer: ByteBuf) {
         settings.encode(buffer)
     }
 
     fun encodeInfo(buffer: ByteBuf) {
         buffer.writeFixedSizeString(settings.name, 64)
-        buffer.writeByte(if (settings.password == null) 1 else 0) // public room
-        buffer.writeByte(1) // room is joinable, game hasn't started, if 0 it is not possible to join unless the byte below is on
-        buffer.writeByte(0) // joinable after start
+        buffer.writeBoolean(settings.password == null) // public room
+        buffer.writeBoolean(state == RoomState.LOBBY)
+        buffer.writeBoolean(state == RoomState.IN_GAME_JOINABLE)
         buffer.writeByte(settings.maxPlayers)
         buffer.writeByte(playerCount())
         buffer.writeZero(17)
@@ -130,3 +161,12 @@ class Room(
     }
 }
 
+enum class RoomState {
+    LOBBY,
+    IN_GAME_JOINABLE,
+    IN_GAME
+}
+
+fun interface PlayerLeaveRoomListener {
+    fun onPlayerLeave(room: Room, player: RoomPlayer)
+}

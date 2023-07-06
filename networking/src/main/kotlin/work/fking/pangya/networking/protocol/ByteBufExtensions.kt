@@ -46,5 +46,5 @@ fun ByteBuf.writeLocalDateTime(localDateTime: LocalDateTime) {
     this.writeShortLE(localDateTime.hour)
     this.writeShortLE(localDateTime.minute)
     this.writeShortLE(localDateTime.second)
-    this.writeShortLE(localDateTime[ChronoField.MILLI_OF_SECOND])
+    this.writeShortLE(0)
 }

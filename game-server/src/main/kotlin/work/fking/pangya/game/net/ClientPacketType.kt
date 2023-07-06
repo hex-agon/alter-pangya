@@ -13,6 +13,14 @@ import work.fking.pangya.game.packet.handler.RareShopOpenPacketHandler
 import work.fking.pangya.game.packet.handler.SelectChannelPacketHandler
 import work.fking.pangya.game.packet.handler.UpdateChatMacrosPacketHandler
 import work.fking.pangya.game.packet.handler.UserProfileRequestPacketHandler
+import work.fking.pangya.game.packet.handler.match.MatchPlayerHoleFinishPacketHandler
+import work.fking.pangya.game.packet.handler.match.MatchFinishPlayerPreviewPacketHandler
+import work.fking.pangya.game.packet.handler.match.MatchHoleStartPacketHandler
+import work.fking.pangya.game.packet.handler.match.MatchPlayerRotateAimPacketHandler
+import work.fking.pangya.game.packet.handler.match.MatchPlayerShotCommitPacketHandler
+import work.fking.pangya.game.packet.handler.match.MatchPlayerTurnEndPacketHandler
+import work.fking.pangya.game.packet.handler.match.MatchPlayerShotStartPacketHandler
+import work.fking.pangya.game.packet.handler.match.StartGamePacketHandler
 import work.fking.pangya.game.packet.handler.room.CreateRoomPacketHandler
 import work.fking.pangya.game.packet.handler.room.LeaveRoomPacketHandler
 import work.fking.pangya.game.packet.handler.room.RoomSettingsUpdatePacketHandler
@@ -24,9 +32,26 @@ enum class ClientPacketType(
     SELECT_CHANNEL(0x4, SelectChannelPacketHandler()),
     ROOM_CREATE(0x8, CreateRoomPacketHandler()),
     ROOM_SETTINGS_UPDATE(0xa, RoomSettingsUpdatePacketHandler()),
+    PLAYER_EQUIPMENT_CONFIRM(0xb),
+    PLAYER_EQUIPMENT_CONFIRM2(0xc),
+    START_MATCH(0xe, StartGamePacketHandler()),
     ROOM_LEAVE(0xf, LeaveRoomPacketHandler()),
+    MATCH_HOLE_LOAD_FINISHED(0x11),
+    MATCH_PLAYER_SHOT_COMMIT(0x12, MatchPlayerShotCommitPacketHandler()),
+    MATCH_PLAYER_ROTATE_AIM(0x13, MatchPlayerRotateAimPacketHandler()),
+    MATCH_PLAYER_SHOT_START(0x14, MatchPlayerShotStartPacketHandler()),
+    MATCH_PLAYER_POWER_TOGGLE(0x15),
+    MATCH_PLAYER_CHANGE_CLUB(0x16),
+    MATCH_HOLE_START(0x1a, MatchHoleStartPacketHandler()),
+    MATCH_PLAYER_SHOT_SYNC(0x1b),
+    MATCH_PLAYER_SHOT_END(0x1c, MatchPlayerTurnEndPacketHandler()),
     EQUIPMENT_UPDATE(0x20, EquipmentUpdatePacketHandler()),
+    MATCH_PLAYER_TURN_START(0x22),
     USER_PROFILE_REQUEST(0x2f, UserProfileRequestPacketHandler()),
+    MATCH_PLAYER_HOLE_FINISH(0x31, MatchPlayerHoleFinishPacketHandler()),
+    MATCH_FINISH_PLAYER_PREVIEW(0x34, MatchFinishPlayerPreviewPacketHandler()),
+    MATCH_PLAYER_SHOT_ARROW(0x42),
+    PLAYER_LOAD_PROGRESS(0x48),
     LOUNGE_USER_ACTION(0x63),
     UPDATE_MACROS(0x69, UpdateChatMacrosPacketHandler()),
     JOIN_LOBBY(0x81, JoinLobbyPacketHandler()),

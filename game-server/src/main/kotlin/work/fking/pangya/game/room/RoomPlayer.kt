@@ -9,6 +9,20 @@ class RoomPlayer(
 ) {
     val connectionId: Int = player.connectionId
 
+    var finishedHole: Boolean = false
+
+    fun write(message: Any) {
+        player.write(message)
+    }
+
+    fun writeAndFlush(message: Any) {
+        player.writeAndFlush(message)
+    }
+
+    fun flush() {
+        player.flush()
+    }
+
     fun encode(buffer: ByteBuf, extendedInfo: Boolean) {
         buffer.writeIntLE(player.connectionId)
         buffer.writeFixedSizeString(player.nickname, 22)
@@ -58,6 +72,10 @@ class RoomPlayer(
         if (extendedInfo) {
             player.equippedCharacter().encode(buffer)
         }
+    }
+
+    override fun toString(): String {
+        return "RoomPlayer(player=${player.nickname})"
     }
 }
 

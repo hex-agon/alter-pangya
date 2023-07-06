@@ -19,8 +19,8 @@ class ProtocolDecoder(
     override fun decode(ctx: ChannelHandlerContext, buffer: ByteBuf, out: MutableList<Any>) {
         PangCrypt.decrypt(buffer, cryptKey)
         val packetId = buffer.readShortLE().toInt()
-        LOGGER.trace("Incoming packetId=0x{}", Integer.toHexString(packetId))
         val packetType = protocol.forId(packetId)
+        LOGGER.trace("Incoming packet {} (0x{})", packetType, Integer.toHexString(packetId))
 
         if (packetType == null) {
             LOGGER.warn("Unknown packetId=0x{}", Integer.toHexString(packetId))

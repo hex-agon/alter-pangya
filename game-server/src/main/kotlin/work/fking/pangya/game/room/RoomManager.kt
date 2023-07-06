@@ -43,12 +43,20 @@ class RoomManager {
                 shotTime = shotTime,
                 gameTime = gameTime,
                 artifactIffId = artifactIffId,
-                naturalWind = naturalWind
-            )
+                naturalWind = naturalWind,
+            ),
+            playerLeaveListener = this::onPlayerRoomLeave
         )
 
         rooms[id] = room
         LOGGER.debug("Room $id created")
         return room
+    }
+
+    private fun onPlayerRoomLeave(room: Room, player: RoomPlayer) {
+        if (room.isEmpty()) {
+            rooms.remove(room.id)
+            LOGGER.debug("Destroying room ${room.id} as it was empty")
+        }
     }
 }

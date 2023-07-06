@@ -1,11 +1,12 @@
 package work.fking.pangya.game.packet.outbound
 
-import work.fking.pangya.game.room.Course
 import work.fking.pangya.game.model.CourseStatistics
+import work.fking.pangya.game.player.Caddie
+import work.fking.pangya.game.player.Player
 import work.fking.pangya.game.player.PlayerBasicInfo
 import work.fking.pangya.game.player.PlayerStatistic
 import work.fking.pangya.game.player.PlayerTrophies
-import work.fking.pangya.game.player.Player
+import work.fking.pangya.game.room.Course
 import work.fking.pangya.networking.protocol.OutboundPacket
 import work.fking.pangya.networking.protocol.writeFixedSizeString
 import work.fking.pangya.networking.protocol.writePString
@@ -64,31 +65,27 @@ object HandoverReplies {
             player.equipment.encode(buffer)
 
             // Season historical stats
-            for (i in 0..11) { // for each season...
-                for (j in 0..20) { // for each course...
+            repeat(12) { // for each season...
+                repeat(21) { // for each course...
                     CourseStatistics(Course.BLUE_LAGOON).serialize(buffer)
                 }
             }
-
             // Active Character
             player.equippedCharacter().encode(buffer)
 
             // Active Caddie
-            player.activeCaddie()!!.encode(buffer)
+            val caddie = player.activeCaddie() ?: Caddie.nullCaddie()
+            caddie.encode(buffer)
 
             // Active Clubset
-            buffer.writeIntLE(2000) // item unique id
+            buffer.writeIntLE(player.inventory.findByIffId(268435511)!!.uid) // item unique id
             buffer.writeIntLE(268435511) // item iff id
-            buffer.writeShortLE(5) // power slot
-            buffer.writeShortLE(4) // control slot
-            buffer.writeShortLE(3) // accuracy slot
-            buffer.writeShortLE(2) // spin slot
-            buffer.writeShortLE(1) // curve slot
-            buffer.writeShortLE(1) // power upgrades?
-            buffer.writeShortLE(2) // control upgrades?
-            buffer.writeShortLE(3) // accuracy upgrades?
-            buffer.writeShortLE(4) // spin upgrades?
-            buffer.writeShortLE(5) // curve upgrades?
+            buffer.writeZero(10)
+            buffer.writeShortLE(0) // power upgrades?
+            buffer.writeShortLE(0) // control upgrades?
+            buffer.writeShortLE(0) // accuracy upgrades?
+            buffer.writeShortLE(0) // spin upgrades?
+            buffer.writeShortLE(0) // curve upgrades?
 
             // Active Mascot
             buffer.writeIntLE(0) // item unique id
@@ -111,9 +108,9 @@ object HandoverReplies {
             buffer.writeShortLE(0) // unknown
 
             // Papel shop info?
-            buffer.writeShortLE(3)
-            buffer.writeShortLE(2)
-            buffer.writeShortLE(5)
+            buffer.writeShortLE(0)
+            buffer.writeShortLE(0)
+            buffer.writeShortLE(0)
             buffer.writeIntLE(0) // unknown
             buffer.writeLongLE((1 shl 2).toLong()) // disabled server features, 0x4 = disables mail
             buffer.writeIntLE(0) // unknown, ss = login count

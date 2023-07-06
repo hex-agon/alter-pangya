@@ -8,6 +8,7 @@ import work.fking.pangya.common.server.ServerConfig
 import work.fking.pangya.game.net.ServerChannelInitializer
 import work.fking.pangya.game.player.Item
 import work.fking.pangya.game.player.Player
+import work.fking.pangya.game.player.luciaItems
 import work.fking.pangya.networking.selectBestEventLoopAvailable
 import work.fking.pangya.networking.selectBestServerChannelAvailable
 import java.net.InetAddress
@@ -66,7 +67,7 @@ class GameServer(
         characterRoster.unlockCharacter(67108872)
 
         val caddieRoster = player.caddieRoster
-        caddieRoster.unlockCaddie(469762048)
+        caddieRoster.unlockCaddie(469762083)
 
         val inventory = player.inventory
         inventory.add(Item(iffId = 268435511)) // clubset
@@ -74,14 +75,11 @@ class GameServer(
         inventory.add(Item(iffId = 436207656, quantity = 100)) // papel shop coupons
 
         // lucia items
-        inventory.add(Item(iffId = 136331265))
-        inventory.add(Item(iffId = 136423465))
-        inventory.add(Item(iffId = 136456205))
-        inventory.add(Item(iffId = 136456192))
+        luciaItems.forEach { inventory.add(Item(iffId = it)) }
 
         val equipment = player.equipment
         characterRoster.findByIffId(67108872)?.let(equipment::equipCharacter)
-        caddieRoster.findByIffId(469762048)?.let(equipment::equipCaddie)
+        caddieRoster.findByIffId(469762083)?.let(equipment::equipCaddie)
         inventory.findByIffId(268435511)?.let(equipment::equipClubSet)
         inventory.findByIffId(335544382)?.let(equipment::equipComet)
 

@@ -1,13 +1,17 @@
 package work.fking.pangya.game.packet.outbound
 
 import work.fking.pangya.common.Rand
-import work.fking.pangya.game.room.match.ShotData
 import work.fking.pangya.game.player.Player
 import work.fking.pangya.game.room.Room
 import work.fking.pangya.game.room.RoomPlayer
+import work.fking.pangya.game.room.match.Hole
+import work.fking.pangya.game.room.match.MatchState
+import work.fking.pangya.game.room.match.ShotCommitData
+import work.fking.pangya.game.room.match.TourneyShotData
+import work.fking.pangya.game.room.match.write
+import work.fking.pangya.game.room.write
 import work.fking.pangya.networking.protocol.OutboundPacket
 import work.fking.pangya.networking.protocol.writeLocalDateTime
-import java.time.LocalDateTime
 
 object MatchReplies {
     fun start230(): OutboundPacket {
@@ -29,53 +33,48 @@ object MatchReplies {
         }
     }
 
-    fun start76(room: Room): OutboundPacket {
+    fun start76(room: Room, matchState: MatchState): OutboundPacket {
         return OutboundPacket { buffer ->
-            buffer.writeShortLE(0x76)
-            buffer.writeByte(room.settings.type.uiType)
-            buffer.writeIntLE(1)
-            buffer.writeLocalDateTime(LocalDateTime.now())
+            with(buffer) {
+                writeShortLE(0x76)
+                writeByte(room.settings.type.uiType)
+                writeIntLE(1)
+                writeLocalDateTime(matchState.startTime)
+            }
         }
     }
 
-    fun start52(room: Room): OutboundPacket {
+    fun matchInfo(room: Room, matchState: MatchState): OutboundPacket {
         return OutboundPacket { buffer ->
             buffer.writeShortLE(0x52)
-            buffer.writeByte(room.settings.course.ordinal)
-            buffer.writeByte(0)
-            buffer.writeByte(room.settings.holeMode.ordinal)
-            buffer.writeByte(room.settings.holeCount)
-            buffer.writeIntLE(0)
-            buffer.writeIntLE(room.settings.shotTimeMs)
-            buffer.writeIntLE(room.settings.gameTimeMs)
-
-            // hole info, must be equal to hole count
-            for (hole in 1..18) {
-                buffer.writeIntLE(Rand.nextInt())
-                buffer.writeByte(0)
-                buffer.writeByte(room.settings.course.ordinal)
-                buffer.writeByte(hole)
-            }
+            buffer.write(matchState.course)
+            buffer.writeByte(room.settings.type.uiType)
+            buffer.write(matchState.holeMode)
+            buffer.writeByte(matchState.holeCount)
+            buffer.writeIntLE(room.settings.trophyIffId())
+            buffer.writeIntLE(matchState.shotTimeMs)
+            buffer.writeIntLE(matchState.gameTimeMs)
+            matchState.holes.forEach { buffer.write(it) }
             buffer.writeIntLE(Rand.nextInt())
             buffer.writeZero(18)
         }
     }
 
-    fun gameHoleWeather(): OutboundPacket {
+    fun holeWeather(hole: Hole): OutboundPacket {
         return OutboundPacket { buffer ->
             buffer.writeShortLE(0x9e)
-            buffer.writeShortLE(0) // 1 = cloudy, 2 = raining
+            buffer.write(hole.weather)
             buffer.writeByte(0)
         }
     }
 
-    fun gameHoleWind(): OutboundPacket {
+    fun holeWind(hole: Hole): OutboundPacket {
         return OutboundPacket { buffer ->
             buffer.writeShortLE(0x5b)
-            buffer.writeByte(0) // wind strength
+            buffer.writeByte(hole.wind)
             buffer.writeByte(0) // silent wind?
-            buffer.writeShortLE(0) // wind direction
-            buffer.writeByte(1)
+            buffer.writeShortLE(hole.windDirection)
+            buffer.writeByte(1) // sets, 0 adds value
         }
     }
 
@@ -95,7 +94,7 @@ object MatchReplies {
         }
     }
 
-    fun gamePlayerAimRotate(player: Player, rotation: Float): OutboundPacket {
+    fun versusPlayerAimRotate(player: Player, rotation: Float): OutboundPacket {
         return OutboundPacket { buffer ->
             buffer.writeShortLE(0x56)
             buffer.writeIntLE(player.connectionId)
@@ -103,7 +102,7 @@ object MatchReplies {
         }
     }
 
-    fun gamePlayerShotCommit(player: RoomPlayer, shotData: ShotData): OutboundPacket {
+    fun versusPlayerShotCommit(player: RoomPlayer, shotData: ShotCommitData): OutboundPacket {
         return OutboundPacket { buffer ->
             buffer.writeShortLE(0x55)
             buffer.writeIntLE(player.connectionId)
@@ -111,24 +110,49 @@ object MatchReplies {
         }
     }
 
-    fun gamePlayerTurnEnd(player: RoomPlayer): OutboundPacket {
+    fun versusPlayerTurnEnd(player: RoomPlayer): OutboundPacket {
         return OutboundPacket { buffer ->
-            buffer.writeShortLE(0xCC)
+            buffer.writeShortLE(0xcc)
             buffer.writeIntLE(player.connectionId)
-            buffer.writeIntLE(0)
+            buffer.writeIntLE(0) // sizeof something
         }
     }
 
-    fun gamePlayerTurnStart(player: RoomPlayer): OutboundPacket {
+    fun versusPlayerTurnStart(player: RoomPlayer): OutboundPacket {
         return OutboundPacket { buffer ->
             buffer.writeShortLE(0x63)
             buffer.writeIntLE(player.connectionId)
         }
     }
 
-    fun gameFinishHole(): OutboundPacket {
+    fun versusFinishHole(): OutboundPacket {
         return OutboundPacket { buffer ->
             buffer.writeShortLE(0x65)
+        }
+    }
+
+    // used for drawing the white dots across the map
+    fun gameTourneyShotGhost(player: RoomPlayer, x: Float, z: Float, shotFlags: Int, frames: Int): OutboundPacket {
+        return OutboundPacket { buffer ->
+            buffer.writeShortLE(0x6e)
+            buffer.writeIntLE(player.connectionId)
+
+            buffer.writeByte(player.currentHole)
+
+            buffer.writeFloatLE(x)
+            buffer.writeFloatLE(z)
+
+            buffer.writeIntLE(shotFlags)
+            buffer.writeShortLE(frames)
+        }
+    }
+
+    fun gameTourneyShotAck(player: RoomPlayer, tourneyShotData: TourneyShotData): OutboundPacket {
+        return OutboundPacket { buffer ->
+            buffer.writeShortLE(0x1f7)
+            buffer.writeIntLE(player.connectionId)
+            buffer.writeIntLE(1) // hole
+            tourneyShotData.serialize(buffer)
         }
     }
 }

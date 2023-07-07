@@ -5,7 +5,7 @@ import work.fking.pangya.game.GameServer
 import work.fking.pangya.game.net.ClientPacketHandler
 import work.fking.pangya.game.player.Player
 import work.fking.pangya.game.room.match.PlayerShotCommitEvent
-import work.fking.pangya.game.room.match.ShotData
+import work.fking.pangya.game.room.match.ShotCommitData
 
 class MatchPlayerShotCommitPacketHandler : ClientPacketHandler {
     override fun handle(server: GameServer, player: Player, packet: ByteBuf) {
@@ -17,9 +17,8 @@ class MatchPlayerShotCommitPacketHandler : ClientPacketHandler {
         if (shotType == 1) { // ??
             val bytes = ByteArray(9)
             packet.readBytes(bytes)
-            println(bytes.contentToString())
         }
-        val shotData = ShotData(
+        val shotData = ShotCommitData(
             maxClick = packet.readFloatLE(),
             minClick = packet.readFloatLE(),
             curve = packet.readFloatLE(),

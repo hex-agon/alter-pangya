@@ -1,51 +1,51 @@
 package work.fking.pangya.game.room.match
 
 import work.fking.pangya.game.packet.outbound.MatchReplies
+import work.fking.pangya.game.room.Room
 
 class PracticeMatchDirector : MatchDirector {
 
-    override fun handleMatchEvent(event: MatchEvent) {
+    override fun handleMatchEvent(room: Room, matchState: MatchState, event: MatchEvent) {
         when (event) {
-            is PlayerFinishedPreviewEvent -> handlePlayerFinishedPreviewEvent(event)
-            is PlayerHoleStartEvent -> handlePlayerHoleStart(event)
-            is PlayerHoleFinishEvent -> handlePlayerHoleFinish(event)
-            is PlayerShotCommitEvent -> handlePlayerShotCommitEvent(event)
-            is PlayerTurnEndEvent -> handlePlayerTurnEndEvent(event)
+            is PlayerFinishedPreviewEvent -> handleFinishedPreview(event)
+            is PlayerHoleStartEvent -> handleHoleStart(matchState, event)
+            is PlayerTourneyShotEvent -> handleTourneyShot(room, event)
+            is PlayerShotSyncEvent -> handleShotSync(room, event)
             else -> return
         }
     }
 
-    private fun handlePlayerFinishedPreviewEvent(event: PlayerFinishedPreviewEvent) {
+    private fun handleFinishedPreview(event: PlayerFinishedPreviewEvent) {
         event.player.writeAndFlush(MatchReplies.gameFinishPlayerPreviewAck())
     }
 
-    private fun handlePlayerHoleStart(event: PlayerHoleStartEvent) {
+    private fun handleHoleStart(matchState: MatchState, event: PlayerHoleStartEvent) {
+        val hole = matchState.holes[event.hole - 1]
+
         with(event.player) {
-            finishedHole = false
-            write(MatchReplies.gameHoleWeather())
-            write(MatchReplies.gameHoleWind())
+            currentHole = event.hole
+            write(MatchReplies.holeWeather(hole))
+            write(MatchReplies.holeWind(hole))
             write(MatchReplies.gamePlayerStartHole(this))
             flush()
         }
     }
 
-    private fun handlePlayerHoleFinish(event: PlayerHoleFinishEvent) {
-        event.player.finishedHole = true
+    private fun handleTourneyShot(room: Room, event: PlayerTourneyShotEvent) {
+        val player = event.player
+        room.broadcast(MatchReplies.gameTourneyShotAck(player, event.tourneyShotData))
     }
 
-    private fun handlePlayerShotCommitEvent(event: PlayerShotCommitEvent) {
+    private fun handleShotSync(room: Room, event: PlayerShotSyncEvent) {
         val player = event.player
-        player.writeAndFlush(MatchReplies.gamePlayerShotCommit(player, event.shotData))
-    }
-
-    private fun handlePlayerTurnEndEvent(event: PlayerTurnEndEvent) {
-        val player = event.player
-        player.write(MatchReplies.gamePlayerTurnEnd(player))
-
-        if (player.finishedHole) {
-            player.writeAndFlush(MatchReplies.gameFinishHole())
-        } else {
-            player.writeAndFlush(MatchReplies.gamePlayerTurnStart(player))
-        }
+        room.broadcast(
+            MatchReplies.gameTourneyShotGhost(
+                player = player,
+                x = event.x,
+                z = event.z,
+                shotFlags = event.shotFlags,
+                frames = event.frames
+            )
+        )
     }
 }

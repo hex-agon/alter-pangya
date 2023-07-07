@@ -56,19 +56,21 @@ class RoomSettings(
     }
 
     fun encode(buffer: ByteBuf) {
-        buffer.writeByte(type.uiType)
-        buffer.writeByte(course.ordinal)
-        buffer.writeByte(holeCount)
-        buffer.writeByte(holeMode.ordinal)
-        buffer.writeIntLE(if (naturalWind) 1 else 0)
-        buffer.writeByte(maxPlayers) // max players
-        buffer.writeByte(30)
-        buffer.writeByte(0)
-        buffer.writeIntLE(shotTimeMs)
-        buffer.writeIntLE(gameTimeMs)
-        buffer.writeIntLE(trophyIffId())
-        buffer.writeByte(if (password != null) 1 else 0)
-        buffer.writePString(name)
+        with(buffer) {
+            writeByte(type.uiType)
+            write(course)
+            writeByte(holeCount)
+            write(holeMode)
+            writeIntLE(if (naturalWind) 1 else 0)
+            writeByte(maxPlayers) // max players
+            writeByte(30)
+            writeByte(0)
+            writeIntLE(shotTimeMs)
+            writeIntLE(gameTimeMs)
+            writeIntLE(trophyIffId())
+            writeByte(if (password != null) 1 else 0)
+            writePString(name)
+        }
     }
 
     fun trophyIffId(): Int {

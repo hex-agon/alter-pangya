@@ -1,5 +1,7 @@
 package work.fking.pangya.game.room.match
 
+import work.fking.pangya.game.room.Room
+
 /**
  * Responsible for managing the match with actions such as:
  * - Timing out players
@@ -11,12 +13,12 @@ package work.fking.pangya.game.room.match
  * MatchDirectors must be stateless as they are shared per room.
  */
 interface MatchDirector {
-    fun handleMatchEvent(event: MatchEvent)
+    fun handleMatchEvent(room: Room, matchState: MatchState, event: MatchEvent)
 }
 
 fun noopMatchDirector(): MatchDirector {
     return object : MatchDirector {
-        override fun handleMatchEvent(event: MatchEvent) {
+        override fun handleMatchEvent(room: Room, matchState: MatchState, event: MatchEvent) {
         }
     }
 }

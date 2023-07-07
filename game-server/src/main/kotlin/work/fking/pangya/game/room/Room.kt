@@ -5,7 +5,9 @@ import org.slf4j.LoggerFactory
 import work.fking.pangya.game.packet.outbound.MatchReplies
 import work.fking.pangya.game.packet.outbound.RoomReplies
 import work.fking.pangya.game.player.Player
+import work.fking.pangya.game.room.match.MatchDirector
 import work.fking.pangya.game.room.match.MatchEvent
+import work.fking.pangya.game.room.match.MatchState
 import work.fking.pangya.networking.protocol.writeFixedSizeString
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
@@ -21,6 +23,7 @@ class Room(
     }
 
     private var state: RoomState = RoomState.LOBBY
+    private var matchEventHandler: MatchEventHandler? = null
     private var ownerUid = -1
 
     private val playersLock = ReentrantLock()
@@ -79,34 +82,42 @@ class Room(
     }
 
     fun handleMatchEvent(event: MatchEvent) {
-        LOGGER.debug("Room $id handling event {}", event)
-        settings.type.matchDirector.handleMatchEvent(event)
+        matchEventHandler?.onMatchEvent(event) ?: throw IllegalStateException("Room[$id] Cannot handle match event, no bound handler")
     }
 
     fun handleUpdates(updates: List<RoomUpdate>) {
         if (state != RoomState.LOBBY) {
-            throw IllegalStateException("Cannot handle room update, room $id is $state")
+            throw IllegalStateException("Cannot handle room update, room $id state is $state")
         }
-        LOGGER.debug("Updating room {} with {}", id, updates)
+        LOGGER.debug("Room [$id] update with {}", id, updates)
         updates.forEach { settings.handleUpdate(it) }
         broadcast(RoomReplies.roomSettings(this))
     }
 
-    private fun broadcast(message: Any) {
+    fun broadcast(message: Any) {
         playersLock.withLock {
             players.forEach { it.player.writeAndFlush(message) }
         }
     }
 
     fun startGame() {
+        state = RoomState.IN_GAME
+        val matchState = MatchState(
+            course = settings.course,
+            holeMode = settings.holeMode,
+            holeCount = settings.holeCount,
+            shotTimeMs = settings.shotTimeMs,
+            gameTimeMs = settings.gameTimeMs
+        )
+        matchEventHandler = MatchEventHandler(this, matchState, settings.type.matchDirector)
+
         playersLock.withLock {
-            state = RoomState.IN_GAME
             players.forEach { player ->
                 player.write(MatchReplies.start230())
                 player.write(MatchReplies.start231())
                 player.write(MatchReplies.start77())
-                player.write(MatchReplies.start76(this))
-                player.writeAndFlush(MatchReplies.start52(this))
+                player.write(MatchReplies.start76(this, matchState))
+                player.writeAndFlush(MatchReplies.matchInfo(this, matchState))
             }
         }
     }
@@ -116,35 +127,37 @@ class Room(
     }
 
     fun encodeInfo(buffer: ByteBuf) {
-        buffer.writeFixedSizeString(settings.name, 64)
-        buffer.writeBoolean(settings.password == null) // public room
-        buffer.writeBoolean(state == RoomState.LOBBY)
-        buffer.writeBoolean(state == RoomState.IN_GAME_JOINABLE)
-        buffer.writeByte(settings.maxPlayers)
-        buffer.writeByte(playerCount())
-        buffer.writeZero(17)
-        buffer.writeByte(30)
-        buffer.writeByte(settings.holeCount)
-        buffer.writeByte(settings.type.uiType)
-        buffer.writeShortLE(id)
-        buffer.writeByte(settings.holeMode.ordinal)
-        buffer.writeByte(settings.course.ordinal)
-        buffer.writeIntLE(settings.shotTimeMs)
-        buffer.writeIntLE(settings.gameTimeMs)
-        buffer.writeIntLE(settings.trophyIffId())
-        buffer.writeShortLE(0)
-        buffer.writeZero(66) // guildInfo
-        buffer.writeIntLE(100)
-        buffer.writeIntLE(100)
-        buffer.writeIntLE(ownerUid)
-        buffer.writeByte(settings.type.id)
-        buffer.writeIntLE(settings.artifactIffId)
-        buffer.writeIntLE(if (settings.naturalWind) 1 else 0)
-        // event info
-        buffer.writeIntLE(0)
-        buffer.writeIntLE(0)
-        buffer.writeIntLE(0)
-        buffer.writeIntLE(0)
+        with(buffer) {
+            writeFixedSizeString(settings.name, 64)
+            writeBoolean(settings.password == null) // public room
+            writeBoolean(state == RoomState.LOBBY)
+            writeBoolean(state == RoomState.IN_GAME_JOINABLE)
+            writeByte(settings.maxPlayers)
+            writeByte(playerCount())
+            writeZero(17)
+            writeByte(30)
+            writeByte(settings.holeCount)
+            writeByte(settings.type.uiType)
+            writeShortLE(id)
+            write(settings.holeMode)
+            write(settings.course)
+            writeIntLE(settings.shotTimeMs)
+            writeIntLE(settings.gameTimeMs)
+            writeIntLE(settings.trophyIffId())
+            writeShortLE(0)
+            writeZero(66) // guildInfo
+            writeIntLE(100)
+            writeIntLE(100)
+            writeIntLE(ownerUid)
+            writeByte(settings.type.id)
+            writeIntLE(settings.artifactIffId)
+            writeIntLE(if (settings.naturalWind) 1 else 0)
+            // event info
+            writeIntLE(0)
+            writeIntLE(0)
+            writeIntLE(0)
+            writeIntLE(0)
+        }
     }
 
     override fun equals(other: Any?): Boolean {
@@ -165,6 +178,12 @@ enum class RoomState {
     LOBBY,
     IN_GAME_JOINABLE,
     IN_GAME
+}
+
+private class MatchEventHandler(val room: Room, val matchState: MatchState, val matchDirector: MatchDirector) {
+    fun onMatchEvent(event: MatchEvent) {
+        matchDirector.handleMatchEvent(room, matchState, event)
+    }
 }
 
 fun interface PlayerLeaveRoomListener {

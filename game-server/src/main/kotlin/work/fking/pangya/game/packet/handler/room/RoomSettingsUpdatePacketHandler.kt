@@ -19,6 +19,8 @@ import work.fking.pangya.game.room.RoomShotTimeChange
 import work.fking.pangya.game.room.RoomType
 import work.fking.pangya.game.room.RoomTypeChange
 import work.fking.pangya.game.room.RoomUpdate
+import work.fking.pangya.game.room.courseById
+import work.fking.pangya.game.room.holeModeById
 import work.fking.pangya.networking.protocol.readPString
 
 class RoomSettingsUpdatePacketHandler : ClientPacketHandler {
@@ -36,9 +38,9 @@ class RoomSettingsUpdatePacketHandler : ClientPacketHandler {
                 0 -> RoomNameChange(packet.readPString())
                 1 -> RoomPasswordChange(packet.readPString())
                 2 -> RoomTypeChange(RoomType.forId(packet.readByte()))
-                3 -> RoomCourseChange(Course.forId(packet.readByte()))
+                3 -> RoomCourseChange(courseById(packet.readByte()))
                 4 -> RoomHoleCountChange(packet.readByte().toInt())
-                5 -> RoomHoleModeChange(HoleMode.forId(packet.readByte()))
+                5 -> RoomHoleModeChange(holeModeById(packet.readByte()))
                 6 -> RoomShotTimeChange(packet.readUnsignedByte().toInt() * 1000) // client sends in seconds, need ms
                 7 -> RoomPlayerCountChange(packet.readUnsignedByte().toInt())
                 8 -> RoomGameTimeChange(packet.readUnsignedByte().toInt() * 60 * 1000) // client sends in minutes, need ms

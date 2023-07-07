@@ -20,7 +20,7 @@ class ProtocolDecoder(
         PangCrypt.decrypt(buffer, cryptKey)
         val packetId = buffer.readShortLE().toInt()
         val packetType = protocol.forId(packetId)
-        LOGGER.trace("Incoming packet {} (0x{})", packetType, Integer.toHexString(packetId))
+        LOGGER.debug("Incoming packet {} (0x{})", packetType, Integer.toHexString(packetId))
 
         if (packetType == null) {
             LOGGER.warn("Unknown packetId=0x{}", Integer.toHexString(packetId))

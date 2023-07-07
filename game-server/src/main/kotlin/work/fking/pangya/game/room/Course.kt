@@ -1,5 +1,6 @@
 package work.fking.pangya.game.room
 
+import io.netty.buffer.ByteBuf
 import work.fking.pangya.common.Rand
 
 enum class Course {
@@ -25,14 +26,10 @@ enum class Course {
     WIZ_CITY,
     ABBOT_MINE;
 
-    companion object {
-        fun forId(id: Byte): Course {
-            val values = values()
-            return if (id < values.size) {
-                values[id.toInt()]
-            } else { // anything else or random (id == 127)
-                values[Rand.max(values.size)]
-            }
-        }
-    }
 }
+
+fun ByteBuf.write(course: Course) {
+    this.writeByte(course.ordinal)
+}
+
+fun courseById(id: Byte): Course = Course.entries.find { it.ordinal == id.toInt() } ?: Course.entries[Rand.max(Course.entries.size)]

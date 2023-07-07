@@ -55,7 +55,7 @@ class Player(
     }
 
     fun write(message: Any) {
-        channel.write(message)
+        channel.write(message, channel.voidPromise())
     }
 
     fun writeAndFlush(message: Any) {

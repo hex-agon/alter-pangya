@@ -8,6 +8,8 @@ import work.fking.pangya.game.player.Player
 import work.fking.pangya.game.room.Course
 import work.fking.pangya.game.room.HoleMode
 import work.fking.pangya.game.room.RoomType
+import work.fking.pangya.game.room.courseById
+import work.fking.pangya.game.room.holeModeById
 import work.fking.pangya.networking.protocol.readPString
 
 class CreateRoomPacketHandler : ClientPacketHandler {
@@ -19,9 +21,9 @@ class CreateRoomPacketHandler : ClientPacketHandler {
         val roomTypeId = packet.readByte()
         val roomType = RoomType.forId(roomTypeId)
         val holeCount = packet.readByte()
-        val course = Course.forId(packet.readByte())
+        val course = courseById(packet.readByte())
         val holeModeId = packet.readByte()
-        val holeMode = HoleMode.forId(holeModeId)
+        val holeMode = holeModeById(holeModeId)
         val unknown3 = packet.readIntLE()
         val name = packet.readPString()
         val password = packet.readPString()

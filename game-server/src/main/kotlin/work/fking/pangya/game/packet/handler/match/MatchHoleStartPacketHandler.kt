@@ -2,7 +2,7 @@ package work.fking.pangya.game.packet.handler.match
 
 import io.netty.buffer.ByteBuf
 import work.fking.pangya.game.GameServer
-import work.fking.pangya.game.model.Coord
+import work.fking.pangya.game.model.Coord2D
 import work.fking.pangya.game.net.ClientPacketHandler
 import work.fking.pangya.game.player.Player
 import work.fking.pangya.game.room.match.PlayerHoleStartEvent
@@ -16,8 +16,8 @@ class MatchHoleStartPacketHandler : ClientPacketHandler {
         val unknown1 = packet.readIntLE()
         val unknown2 = packet.readIntLE()
         val par = packet.readByte()
-        val teeCoord = Coord(packet.readFloatLE(), packet.readFloatLE())
-        val holeCoord = Coord(packet.readFloatLE(), packet.readFloatLE())
+        val teeCoord = Coord2D(packet.readFloatLE(), packet.readFloatLE())
+        val holeCoord = Coord2D(packet.readFloatLE(), packet.readFloatLE())
 
 
         room.handleMatchEvent(PlayerHoleStartEvent(
@@ -27,13 +27,6 @@ class MatchHoleStartPacketHandler : ClientPacketHandler {
             teeCoord = teeCoord,
             holeCoord = holeCoord
         ))
-//        roomPlayer.finishedHole = false
-//        println("${player.nickname} hole start")
-//
-//        player.write(MatchReplies.gameHoleWeather())
-//        player.write(MatchReplies.gameHoleWind())
-//        player.write(MatchReplies.gamePlayerStartHole(player))
-//        player.flush()
     }
 }
 

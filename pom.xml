@@ -25,7 +25,7 @@
         <maven.compiler.version>3.11.0</maven.compiler.version>
         <maven.compiler.release>20</maven.compiler.release>
         <kotlin.compiler.jvmTarget>19</kotlin.compiler.jvmTarget>
-        <kotlin.version>1.8.22</kotlin.version>
+        <kotlin.version>1.9.0</kotlin.version>
         <jackson.version>2.15.2</jackson.version>
         <netty.version>4.1.94.Final</netty.version>
         <slf4j.version>2.0.7</slf4j.version>

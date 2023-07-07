@@ -20,6 +20,8 @@ import work.fking.pangya.game.packet.handler.match.MatchPlayerRotateAimPacketHan
 import work.fking.pangya.game.packet.handler.match.MatchPlayerShotCommitPacketHandler
 import work.fking.pangya.game.packet.handler.match.MatchPlayerTurnEndPacketHandler
 import work.fking.pangya.game.packet.handler.match.MatchPlayerShotStartPacketHandler
+import work.fking.pangya.game.packet.handler.match.MatchPlayerShotSyncPacketHandler
+import work.fking.pangya.game.packet.handler.match.MatchTourneyShotPacketHandler
 import work.fking.pangya.game.packet.handler.match.StartGamePacketHandler
 import work.fking.pangya.game.packet.handler.room.CreateRoomPacketHandler
 import work.fking.pangya.game.packet.handler.room.LeaveRoomPacketHandler
@@ -43,7 +45,7 @@ enum class ClientPacketType(
     MATCH_PLAYER_POWER_TOGGLE(0x15),
     MATCH_PLAYER_CHANGE_CLUB(0x16),
     MATCH_HOLE_START(0x1a, MatchHoleStartPacketHandler()),
-    MATCH_PLAYER_SHOT_SYNC(0x1b),
+    MATCH_PLAYER_SHOT_SYNC(0x1b, MatchPlayerShotSyncPacketHandler()),
     MATCH_PLAYER_SHOT_END(0x1c, MatchPlayerTurnEndPacketHandler()),
     EQUIPMENT_UPDATE(0x20, EquipmentUpdatePacketHandler()),
     MATCH_PLAYER_TURN_START(0x22),
@@ -64,6 +66,7 @@ enum class ClientPacketType(
     LOCKER_INVENTORY_REQUEST(0xd3, LockerInventoryRequestPacketHandler()),
     UNKNOWN_140(0x140),
     ACHIEVEMENT_STATUS_REQUEST(0x157),
+    MATCH_PLAYER_TOURNEY_SHOT(0x12f, MatchTourneyShotPacketHandler()),
     PAPEL_SHOP_PLAY(0x14b, PapelShopPlayPacketHandler()),
     LOGIN_BONUS_INFO(0x16e, LoginBonusStatusPacketHandler()),
     LOGIN_BONUS_CLAIM(0x16f, LoginBonusClaimPacketHandler());

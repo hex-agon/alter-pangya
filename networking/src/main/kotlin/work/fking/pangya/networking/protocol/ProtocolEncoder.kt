@@ -16,7 +16,7 @@ class ProtocolEncoder(
     private val lzoDict = IntArray(1 shl 14)
 
     override fun encode(ctx: ChannelHandlerContext, packet: OutboundPacket, buffer: ByteBuf) {
-        logger.trace("Encoding packet={}", packet.javaClass.simpleName)
+        logger.debug("Encoding packet={}", packet.javaClass.simpleName)
         // TODO: Everything here is terribly inefficient
         val pktBuffer = ctx.alloc().buffer()
         try {

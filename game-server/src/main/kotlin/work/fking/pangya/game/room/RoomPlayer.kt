@@ -9,6 +9,7 @@ class RoomPlayer(
 ) {
     val connectionId: Int = player.connectionId
 
+    var currentHole: Int = 1
     var finishedHole: Boolean = false
 
     fun write(message: Any) {
@@ -24,50 +25,52 @@ class RoomPlayer(
     }
 
     fun encode(buffer: ByteBuf, extendedInfo: Boolean) {
-        buffer.writeIntLE(player.connectionId)
-        buffer.writeFixedSizeString(player.nickname, 22)
-        buffer.writeFixedSizeString("", 17) // guildName
-        buffer.writeByte(1) // room slot, starting at 1
-        buffer.writeIntLE(0) // unknown
-        buffer.writeIntLE(0) // title
-        buffer.writeIntLE(player.equipment.equippedCharacterUid()) // character iff
-        buffer.writeIntLE(0) // skin id background
-        buffer.writeIntLE(0) // skin id frame
-        buffer.writeIntLE(0) // skin id sticker
-        buffer.writeIntLE(0) // skin id slot
-        buffer.writeIntLE(0) // unknown
-        buffer.writeIntLE(0) // duplicate skin id title
-        buffer.writeShortLE(520) // room status (master, away, ready)
-        buffer.writeByte(player.rank)
-        buffer.writeShortLE(0x2560)
-        buffer.writeIntLE(0) // guild id
-        buffer.writeFixedSizeString("", 12)
-        buffer.writeIntLE(player.uid)
+        with(buffer) {
+            writeIntLE(player.connectionId)
+            writeFixedSizeString(player.nickname, 22)
+            writeFixedSizeString("", 17) // guildName
+            writeByte(1) // room slot, starting at 1
+            writeIntLE(0) // unknown
+            writeIntLE(0) // title
+            writeIntLE(player.equipment.equippedCharacterUid()) // character iff
+            writeIntLE(0) // skin id background
+            writeIntLE(0) // skin id frame
+            writeIntLE(0) // skin id sticker
+            writeIntLE(0) // skin id slot
+            writeIntLE(0) // unknown
+            writeIntLE(0) // duplicate skin id title
+            writeShortLE(520) // room status (master, away, ready)
+            writeByte(player.rank)
+            writeShortLE(0x2560)
+            writeIntLE(0) // guild id
+            writeFixedSizeString("", 12)
+            writeIntLE(player.uid)
 
-        // lounge stuff
-        buffer.writeIntLE(0) // animation/pose
-        buffer.writeShortLE(0)
-        buffer.writeIntLE(0) //
+            // lounge stuff
+            writeIntLE(0) // animation/pose
+            writeShortLE(0)
+            writeIntLE(0) //
 
-        // lounge location
-        buffer.writeFloatLE(0f) // x
-        buffer.writeFloatLE(0f) // y
-        buffer.writeFloatLE(0f) // rotation
+            // lounge location
+            writeFloatLE(0f) // x
+            writeFloatLE(0f) // y
+            writeFloatLE(0f) // rotation
 
-        // lounge shop
-        buffer.writeIntLE(0) // shop active?
-        buffer.writeFixedSizeString("", 64) // shop name
+            // lounge shop
+            writeIntLE(0) // shop active?
+            writeFixedSizeString("", 64) // shop name
 
-        buffer.writeIntLE(0) // mascot id
-        buffer.writeShortLE(0) // item boost (pang mastery/pang nitro)
+            writeIntLE(0) // mascot id
+            writeShortLE(0) // item boost (pang mastery/pang nitro)
 
-        buffer.writeIntLE(0)
+            writeIntLE(0)
 
-        buffer.writeFixedSizeString("", 22) // ntreev nick?
-        buffer.writeZero(105)
-        buffer.writeByte(0) // invited?
-        buffer.writeFloatLE(0f) // avg score
-        buffer.writeFloatLE(0f)
+            writeFixedSizeString("", 22) // ntreev nick?
+            writeZero(105)
+            writeByte(0) // invited?
+            writeFloatLE(0f) // avg score
+            writeFloatLE(0f)
+        }
 
         if (extendedInfo) {
             player.equippedCharacter().encode(buffer)

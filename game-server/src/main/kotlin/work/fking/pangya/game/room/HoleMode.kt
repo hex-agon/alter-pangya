@@ -1,5 +1,7 @@
 package work.fking.pangya.game.room
 
+import io.netty.buffer.ByteBuf
+
 enum class HoleMode {
     FRONT,
     BACK,
@@ -8,13 +10,10 @@ enum class HoleMode {
     REPEAT,
     SHUFFLE_COURSE;
 
-    companion object {
-        private val VALUES = values()
-
-        fun forId(id: Byte): HoleMode {
-            return if (id < VALUES.size) {
-                VALUES[id.toInt()]
-            } else FRONT
-        }
-    }
 }
+
+fun ByteBuf.write(holeMode: HoleMode) {
+    this.writeByte(holeMode.ordinal)
+}
+
+fun holeModeById(id: Byte): HoleMode = HoleMode.entries.find { it.ordinal == id.toInt() } ?: HoleMode.FRONT

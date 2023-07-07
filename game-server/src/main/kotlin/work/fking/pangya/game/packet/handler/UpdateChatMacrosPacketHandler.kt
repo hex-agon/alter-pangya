@@ -17,7 +17,5 @@ class UpdateChatMacrosPacketHandler : ClientPacketHandler {
         for (i in 0 until MAX_MACROS) {
             macros[i] = packet.readFixedSizeString(MACRO_LENGTH)
         }
-        println(macros)
     }
-
 }

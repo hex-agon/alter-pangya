@@ -32,6 +32,7 @@ enum class ClientPacketType(
     private val handler: ClientPacketHandler = ClientPacketHandler { _, _, _ -> }
 ) {
     SELECT_CHANNEL(0x4, SelectChannelPacketHandler()),
+    MATCH_FINAL_STATS(0x6),
     ROOM_CREATE(0x8, CreateRoomPacketHandler()),
     ROOM_SETTINGS_UPDATE(0xa, RoomSettingsUpdatePacketHandler()),
     PLAYER_EQUIPMENT_CONFIRM(0xb),

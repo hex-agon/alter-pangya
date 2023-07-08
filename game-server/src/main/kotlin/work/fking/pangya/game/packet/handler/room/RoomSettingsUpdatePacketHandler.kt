@@ -4,8 +4,6 @@ import io.netty.buffer.ByteBuf
 import work.fking.pangya.game.GameServer
 import work.fking.pangya.game.net.ClientPacketHandler
 import work.fking.pangya.game.player.Player
-import work.fking.pangya.game.room.Course
-import work.fking.pangya.game.room.HoleMode
 import work.fking.pangya.game.room.RoomArtifactChange
 import work.fking.pangya.game.room.RoomCourseChange
 import work.fking.pangya.game.room.RoomGameTimeChange
@@ -21,6 +19,7 @@ import work.fking.pangya.game.room.RoomTypeChange
 import work.fking.pangya.game.room.RoomUpdate
 import work.fking.pangya.game.room.courseById
 import work.fking.pangya.game.room.holeModeById
+import work.fking.pangya.game.room.roomTypeById
 import work.fking.pangya.networking.protocol.readPString
 
 class RoomSettingsUpdatePacketHandler : ClientPacketHandler {
@@ -37,7 +36,7 @@ class RoomSettingsUpdatePacketHandler : ClientPacketHandler {
             val roomUpdate = when (type.toInt()) {
                 0 -> RoomNameChange(packet.readPString())
                 1 -> RoomPasswordChange(packet.readPString())
-                2 -> RoomTypeChange(RoomType.forId(packet.readByte()))
+                2 -> RoomTypeChange(roomTypeById(packet.readByte()))
                 3 -> RoomCourseChange(courseById(packet.readByte()))
                 4 -> RoomHoleCountChange(packet.readByte().toInt())
                 5 -> RoomHoleModeChange(holeModeById(packet.readByte()))

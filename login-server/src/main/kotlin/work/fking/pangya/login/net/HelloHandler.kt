@@ -12,15 +12,12 @@ import work.fking.pangya.networking.crypt.PangCrypt
 import work.fking.pangya.networking.protocol.ProtocolEncoder
 import java.nio.ByteOrder
 
+private val LOGGER = LogManager.getLogger(HelloHandler::class.java)
+
 @Sharable
 class HelloHandler(
     private val loginServer: LoginServer
 ) : ChannelInboundHandlerAdapter() {
-
-    companion object {
-        @JvmStatic
-        private val LOGGER = LogManager.getLogger(HelloHandler::class.java)
-    }
 
     override fun channelActive(ctx: ChannelHandlerContext) {
         val channel = ctx.channel()

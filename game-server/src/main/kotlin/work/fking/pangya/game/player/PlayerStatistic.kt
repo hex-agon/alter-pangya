@@ -1,62 +1,65 @@
 package work.fking.pangya.game.player
 
 import io.netty.buffer.ByteBuf
+import io.netty.buffer.Unpooled
 import java.util.concurrent.TimeUnit
 
 class PlayerStatistic {
 
     fun encode(buffer: ByteBuf) {
-        buffer.writeIntLE(100) // total shots !
-        buffer.writeIntLE(2) // total putts !
-        buffer.writeIntLE(TimeUnit.DAYS.toSeconds(1).toInt()) // total play time, in seconds !
-        buffer.writeIntLE(60) // total time spent before performing the shot, in seconds !
-        buffer.writeFloatLE(456.76f) // longest drive !
-        buffer.writeIntLE(7) // pangya hit count, the pangya rate displayed is calculated by dividing this by the totals shots !
-        buffer.writeIntLE(0) // timeouts?
-        buffer.writeIntLE(0) // total shots that went out of bounds !
-        buffer.writeIntLE(547899) // total distance !
-        buffer.writeIntLE(10) // total holes !
-        buffer.writeIntLE(0)
-        buffer.writeIntLE(54) // hole in ones !
-        buffer.writeShortLE(0) // total shots that landed in a bunker?
-        buffer.writeIntLE(5) // total fairway shots, for some reason this is divided by 'total holes' !
-        buffer.writeIntLE(33) // albatross !
-        buffer.writeIntLE(0) // ?
-        buffer.writeIntLE(1) // successful putts !
-        buffer.writeFloatLE(33.7f) // longest putt !
-        buffer.writeFloatLE(242.2f) // longest chip in !
-        buffer.writeIntLE(346) // experience !
-        buffer.writeByte(20) // level !
-        buffer.writeLongLE(4456) // total pang earned?
-        buffer.writeIntLE(-5) // total score (sum of all final scores, under par = negative values) !
-        buffer.writeZero(5)
-        buffer.writeByte(0)
-        buffer.writeLongLE(0)
-        buffer.writeLongLE(0)
-        buffer.writeLongLE(0)
-        buffer.writeLongLE(0)
-        buffer.writeLongLE(0)
-        buffer.writeLongLE(0)
-        buffer.writeIntLE(51) // total games played (used for quit rate) !
-        buffer.writeIntLE(0) // team hole?
-        buffer.writeIntLE(1) // team win?
-        buffer.writeIntLE(2) // team game?
-        buffer.writeIntLE(0) // ladder point?
-        buffer.writeIntLE(0) // ladder hole?
-        buffer.writeIntLE(0) // ladder win?
-        buffer.writeIntLE(0) // ladder lose?
-        buffer.writeIntLE(0) // ladder draw?
-        buffer.writeIntLE(1) // game combo current streak !
-        buffer.writeIntLE(2) // game combo best streak !
-        buffer.writeIntLE(3) // total games quit (used for quit rate) !
-        buffer.writeIntLE(540) // total pangs won in pang battle !
-        buffer.writeIntLE(0)
-        buffer.writeIntLE(0)
-        buffer.writeIntLE(0)
-        buffer.writeIntLE(0)
-        buffer.writeIntLE(0)
-        buffer.writeZero(10)
-        buffer.writeIntLE(0) // game count
-        buffer.writeZero(8)
+        with(buffer) {
+            writeIntLE(100) // total shots !
+            writeIntLE(2) // total putts !
+            writeIntLE(TimeUnit.DAYS.toSeconds(1).toInt()) // total play time, in seconds !
+            writeIntLE(60) // total time spent before performing the shot, in seconds !
+            writeFloatLE(456.76f) // longest drive !
+            writeIntLE(7) // pangya hit count, the pangya rate displayed is calculated by dividing this by the totals shots !
+            writeIntLE(0) // timeouts?
+            writeIntLE(0) // total shots that went out of bounds !
+            writeIntLE(547899) // total distance !
+            writeIntLE(10) // total holes !
+            writeIntLE(0)
+            writeIntLE(54) // hole in ones !
+            writeShortLE(0) // total shots that landed in a bunker?
+            writeIntLE(5) // total fairway shots, for some reason this is divided by 'total holes' !
+            writeIntLE(33) // albatross !
+            writeIntLE(0) // ?
+            writeIntLE(1) // successful putts !
+            writeFloatLE(33.7f) // longest putt !
+            writeFloatLE(242.2f) // longest chip in !
+            writeIntLE(346) // experience !
+            writeByte(20) // level !
+            writeLongLE(4456) // total pang earned?
+            writeIntLE(-5) // total score (sum of all final scores, under par = negative values) !
+            writeZero(5)
+            writeByte(0)
+            writeLongLE(0)
+            writeLongLE(0)
+            writeLongLE(0)
+            writeLongLE(0)
+            writeLongLE(0)
+            writeLongLE(0)
+            writeIntLE(51) // total games played (used for quit rate) !
+            writeIntLE(0) // team hole?
+            writeIntLE(1) // team win?
+            writeIntLE(2) // team game?
+            writeIntLE(0) // ladder point?
+            writeIntLE(0) // ladder hole?
+            writeIntLE(0) // ladder win?
+            writeIntLE(0) // ladder lose?
+            writeIntLE(0) // ladder draw?
+            writeIntLE(1) // game combo current streak !
+            writeIntLE(2) // game combo best streak !
+            writeIntLE(3) // total games quit (used for quit rate) !
+            writeIntLE(540) // total pangs won in pang battle !
+            writeIntLE(0)
+            writeIntLE(0)
+            writeIntLE(0)
+            writeIntLE(0)
+            writeIntLE(0)
+            writeZero(10)
+            writeIntLE(0) // game count
+            writeZero(8)
+        }
     }
 }

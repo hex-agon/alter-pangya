@@ -1,14 +1,14 @@
 package work.fking.pangya.game.player
 
 import io.netty.buffer.ByteBuf
-import work.fking.pangya.game.model.IffObject
+import work.fking.pangya.game.model.IFF_TYPE_BALL
+import work.fking.pangya.game.model.IFF_TYPE_CLUBSET
+import work.fking.pangya.game.model.IFF_TYPE_ITEM
 import work.fking.pangya.game.model.iffTypeFromId
 
-class Equipment(private val player: Player) {
+private const val EQUIPPED_ITEMS_SIZE = 10
 
-    companion object {
-        private const val EQUIPPED_ITEMS_SIZE = 10
-    }
+class Equipment(private val player: Player) {
 
     private val equippedItemIffIds = IntArray(EQUIPPED_ITEMS_SIZE)
     private var equippedClubSetUid = 0
@@ -27,13 +27,13 @@ class Equipment(private val player: Player) {
     fun updateEquippedItems(itemIffIds: IntArray) {
         require(itemIffIds.size == EQUIPPED_ITEMS_SIZE) { "Equipped item iff ids invalid length" }
         for (i in itemIffIds.indices) {
-            require(iffTypeFromId(itemIffIds[i]) == IffObject.TYPE_ITEM) { "Iff object " + itemIffIds[i] + " is not an item" }
+            require(iffTypeFromId(itemIffIds[i]) == IFF_TYPE_ITEM) { "Iff object " + itemIffIds[i] + " is not an item" }
             equippedItemIffIds[i] = itemIffIds[i]
         }
     }
 
     fun equipClubSet(clubSet: Item) {
-        require(clubSet.iffTypeId() == IffObject.TYPE_CLUBSET) { "Item is not a clubSet" }
+        require(clubSet.iffTypeId() == IFF_TYPE_CLUBSET) { "Item is not a clubSet" }
         // sanity check to see if we actually own the item
         if (player.inventory.existsByUid(clubSet.uid)) {
             equippedClubSetUid = clubSet.uid
@@ -41,7 +41,7 @@ class Equipment(private val player: Player) {
     }
 
     fun equipComet(comet: Item) {
-        require(comet.iffTypeId() == IffObject.TYPE_BALL) { "Item is not a comet" }
+        require(comet.iffTypeId() == IFF_TYPE_BALL) { "Item is not a comet" }
         // sanity check to see if we actually own the item
         if (player.inventory.existsByUid(comet.uid)) {
             equippedCometIffId = comet.iffId

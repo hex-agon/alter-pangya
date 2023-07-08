@@ -15,17 +15,14 @@ import work.fking.pangya.networking.selectBestServerChannelAvailable
 import java.net.InetAddress
 import java.util.concurrent.Executors
 
+private val LOGGER = LoggerFactory.getLogger(LoginServer::class.java)
+
 class LoginServer(
     val discoveryClient: DiscoveryClient,
     val serverConfig: ServerConfig,
     val sessionClient: SessionClient,
     val authenticator: Authenticator
 ) {
-
-    companion object {
-        @JvmStatic
-        private val LOGGER = LoggerFactory.getLogger(LoginServer::class.java)
-    }
 
     private val executorService = Executors.newVirtualThreadPerTaskExecutor()
 

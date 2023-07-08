@@ -7,12 +7,9 @@ import work.fking.pangya.login.Player
 import work.fking.pangya.login.net.ClientPacketHandler
 import work.fking.pangya.login.packet.outbound.LoginReplies
 
-class SelectServerPacketHandler : ClientPacketHandler {
+private val LOGGER = LoggerFactory.getLogger(SelectServerPacketHandler::class.java)
 
-    companion object {
-        @JvmStatic
-        private val LOGGER = LoggerFactory.getLogger(SelectServerPacketHandler::class.java)
-    }
+class SelectServerPacketHandler : ClientPacketHandler {
 
     override fun handle(server: LoginServer, player: Player, packet: ByteBuf) {
         val serverId = packet.readShortLE().toInt()
@@ -20,5 +17,4 @@ class SelectServerPacketHandler : ClientPacketHandler {
         runCatching { server.sessionClient.registerSession(player) }.onFailure { throw RuntimeException("Failed to register player session") }
         player.channel.writeAndFlush(LoginReplies.sessionKey(player.sessionKey))
     }
-
 }

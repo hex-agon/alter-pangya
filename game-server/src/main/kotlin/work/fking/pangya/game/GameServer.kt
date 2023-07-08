@@ -17,16 +17,13 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicInteger
 
+private val LOGGER = LoggerFactory.getLogger(GameServer::class.java)
+
 class GameServer(
     private val serverConfig: ServerConfig,
     private val sessionClient: SessionClient,
     private val serverChannels: List<ServerChannel>
 ) {
-    private companion object {
-        @JvmStatic
-        private val LOGGER = LoggerFactory.getLogger(GameServer::class.java)
-    }
-
     private val executorService = Executors.newVirtualThreadPerTaskExecutor()
     private val connectionIdSequence = AtomicInteger()
     private val playerCount = AtomicInteger()

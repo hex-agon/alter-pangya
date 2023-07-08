@@ -15,17 +15,15 @@ enum class RoomType(
     TOURNAMENT(4, matchDirector = noopMatchDirector()),
     PANG_BATTLE(10, matchDirector = noopMatchDirector()),
     PRACTICE(19, uiType = 4, extendedInfo = false, matchDirector = PracticeMatchDirector());
+}
 
-    companion object {
-        fun forId(id: Byte): RoomType {
-            return when (id.toInt()) {
-                0 -> VERSUS
-                2 -> LOUNGE
-                4 -> TOURNAMENT
-                10 -> PANG_BATTLE
-                19 -> PRACTICE
-                else -> VERSUS
-            }
-        }
+fun roomTypeById(id: Byte): RoomType {
+    return when (id.toInt()) {
+        0 -> RoomType.VERSUS
+        2 -> RoomType.LOUNGE
+        4 -> RoomType.TOURNAMENT
+        10 -> RoomType.PANG_BATTLE
+        19 -> RoomType.PRACTICE
+        else -> RoomType.VERSUS
     }
 }

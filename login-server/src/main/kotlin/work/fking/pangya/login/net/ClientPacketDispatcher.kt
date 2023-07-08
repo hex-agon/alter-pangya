@@ -6,15 +6,13 @@ import org.slf4j.LoggerFactory
 import work.fking.pangya.login.LoginServer
 import work.fking.pangya.login.Player
 
+private val LOGGER = LoggerFactory.getLogger(ClientPacketDispatcher::class.java)
+
 class ClientPacketDispatcher(
     private val loginServer: LoginServer,
     private val player: Player,
     private val handlers: Array<ClientPacketHandler?>
 ) : SimpleChannelInboundHandler<ClientPacket>() {
-
-    companion object {
-        private val LOGGER = LoggerFactory.getLogger(ClientPacketDispatcher::class.java)
-    }
 
     override fun channelRead0(ctx: ChannelHandlerContext, packet: ClientPacket) {
         val packetId = packet.type.id()

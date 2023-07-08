@@ -3,12 +3,9 @@ package work.fking.pangya.game.room
 import org.slf4j.LoggerFactory
 import java.util.concurrent.atomic.AtomicInteger
 
-class RoomManager {
-    companion object {
-        @JvmStatic
-        private val LOGGER = LoggerFactory.getLogger(Room::class.java)
-    }
+private val LOGGER = LoggerFactory.getLogger(Room::class.java)
 
+class RoomManager {
     private val idSequence = AtomicInteger()
     private val rooms = HashMap<Int, Room>()
 

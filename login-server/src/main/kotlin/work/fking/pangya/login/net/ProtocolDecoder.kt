@@ -7,14 +7,12 @@ import io.netty.handler.codec.ByteToMessageDecoder
 import org.apache.logging.log4j.LogManager
 import work.fking.pangya.networking.crypt.PangCrypt
 
+private val LOGGER = LogManager.getLogger(ProtocolDecoder::class.java)
+
 class ProtocolDecoder(
     private val protocol: ClientProtocol,
     private val cryptKey: Int
 ) : ByteToMessageDecoder() {
-
-    companion object {
-        private val LOGGER = LogManager.getLogger(ProtocolDecoder::class.java)
-    }
 
     override fun decode(ctx: ChannelHandlerContext, buffer: ByteBuf, out: MutableList<Any>) {
         PangCrypt.decrypt(buffer, cryptKey)

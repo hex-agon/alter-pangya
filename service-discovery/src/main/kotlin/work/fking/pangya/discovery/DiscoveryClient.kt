@@ -10,6 +10,9 @@ import org.apache.logging.log4j.LogManager
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
+private val LOGGER = LogManager.getLogger(DiscoveryClient::class.java)
+private const val CHANNEL_NAME = "pangya.servers.heartbeat"
+
 class DiscoveryClient(
     redisClient: RedisClient,
     private val redis: RedisPubSubCommands<String, String> = redisClient.connectPubSub().sync()
@@ -25,11 +28,6 @@ class DiscoveryClient(
             .filter { it.channel == CHANNEL_NAME }
             .doOnNext { onChannelMessage(it) }
             .subscribe()
-    }
-
-    companion object {
-        private val LOGGER = LogManager.getLogger(DiscoveryClient::class.java)
-        private const val CHANNEL_NAME = "pangya.servers.heartbeat"
     }
 
     private val knownServers: MutableList<KnownServer> = ArrayList()

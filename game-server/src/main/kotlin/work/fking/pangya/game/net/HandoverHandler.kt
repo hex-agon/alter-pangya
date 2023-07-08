@@ -9,15 +9,13 @@ import work.fking.pangya.game.task.HandoverTask
 import work.fking.pangya.networking.crypt.PangCrypt
 import work.fking.pangya.networking.protocol.readPString
 
+private val LOGGER = LoggerFactory.getLogger(HandoverHandler::class.java)
+private const val PACKET_ID = 0x2
+
 class HandoverHandler(
     private val gameServer: GameServer,
     private val cryptKey: Int
 ) : SimpleChannelInboundHandler<ByteBuf>() {
-
-    companion object {
-        private val LOGGER = LoggerFactory.getLogger(HandoverHandler::class.java)
-        private const val PACKET_ID = 0x2
-    }
 
     override fun channelRead0(ctx: ChannelHandlerContext, buffer: ByteBuf) {
         PangCrypt.decrypt(buffer, cryptKey)

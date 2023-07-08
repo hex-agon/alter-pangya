@@ -1,6 +1,7 @@
 package work.fking.pangya.game.packet.handler.match
 
 import io.netty.buffer.ByteBuf
+import io.netty.buffer.ByteBufUtil
 import work.fking.pangya.game.GameServer
 import work.fking.pangya.game.net.ClientPacketHandler
 import work.fking.pangya.game.player.Player
@@ -11,5 +12,6 @@ class MatchPlayerHoleFinishPacketHandler : ClientPacketHandler {
         val room = player.currentRoom ?: throw IllegalStateException("Player ${player.nickname} finished a hole but is not in a room")
         val roomPlayer = room.findSelf(player)
         room.handleMatchEvent(PlayerHoleFinishEvent(roomPlayer))
+        println(ByteBufUtil.hexDump(packet))
     }
 }

@@ -5,11 +5,9 @@ import io.netty.buffer.Unpooled
 import org.apache.logging.log4j.LogManager
 import java.io.IOException
 
-class ResourceLoader {
+private val LOGGER = LogManager.getLogger(ResourceLoader::class.java)
 
-    companion object {
-        private val LOGGER = LogManager.getLogger(ResourceLoader::class.java)
-    }
+class ResourceLoader {
 
     private val cachedResources: MutableMap<String, ByteBuf?> = HashMap()
 

@@ -6,11 +6,10 @@ import work.fking.pangya.game.net.ClientPacketHandler
 import work.fking.pangya.game.player.Player
 import work.fking.pangya.networking.protocol.readFixedSizeString
 
+private const val MAX_MACROS = 9
+private const val MACRO_LENGTH = 64
+
 class UpdateChatMacrosPacketHandler : ClientPacketHandler {
-    companion object {
-        private const val MAX_MACROS = 9
-        private const val MACRO_LENGTH = 64
-    }
 
     override fun handle(server: GameServer, player: Player, packet: ByteBuf) {
         val macros = arrayOfNulls<String>(MAX_MACROS)

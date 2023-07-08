@@ -1,12 +1,10 @@
 package work.fking.pangya.login.net
 
+private const val PACKETS_SIZE = 512
+
 class ClientProtocol(
     packetTypes: Array<ClientPacketType>
 ) {
-
-    companion object {
-        private const val PACKETS_SIZE = 512
-    }
 
     private val packets = arrayOfNulls<ClientPacketType>(PACKETS_SIZE)
     private val handlers = arrayOfNulls<ClientPacketHandler>(PACKETS_SIZE)

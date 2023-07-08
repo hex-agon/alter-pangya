@@ -16,15 +16,13 @@ import io.netty.handler.codec.http.HttpVersion
 import io.netty.util.CharsetUtil
 import org.apache.logging.log4j.LogManager
 
+private val LOGGER = LogManager.getLogger(HttpServerHandler::class.java)
+private val INTERNAL_ERROR_BUFFER = Unpooled.copiedBuffer("Internal server error", CharsetUtil.UTF_8)
+private const val URI_TRANSLATIONS_REQUEST = "/Translation/Read.aspx"
+private const val URI_UPDATELIST_REQUEST = "/new/Service/S4_Patch/updatelist"
+
 @Sharable
 class HttpServerHandler : SimpleChannelInboundHandler<FullHttpRequest>() {
-
-    companion object {
-        private val LOGGER = LogManager.getLogger(HttpServerHandler::class.java)
-        private val INTERNAL_ERROR_BUFFER = Unpooled.copiedBuffer("Internal server error", CharsetUtil.UTF_8)
-        private const val URI_TRANSLATIONS_REQUEST = "/Translation/Read.aspx"
-        private const val URI_UPDATELIST_REQUEST = "/new/Service/S4_Patch/updatelist"
-    }
 
     private val resourceLoader = ResourceLoader()
 

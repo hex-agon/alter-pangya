@@ -9,6 +9,8 @@ import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import java.util.function.IntSupplier
 
+private val LOGGER = LogManager.getLogger(HeartbeatPublisher::class.java)
+
 class HeartbeatPublisher(
     private val discoveryClient: DiscoveryClient,
     serverType: ServerType,
@@ -26,10 +28,6 @@ class HeartbeatPublisher(
         serverConfig.boosts,
         serverConfig.icon
     )
-
-    companion object {
-        private val LOGGER = LogManager.getLogger(HeartbeatPublisher::class.java)
-    }
 
     private val executorService = Executors.newSingleThreadScheduledExecutor { runnable: Runnable? ->
         val thread = Thread(runnable)

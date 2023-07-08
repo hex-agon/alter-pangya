@@ -10,17 +10,14 @@ import work.fking.pangya.networking.crypt.PangCrypt
 import work.fking.pangya.networking.protocol.readPString
 import work.fking.pangya.networking.protocol.readPStringCharArray
 
+private const val PACKET_ID = 0x1
+
+private val LOGGER = LoggerFactory.getLogger(LoginHandler::class.java)
+
 class LoginHandler(
     private val loginServer: LoginServer,
     private val cryptKey: Int
 ) : SimpleChannelInboundHandler<ByteBuf>() {
-
-    companion object {
-        private const val PACKET_ID = 0x1
-
-        @JvmStatic
-        private val LOGGER = LoggerFactory.getLogger(LoginHandler::class.java)
-    }
 
     override fun channelRead0(ctx: ChannelHandlerContext, buffer: ByteBuf) {
         PangCrypt.decrypt(buffer, cryptKey)

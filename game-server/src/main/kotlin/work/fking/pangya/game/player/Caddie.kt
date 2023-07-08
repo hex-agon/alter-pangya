@@ -11,10 +11,6 @@ data class Caddie(
     private val experience: Int
 ) : IffObject {
 
-    companion object {
-        fun nullCaddie() = Caddie(uid = 0, iffId = 0, levelsGained = 0, experience = 0)
-    }
-
     override fun encode(buffer: ByteBuf) {
         buffer.writeIntLE(uid)
         buffer.writeIntLE(iffId)
@@ -24,3 +20,5 @@ data class Caddie(
         buffer.writeLongLE(0)
     }
 }
+
+fun nullCaddie() = Caddie(uid = 0, iffId = 0, levelsGained = 0, experience = 0)

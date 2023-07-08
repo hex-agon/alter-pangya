@@ -8,10 +8,13 @@ import work.fking.pangya.login.auth.UserInfo
 import work.fking.pangya.login.net.ClientPacketDispatcher
 import work.fking.pangya.login.net.ClientPacketType
 import work.fking.pangya.login.net.ClientProtocol
-import work.fking.pangya.login.net.ProtocolDecoder
 import work.fking.pangya.login.net.LoginState
+import work.fking.pangya.login.net.ProtocolDecoder
 import work.fking.pangya.login.packet.outbound.LoginReplies
 import work.fking.pangya.login.packet.outbound.ServerListReplies
+
+private val PROTOCOL: ClientProtocol = ClientProtocol(ClientPacketType.values())
+private val LOGGER = LoggerFactory.getLogger(LoginTask::class.java)
 
 class LoginTask(
     private val loginServer: LoginServer,
@@ -20,14 +23,6 @@ class LoginTask(
     private val username: String,
     private val password: CharArray
 ) : Runnable {
-
-    companion object {
-        @JvmStatic
-        private val PROTOCOL: ClientProtocol = ClientProtocol(ClientPacketType.values())
-
-        @JvmStatic
-        private val LOGGER = LoggerFactory.getLogger(LoginTask::class.java)
-    }
 
     override fun run() {
         val userInfo: UserInfo? = try {

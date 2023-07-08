@@ -7,10 +7,9 @@ import work.fking.pangya.game.net.ClientPacketHandler
 import work.fking.pangya.game.packet.outbound.SelectChannelResultPacket
 import work.fking.pangya.game.player.Player
 
+private val LOGGER = LoggerFactory.getLogger(SelectChannelPacketHandler::class.java)
+
 class SelectChannelPacketHandler : ClientPacketHandler {
-    companion object {
-        private val LOGGER = LoggerFactory.getLogger(SelectChannelPacketHandler::class.java)
-    }
 
     override fun handle(server: GameServer, player: Player, packet: ByteBuf) {
         val channelId = packet.readUnsignedByte()

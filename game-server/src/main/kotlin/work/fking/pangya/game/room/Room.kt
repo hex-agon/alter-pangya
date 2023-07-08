@@ -12,16 +12,13 @@ import work.fking.pangya.networking.protocol.writeFixedSizeString
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
 
+private val LOGGER = LoggerFactory.getLogger(Room::class.java)
+
 class Room(
     val id: Int,
     val settings: RoomSettings,
     private val playerLeaveListener: PlayerLeaveRoomListener
 ) {
-    companion object {
-        @JvmStatic
-        private val LOGGER = LoggerFactory.getLogger(Room::class.java)
-    }
-
     private var state: RoomState = RoomState.LOBBY
     private var matchEventHandler: MatchEventHandler? = null
     private var ownerUid = -1

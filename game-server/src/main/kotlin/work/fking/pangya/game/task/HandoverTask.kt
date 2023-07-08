@@ -12,11 +12,14 @@ import work.fking.pangya.game.packet.outbound.CookieBalancePacket
 import work.fking.pangya.game.packet.outbound.EquipmentPacket
 import work.fking.pangya.game.packet.outbound.HandoverReplies
 import work.fking.pangya.game.packet.outbound.HandoverReplies.HandoverResult
-import work.fking.pangya.game.packet.outbound.IffContainerChunkPacket
 import work.fking.pangya.game.packet.outbound.MascotRosterPacket
 import work.fking.pangya.game.packet.outbound.PangBalancePacket
 import work.fking.pangya.game.packet.outbound.ServerChannelsPacket
 import work.fking.pangya.game.packet.outbound.TreasureHunterPacket
+import work.fking.pangya.game.packet.outbound.chunkIffContainer
+
+private val LOGGER = LoggerFactory.getLogger(HandoverTask::class.java)
+private val PROTOCOL = ClientProtocol(ClientPacketType.values())
 
 class HandoverTask(
     private val gameServer:
@@ -24,14 +27,6 @@ class HandoverTask(
     private val cryptKey: Int,
     private val sessionKey: String
 ) : Runnable {
-
-    companion object {
-        @JvmStatic
-        private val LOGGER = LoggerFactory.getLogger(HandoverTask::class.java)
-
-        @JvmStatic
-        private val PROTOCOL = ClientProtocol(ClientPacketType.values())
-    }
 
     override fun run() {
         val sessionInfo: SessionClient.SessionInfo? = try {
@@ -68,10 +63,10 @@ class HandoverTask(
         pipeline.addLast("packetDispatcher", ClientPacketDispatcher(gameServer, player, PROTOCOL.handlers()))
 
         channel.write(HandoverReplies.handoverReply(player))
-        IffContainerChunkPacket.chunk(0x70, player.characterRoster).forEach(channel::write)
-        IffContainerChunkPacket.chunk(0x71, player.caddieRoster).forEach(channel::write)
+        chunkIffContainer(0x70, player.characterRoster).forEach(channel::write)
+        chunkIffContainer(0x71, player.caddieRoster).forEach(channel::write)
         channel.write(EquipmentPacket(player))
-        IffContainerChunkPacket.chunk(0x73, player.inventory).forEach(channel::write)
+        chunkIffContainer(0x73, player.inventory).forEach(channel::write)
         channel.write(TreasureHunterPacket())
         channel.write(MascotRosterPacket())
         channel.write(CookieBalancePacket(player))

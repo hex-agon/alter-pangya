@@ -6,6 +6,7 @@ import work.fking.pangya.game.player.Player
 import work.fking.pangya.game.player.PlayerBasicInfo
 import work.fking.pangya.game.player.PlayerStatistic
 import work.fking.pangya.game.player.PlayerTrophies
+import work.fking.pangya.game.player.nullCaddie
 import work.fking.pangya.game.room.Course
 import work.fking.pangya.networking.protocol.OutboundPacket
 import work.fking.pangya.networking.protocol.writeFixedSizeString
@@ -74,7 +75,7 @@ object HandoverReplies {
             player.equippedCharacter().encode(buffer)
 
             // Active Caddie
-            val caddie = player.activeCaddie() ?: Caddie.nullCaddie()
+            val caddie = player.activeCaddie() ?: nullCaddie()
             caddie.encode(buffer)
 
             // Active Clubset

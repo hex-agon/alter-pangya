@@ -7,7 +7,7 @@ import work.fking.pangya.common.server.ServerConfigLoader
 import work.fking.pangya.discovery.DiscoveryClient
 import work.fking.pangya.discovery.HeartbeatPublisher
 import work.fking.pangya.discovery.ServerType.LOGIN
-import work.fking.pangya.login.auth.Authenticator.Companion.NOOP_AUTHENTICATOR
+import work.fking.pangya.login.auth.NOOP_AUTHENTICATOR
 import work.fking.pangya.login.auth.SessionClient
 
 object Bootstrap {

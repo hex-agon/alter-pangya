@@ -55,7 +55,7 @@ object MatchReplies {
             buffer.writeIntLE(matchState.shotTimeMs)
             buffer.writeIntLE(matchState.gameTimeMs)
             matchState.holes.forEach { buffer.write(it) }
-            buffer.writeIntLE(Rand.nextInt())
+            buffer.writeIntLE(matchState.randSeed)
             buffer.writeZero(18)
         }
     }
@@ -75,6 +75,15 @@ object MatchReplies {
             buffer.writeByte(0) // silent wind?
             buffer.writeShortLE(hole.windDirection)
             buffer.writeByte(1) // sets, 0 adds value
+        }
+    }
+
+    fun gamePlayerUseItem(player: RoomPlayer, itemIffId: Int, randSeed: Int): OutboundPacket {
+        return OutboundPacket { buffer ->
+            buffer.writeShortLE(0x5a)
+            buffer.writeIntLE(itemIffId)
+            buffer.writeIntLE(randSeed)
+            buffer.writeIntLE(player.connectionId)
         }
     }
 

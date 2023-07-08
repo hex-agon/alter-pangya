@@ -12,7 +12,7 @@ data class Coord3D(val x: Float, val y: Float, val z: Float) {
 }
 
 fun ByteBuf.write(coord: Coord3D) {
-    this.writeFloatLE(coord.x)
-    this.writeFloatLE(coord.y)
-    this.writeFloatLE(coord.z)
+    writeFloatLE(coord.x)
+    writeFloatLE(coord.y)
+    writeFloatLE(coord.z)
 }

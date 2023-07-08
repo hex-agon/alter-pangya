@@ -37,12 +37,12 @@ class Player(
 
     var currentChannel: ServerChannel? = null
         set(value) {
-            require(this.currentChannel == null) { "Player is already in a channel" }
+            require(currentChannel == null) { "Player is already in a channel" }
             field = value
         }
     var currentRoom: Room? = null
         set(value) {
-            if (value != null) require(this.currentRoom == null) { "Player is already in a room" }
+            if (value != null) require(currentRoom == null) { "Player is already in a room" }
             field = value
         }
 

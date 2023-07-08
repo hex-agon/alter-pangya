@@ -2,11 +2,12 @@ package work.fking.pangya.game.player
 
 import io.netty.buffer.ByteBuf
 import work.fking.pangya.game.model.IFF_TYPE_BALL
+import work.fking.pangya.game.model.IFF_TYPE_CADDIE
 import work.fking.pangya.game.model.IFF_TYPE_CLUBSET
 import work.fking.pangya.game.model.IFF_TYPE_ITEM
 import work.fking.pangya.game.model.iffTypeFromId
 
-private const val EQUIPPED_ITEMS_SIZE = 10
+const val EQUIPPED_ITEMS_SIZE = 10
 
 class Equipment(private val player: Player) {
 
@@ -27,8 +28,9 @@ class Equipment(private val player: Player) {
     fun updateEquippedItems(itemIffIds: IntArray) {
         require(itemIffIds.size == EQUIPPED_ITEMS_SIZE) { "Equipped item iff ids invalid length" }
         for (i in itemIffIds.indices) {
-            require(iffTypeFromId(itemIffIds[i]) == IFF_TYPE_ITEM) { "Iff object " + itemIffIds[i] + " is not an item" }
-            equippedItemIffIds[i] = itemIffIds[i]
+            val iffId = itemIffIds[i]
+            require(iffId == 0 || iffTypeFromId(iffId) == IFF_TYPE_ITEM) { "Iff object $iffId is not an item" }
+            equippedItemIffIds[i] = iffId
         }
     }
 

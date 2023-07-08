@@ -25,7 +25,7 @@ object ResourcesServer {
                 .childHandler(HttpServerChannelInitializer())
             LOGGER.info("Binding to port {}...", PORT)
             try {
-                val channel = bootstrap.bind(InetAddress.getByName("127.0.0.1"), PORT)
+                val channel = bootstrap.bind(InetAddress.getByName("0.0.0.0"), PORT)
                     .sync()
                     .channel()
                 LOGGER.info("Successfully bound to port {}, server bootstrap completed!", PORT)

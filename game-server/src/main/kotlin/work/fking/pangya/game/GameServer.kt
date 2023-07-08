@@ -61,15 +61,39 @@ class GameServer(
     fun registerPlayer(channel: Channel, uid: Int, username: String, nickname: String): Player {
         val player = Player(channel, uid, connectionIdSequence.incrementAndGet(), username, nickname)
         val characterRoster = player.characterRoster
-        characterRoster.unlockCharacter(67108872)
+        characterRoster.unlockCharacter(0x4000000)
+        characterRoster.unlockCharacter(0x4000001)
+        characterRoster.unlockCharacter(0x4000002)
+        characterRoster.unlockCharacter(0x4000003)
+        characterRoster.unlockCharacter(0x4000004)
+        characterRoster.unlockCharacter(0x4000005)
+        characterRoster.unlockCharacter(0x4000006)
+        characterRoster.unlockCharacter(0x4000007)
+        characterRoster.unlockCharacter(0x4000008)
+        characterRoster.unlockCharacter(0x4000009)
+        characterRoster.unlockCharacter(0x400000a)
+        characterRoster.unlockCharacter(0x400000b)
+        characterRoster.unlockCharacter(0x400000c)
+        characterRoster.unlockCharacter(0x400000e)
 
         val caddieRoster = player.caddieRoster
+        caddieRoster.unlockCaddie(469762081)
+        caddieRoster.unlockCaddie(469762082)
         caddieRoster.unlockCaddie(469762083)
+        caddieRoster.unlockCaddie(469762078)
 
         val inventory = player.inventory
         inventory.add(Item(iffId = 268435511)) // clubset
         inventory.add(Item(iffId = 335544382, quantity = 100)) // comets
+        inventory.add(Item(iffId = 335544457, quantity = 100)) // comets
         inventory.add(Item(iffId = 436207656, quantity = 100)) // papel shop coupons
+
+        //consumables
+        inventory.add(Item(iffId = 402653195, quantity = 100)) // Duostar Nerve Stabilizer
+        inventory.add(Item(iffId = 402653200, quantity = 100)) // Duostar PS
+        inventory.add(Item(iffId = 402653230, quantity = 100)) // Double Strength Boost
+        inventory.add(Item(iffId = 402653228, quantity = 100)) // Silent Nerve Stabilizer
+        inventory.add(Item(iffId = 436207680, quantity = 1000)) // Auto Caliper
 
         // lucia items
         luciaItems.forEach { inventory.add(Item(iffId = it)) }

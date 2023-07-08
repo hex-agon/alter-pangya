@@ -2,26 +2,23 @@ package work.fking.pangya.game.player
 
 import io.netty.buffer.ByteBuf
 import work.fking.pangya.game.model.IffObject
-import work.fking.pangya.game.model.Stat
 
 private const val PARTS = 24
+private const val AUX_PARTS = 5
 private const val STATS = 5
-private const val CARDS = 10
+private const val CARDS = 12
 
 class Character(
     override val uid: Int,
     override val iffId: Int,
-    private val hairColor: Int,
+    private val hairColor: Int = 0,
     val partIffIds: IntArray,
-    val partUids: IntArray,
-    private val stats: IntArray,
-    private val masteryPoints: Int,
-    val cardIffIds: IntArray
+    val partUids: IntArray = IntArray(PARTS),
+    val auxParts: IntArray = IntArray(AUX_PARTS),
+    val previewIffId: Int = 0,
+    private val stats: IntArray = IntArray(STATS),
+    val cardIffIds: IntArray = IntArray(CARDS)
 ) : IffObject {
-
-    fun stat(stat: Stat): Int {
-        return stats[stat.ordinal]
-    }
 
     fun updateParts(partIffIds: IntArray, partUids: IntArray) {
         partIffIds.copyInto(this.partIffIds)
@@ -33,72 +30,39 @@ class Character(
             writeIntLE(iffId)
             writeIntLE(uid)
             writeIntLE(hairColor)
-            for (iffId in partIffIds) {
-                writeIntLE(iffId)
-            }
-            for (uniqueId in partUids) {
-                writeIntLE(uniqueId)
-            }
+            partIffIds.forEach { writeIntLE(it) }
+            partUids.forEach { writeIntLE(it) }
             writeZero(216)
-            writeIntLE(0)
-            writeIntLE(0)
-            writeZero(12)
-            writeIntLE(0)
-            writeZero(12)
-            writeByte(stat(Stat.POWER))
-            writeByte(stat(Stat.CONTROL))
-            writeByte(stat(Stat.ACCURACY))
-            writeByte(stat(Stat.SPIN))
-            writeByte(stat(Stat.CURVE))
-            writeByte(masteryPoints)
-            writeZero(3)
-            for (cardIffId in cardIffIds) {
-                writeIntLE(cardIffId)
-            }
-            writeIntLE(0)
-            writeIntLE(0)
+            auxParts.forEach { writeIntLE(it) }
+            writeIntLE(previewIffId)
+            writeZero(16)
+            stats.forEach { writeByte(it) }
+            cardIffIds.forEach { writeIntLE(it) }
         }
     }
 }
 
-
-fun ByteBuf.readCharacter(buffer: ByteBuf): Character {
-    val iffId = buffer.readIntLE()
-    val uid = buffer.readIntLE()
-    val hairColor = buffer.readIntLE()
-    val partIffIds = IntArray(PARTS)
-    for (i in 0 until PARTS) {
-        partIffIds[i] = buffer.readIntLE()
-    }
-    val partUids = IntArray(PARTS)
-    for (i in 0 until PARTS) {
-        partUids[i] = buffer.readIntLE()
-    }
-    buffer.skipBytes(216)
-    buffer.skipBytes(4)
-    buffer.skipBytes(4)
-    buffer.skipBytes(12)
-    buffer.skipBytes(4)
-    buffer.skipBytes(12)
-    val stats = IntArray(STATS)
-    for (i in 0 until STATS) {
-        stats[i] = buffer.readByte().toInt()
-    }
-    val masteryPoints = buffer.readByte()
-    buffer.skipBytes(3)
-    val cardIffIds = IntArray(CARDS)
-    for (i in 0 until STATS) {
-        cardIffIds[i] = buffer.readIntLE()
-    }
-    buffer.skipBytes(8)
+fun ByteBuf.readCharacter(): Character {
+    val iffId = readIntLE()
+    val uid = readIntLE()
+    val hairColor = readIntLE()
+    val partIffIds = IntArray(PARTS) { readIntLE() }
+    val partUids = IntArray(PARTS) { readIntLE() }
+    skipBytes(216)
+    val auxParts = IntArray(AUX_PARTS) { readIntLE() }
+    val previewIffId = readIntLE()
+    skipBytes(16)
+    val stats = IntArray(STATS) { readUnsignedByte().toInt() }
+    val cardIffIds = IntArray(CARDS) { readIntLE() }
     return Character(
-        uid,
-        iffId,
-        hairColor,
-        partIffIds,
-        partUids,
-        stats,
-        masteryPoints.toInt(),
-        cardIffIds
+        uid = uid,
+        iffId = iffId,
+        hairColor = hairColor,
+        partIffIds = partIffIds,
+        partUids = partUids,
+        auxParts = auxParts,
+        previewIffId = previewIffId,
+        stats = stats,
+        cardIffIds = cardIffIds
     )
 }

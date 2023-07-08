@@ -29,7 +29,7 @@ enum class Course {
 }
 
 fun ByteBuf.write(course: Course) {
-    this.writeByte(course.ordinal)
+    writeByte(course.ordinal)
 }
 
 fun courseById(id: Byte): Course = Course.entries.find { it.ordinal == id.toInt() } ?: Course.entries[Rand.max(Course.entries.size)]

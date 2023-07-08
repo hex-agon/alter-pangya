@@ -7,7 +7,9 @@ import work.fking.pangya.game.player.PlayerBasicInfo
 import work.fking.pangya.game.player.PlayerStatistic
 import work.fking.pangya.game.player.PlayerTrophies
 import work.fking.pangya.game.player.nullCaddie
+import work.fking.pangya.game.player.write
 import work.fking.pangya.game.room.Course
+import work.fking.pangya.game.room.write
 import work.fking.pangya.networking.protocol.OutboundPacket
 import work.fking.pangya.networking.protocol.writeFixedSizeString
 import work.fking.pangya.networking.protocol.writePString
@@ -57,7 +59,7 @@ object HandoverReplies {
             PlayerBasicInfo().encode(buffer, player)
 
             // Player Statistics
-            PlayerStatistic().encode(buffer)
+            buffer.write(PlayerStatistic())
 
             // trophies
             PlayerTrophies().encode(buffer)

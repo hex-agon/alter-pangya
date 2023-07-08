@@ -17,8 +17,10 @@ data class MatchState(
     val holeCount: Int,
     val shotTimeMs: Int,
     val gameTimeMs: Int,
-    val holes: List<Hole> = generateHoles(course)
-)
+    val holes: List<Hole> = generateHoles(course),
+) {
+    val randSeed: Int = Rand.nextInt()
+}
 
 fun generateHoles(course: Course): List<Hole> {
     var cloudy = false
@@ -52,10 +54,10 @@ data class Hole(
 )
 
 fun ByteBuf.write(hole: Hole) {
-    this.writeIntLE(hole.randomId)
-    this.writeByte(0)
-    this.write(hole.course)
-    this.writeByte(hole.number)
+    writeIntLE(hole.randomId)
+    writeByte(0)
+    write(hole.course)
+    writeByte(hole.number)
 }
 
 enum class HoleWeather {
@@ -65,5 +67,5 @@ enum class HoleWeather {
 }
 
 fun ByteBuf.write(holeWeather: HoleWeather) {
-    this.writeShortLE(holeWeather.ordinal)
+    writeShortLE(holeWeather.ordinal)
 }

@@ -21,6 +21,7 @@ import work.fking.pangya.game.packet.handler.match.MatchPlayerShotCommitPacketHa
 import work.fking.pangya.game.packet.handler.match.MatchPlayerTurnEndPacketHandler
 import work.fking.pangya.game.packet.handler.match.MatchPlayerShotStartPacketHandler
 import work.fking.pangya.game.packet.handler.match.MatchPlayerShotSyncPacketHandler
+import work.fking.pangya.game.packet.handler.match.MatchPlayerUseItemPacketHandler
 import work.fking.pangya.game.packet.handler.match.MatchTourneyShotPacketHandler
 import work.fking.pangya.game.packet.handler.match.StartGamePacketHandler
 import work.fking.pangya.game.packet.handler.room.CreateRoomPacketHandler
@@ -45,6 +46,7 @@ enum class ClientPacketType(
     MATCH_PLAYER_SHOT_START(0x14, MatchPlayerShotStartPacketHandler()),
     MATCH_PLAYER_POWER_TOGGLE(0x15),
     MATCH_PLAYER_CHANGE_CLUB(0x16),
+    MATCH_PLAYER_USE_ITEM(0x17, MatchPlayerUseItemPacketHandler()),
     MATCH_HOLE_START(0x1a, MatchHoleStartPacketHandler()),
     MATCH_PLAYER_SHOT_SYNC(0x1b, MatchPlayerShotSyncPacketHandler()),
     MATCH_PLAYER_SHOT_END(0x1c, MatchPlayerTurnEndPacketHandler()),

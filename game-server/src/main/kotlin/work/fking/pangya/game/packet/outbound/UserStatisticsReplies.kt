@@ -6,6 +6,7 @@ import work.fking.pangya.game.player.PlayerBasicInfo
 import work.fking.pangya.game.player.PlayerStatistic
 import work.fking.pangya.game.player.PlayerTrophies
 import work.fking.pangya.game.player.Player
+import work.fking.pangya.game.player.write
 import work.fking.pangya.networking.protocol.OutboundPacket
 
 object UserStatisticsReplies {
@@ -42,7 +43,7 @@ object UserStatisticsReplies {
             buffer.writeShortLE(0x158)
             buffer.writeByte(requestType)
             buffer.writeIntLE(playerUid)
-            PlayerStatistic().encode(buffer)
+            buffer.write(PlayerStatistic())
         }
     }
 

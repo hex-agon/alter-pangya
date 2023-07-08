@@ -14,3 +14,4 @@ data class PlayerShotStartEvent(val player: RoomPlayer) : MatchEvent
 data class PlayerTurnEndEvent(val player: RoomPlayer) : MatchEvent
 data class PlayerTourneyShotEvent(val player: RoomPlayer, val tourneyShotData: TourneyShotData) : MatchEvent
 data class PlayerShotSyncEvent(val player: RoomPlayer, val x: Float, val z: Float, val shotFlags: Int, val frames: Int) : MatchEvent
+data class PlayerUseItemEvent(val player: RoomPlayer, val itemIffId: Int): MatchEvent

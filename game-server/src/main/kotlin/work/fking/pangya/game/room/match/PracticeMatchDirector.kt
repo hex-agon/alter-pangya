@@ -1,5 +1,6 @@
 package work.fking.pangya.game.room.match
 
+import work.fking.pangya.common.Rand
 import work.fking.pangya.game.packet.outbound.MatchReplies
 import work.fking.pangya.game.room.Room
 
@@ -11,9 +12,11 @@ class PracticeMatchDirector : MatchDirector {
             is PlayerHoleStartEvent -> handleHoleStart(matchState, event)
             is PlayerTourneyShotEvent -> handleTourneyShot(room, event)
             is PlayerShotSyncEvent -> handleShotSync(room, event)
+            is PlayerUseItemEvent -> handleUseItem(room, event)
             else -> return
         }
     }
+
 
     private fun handleFinishedPreview(event: PlayerFinishedPreviewEvent) {
         event.player.writeAndFlush(MatchReplies.gameFinishPlayerPreviewAck())
@@ -47,5 +50,10 @@ class PracticeMatchDirector : MatchDirector {
                 frames = event.frames
             )
         )
+    }
+
+    private fun handleUseItem(room: Room, event: PlayerUseItemEvent) {
+        val randSeed = Rand.nextInt()
+        room.broadcast(MatchReplies.gamePlayerUseItem(event.player, event.itemIffId, randSeed))
     }
 }

@@ -57,10 +57,10 @@ object HandoverReplies {
             // User info
             PlayerBasicInfo().encode(buffer, player)
 
-            // Player Statistics
+            // Player Statistics (verified ok by comparing with struct sent on hole end)
             buffer.write(PlayerStatistic())
 
-            // trophies
+            // trophies (verified ok by checking my room trophies and confirming there's 1 ama 6 gold trophy and 1 bronze pro 7 trophy)
             PlayerTrophies().encode(buffer)
 
             // Player equipment
@@ -78,7 +78,7 @@ object HandoverReplies {
             // Active Caddie
             player.equippedCaddie().encode(buffer)
 
-            // Active Clubset
+            // Active Clubset (seemingly completely ignored by the client)
             val clubSet = player.equippedClubSet() ?: throw IllegalStateException("player doesn't have a clubset equipped")
             buffer.writeIntLE(clubSet.uid)
             buffer.writeIntLE(clubSet.iffId)

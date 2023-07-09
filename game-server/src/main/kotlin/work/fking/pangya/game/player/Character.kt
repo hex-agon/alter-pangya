@@ -15,7 +15,7 @@ class Character(
     val partIffIds: IntArray,
     val partUids: IntArray = IntArray(PARTS),
     val auxParts: IntArray = IntArray(AUX_PARTS),
-    val previewIffId: Int = 0,
+    val cutInIffId: Int = 0,
     private val stats: IntArray = IntArray(STATS),
     val cardIffIds: IntArray = IntArray(CARDS)
 ) : IffObject {
@@ -34,7 +34,7 @@ class Character(
             partUids.forEach { writeIntLE(it) }
             writeZero(216)
             auxParts.forEach { writeIntLE(it) }
-            writeIntLE(previewIffId)
+            writeIntLE(cutInIffId)
             writeZero(16)
             stats.forEach { writeByte(it) }
             cardIffIds.forEach { writeIntLE(it) }
@@ -50,7 +50,7 @@ fun ByteBuf.readCharacter(): Character {
     val partUids = IntArray(PARTS) { readIntLE() }
     skipBytes(216)
     val auxParts = IntArray(AUX_PARTS) { readIntLE() }
-    val previewIffId = readIntLE()
+    val cutInIffId = readIntLE()
     skipBytes(16)
     val stats = IntArray(STATS) { readUnsignedByte().toInt() }
     val cardIffIds = IntArray(CARDS) { readIntLE() }
@@ -61,7 +61,7 @@ fun ByteBuf.readCharacter(): Character {
         partIffIds = partIffIds,
         partUids = partUids,
         auxParts = auxParts,
-        previewIffId = previewIffId,
+        cutInIffId = cutInIffId,
         stats = stats,
         cardIffIds = cardIffIds
     )

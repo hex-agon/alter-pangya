@@ -84,6 +84,10 @@ class GameServer(
 
         val inventory = player.inventory
         inventory.add(Item(iffId = 268435543)) // clubset
+        inventory.add(Item(iffId = 268435457)) // clubset
+        inventory.add(Item(iffId = 268435463)) // clubset
+        inventory.add(Item(iffId = 268435549)) // clubset
+        inventory.add(Item(iffId = 268435511)) // clubset
         inventory.add(Item(iffId = 335544382, quantity = 100)) // comets
         inventory.add(Item(iffId = 335544457, quantity = 100)) // comets
         inventory.add(Item(iffId = 436207656, quantity = 100)) // papel shop coupons

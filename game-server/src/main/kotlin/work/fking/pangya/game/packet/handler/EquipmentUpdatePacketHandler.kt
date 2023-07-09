@@ -23,7 +23,7 @@ class EquipmentUpdatePacketHandler : ClientPacketHandler {
             4 -> handleUpdateDecoration(packet)
             5 -> handleEquipCharacter(player, packet)
             8 -> handleMascot(packet)
-            9 -> handleEquipPlayerPreview(packet)
+            9 -> handleEquipCutIn(packet)
             else -> println("Unhandled equipment update type $type")
         }
     }
@@ -74,6 +74,6 @@ class EquipmentUpdatePacketHandler : ClientPacketHandler {
     private fun handleMascot(buffer: ByteBuf) {
     }
 
-    private fun handleEquipPlayerPreview(buffer: ByteBuf) {
+    private fun handleEquipCutIn(buffer: ByteBuf) {
     }
 }

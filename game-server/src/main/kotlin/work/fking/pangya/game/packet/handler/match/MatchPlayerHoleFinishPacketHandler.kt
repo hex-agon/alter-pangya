@@ -12,6 +12,5 @@ class MatchPlayerHoleFinishPacketHandler : ClientPacketHandler {
         val room = player.currentRoom ?: throw IllegalStateException("Player ${player.nickname} finished a hole but is not in a room")
         val roomPlayer = room.findSelf(player)
         room.handleMatchEvent(PlayerHoleFinishEvent(roomPlayer))
-        println(ByteBufUtil.hexDump(packet))
     }
 }

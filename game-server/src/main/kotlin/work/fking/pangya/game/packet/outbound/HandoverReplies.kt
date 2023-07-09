@@ -1,17 +1,16 @@
 package work.fking.pangya.game.packet.outbound
 
+import io.netty.buffer.ByteBufUtil
 import work.fking.pangya.game.model.CourseStatistics
-import work.fking.pangya.game.player.Caddie
 import work.fking.pangya.game.player.Player
 import work.fking.pangya.game.player.PlayerBasicInfo
 import work.fking.pangya.game.player.PlayerStatistic
 import work.fking.pangya.game.player.PlayerTrophies
-import work.fking.pangya.game.player.nullCaddie
 import work.fking.pangya.game.player.write
 import work.fking.pangya.game.room.Course
-import work.fking.pangya.game.room.write
 import work.fking.pangya.networking.protocol.OutboundPacket
 import work.fking.pangya.networking.protocol.writeFixedSizeString
+import work.fking.pangya.networking.protocol.writeLocalDateTime
 import work.fking.pangya.networking.protocol.writePString
 import java.time.LocalDateTime
 
@@ -77,45 +76,36 @@ object HandoverReplies {
             player.equippedCharacter().encode(buffer)
 
             // Active Caddie
-            val caddie = player.activeCaddie() ?: nullCaddie()
-            caddie.encode(buffer)
+            player.equippedCaddie().encode(buffer)
 
             // Active Clubset
-            buffer.writeIntLE(player.inventory.findByIffId(268435511)!!.uid) // item unique id
-            buffer.writeIntLE(268435511) // item iff id
-            buffer.writeZero(10)
-            buffer.writeShortLE(0) // power upgrades?
-            buffer.writeShortLE(0) // control upgrades?
-            buffer.writeShortLE(0) // accuracy upgrades?
-            buffer.writeShortLE(0) // spin upgrades?
-            buffer.writeShortLE(0) // curve upgrades?
+            val clubSet = player.equippedClubSet() ?: throw IllegalStateException("player doesn't have a clubset equipped")
+            buffer.writeIntLE(clubSet.uid)
+            buffer.writeIntLE(clubSet.iffId)
+            repeat(5) { buffer.writeShortLE(0) }
+            repeat(5) { buffer.writeShortLE(0) }
 
             // Active Mascot
             buffer.writeIntLE(0) // item unique id
             buffer.writeIntLE(0) // item iff id
             buffer.writeByte(0) // level
             buffer.writeIntLE(0) // experience
-            buffer.writeFixedSizeString("mascot1", 16)
+            buffer.writeFixedSizeString("0", 16)
             buffer.writeZero(33)
 
             // Server Time
-            val now = LocalDateTime.now()
-            buffer.writeShortLE(now.year)
-            buffer.writeShortLE(now.monthValue)
-            buffer.writeShortLE(now.dayOfWeek.value)
-            buffer.writeShortLE(now.dayOfMonth)
-            buffer.writeShortLE(now.hour)
-            buffer.writeShortLE(now.minute)
-            buffer.writeShortLE(now.second)
-            buffer.writeShortLE(0) // milliseconds
-            buffer.writeShortLE(0) // unknown
+            buffer.writeLocalDateTime(LocalDateTime.now())
 
+            buffer.writeShortLE(0)
             // Papel shop info?
             buffer.writeShortLE(0)
             buffer.writeShortLE(0)
             buffer.writeShortLE(0)
+
             buffer.writeIntLE(0) // unknown
-            buffer.writeLongLE((1 shl 2).toLong()) // disabled server features, 0x4 = disables mail
+
+            // known ok
+            buffer.writeLongLE((1 shl 18).toLong()) // disabled server features
             buffer.writeIntLE(0) // unknown, ss = login count
             buffer.writeIntLE(0) // ss = server flags
 

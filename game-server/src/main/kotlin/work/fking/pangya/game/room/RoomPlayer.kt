@@ -32,7 +32,7 @@ class RoomPlayer(
             writeByte(1) // room slot, starting at 1
             writeIntLE(0) // unknown
             writeIntLE(0) // title
-            writeIntLE(player.equipment.equippedCharacterUid()) // character iff
+            writeIntLE(player.equipment.equippedCharacterUid) // character iff
             writeIntLE(0) // skin id background
             writeIntLE(0) // skin id frame
             writeIntLE(0) // skin id sticker

@@ -7,6 +7,7 @@ class PlayerTrophies {
         // Starting from Amateur 6 to Amateur 1 repeat qualities gold, silver, bronze
         // Then from pro 1 to pro 7 repeat qualities gold, silver bronze
         buffer.writeShortLE(1)
-        buffer.writeZero(76)
+        buffer.writeZero(74)
+        buffer.writeShortLE(1)
     }
 }

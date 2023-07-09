@@ -83,7 +83,7 @@ class GameServer(
         caddieRoster.unlockCaddie(469762078)
 
         val inventory = player.inventory
-        inventory.add(Item(iffId = 268435511)) // clubset
+        inventory.add(Item(iffId = 268435543)) // clubset
         inventory.add(Item(iffId = 335544382, quantity = 100)) // comets
         inventory.add(Item(iffId = 335544457, quantity = 100)) // comets
         inventory.add(Item(iffId = 436207656, quantity = 100)) // papel shop coupons
@@ -101,7 +101,7 @@ class GameServer(
         val equipment = player.equipment
         characterRoster.findByIffId(67108872)?.let(equipment::equipCharacter)
         caddieRoster.findByIffId(469762083)?.let(equipment::equipCaddie)
-        inventory.findByIffId(268435511)?.let(equipment::equipClubSet)
+        inventory.findByIffId(268435543)?.let(equipment::equipClubSet)
         inventory.findByIffId(335544382)?.let(equipment::equipComet)
 
         players[player.connectionId] = player

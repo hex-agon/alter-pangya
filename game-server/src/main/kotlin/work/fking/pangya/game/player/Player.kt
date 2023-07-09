@@ -47,11 +47,15 @@ class Player(
         }
 
     fun equippedCharacter(): Character {
-        return characterRoster.findByUid(equipment.equippedCharacterUid()) ?: throw IllegalStateException("Player does not have a equipped character")
+        return characterRoster.findByUid(equipment.equippedCharacterUid) ?: throw IllegalStateException("Player does not have a equipped character")
     }
 
-    fun activeCaddie(): Caddie? {
-        return caddieRoster.findByUid(equipment.equippedCaddieUid())
+    fun equippedCaddie(): Caddie {
+        return caddieRoster.findByUid(equipment.equippedCaddieUid) ?: nullCaddie()
+    }
+
+    fun equippedClubSet(): Item? {
+        return inventory.findByUid(equipment.equippedClubSetUid)
     }
 
     fun write(message: Any) {

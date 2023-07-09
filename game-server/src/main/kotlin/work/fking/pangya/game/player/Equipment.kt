@@ -2,7 +2,6 @@ package work.fking.pangya.game.player
 
 import io.netty.buffer.ByteBuf
 import work.fking.pangya.game.model.IFF_TYPE_BALL
-import work.fking.pangya.game.model.IFF_TYPE_CADDIE
 import work.fking.pangya.game.model.IFF_TYPE_CLUBSET
 import work.fking.pangya.game.model.IFF_TYPE_ITEM
 import work.fking.pangya.game.model.iffTypeFromId
@@ -12,18 +11,15 @@ const val EQUIPPED_ITEMS_SIZE = 10
 class Equipment(private val player: Player) {
 
     private val equippedItemIffIds = IntArray(EQUIPPED_ITEMS_SIZE)
-    private var equippedClubSetUid = 0
-    private var equippedCometIffId = 0
-    private var equippedCharacterUid = 0
-    private var equippedCaddieUid = 0
+    var equippedClubSetUid = 0
+        private set
+    var equippedCometIffId = 0
+        private set
+    var equippedCharacterUid = 0
+        private set
+    var equippedCaddieUid = 0
+        private set
 
-    fun equippedCharacterUid(): Int {
-        return equippedCharacterUid
-    }
-
-    fun equippedCaddieUid(): Int {
-        return equippedCaddieUid
-    }
 
     fun updateEquippedItems(itemIffIds: IntArray) {
         require(itemIffIds.size == EQUIPPED_ITEMS_SIZE) { "Equipped item iff ids invalid length" }

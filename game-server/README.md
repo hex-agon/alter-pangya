@@ -10,6 +10,11 @@ port = 20202
 flags = []
 boosts = ["DOUBLE_PANG"]
 icon = "CIEN"
+
+serverChannels = [
+    { id = 1, name = "Rookies", capacity = 20, restrictions = ["ROOKIES_ONLY"] },
+    { id = 2, name = "Free", capacity = 300 }
+]
 ```
 
 Environment variables:

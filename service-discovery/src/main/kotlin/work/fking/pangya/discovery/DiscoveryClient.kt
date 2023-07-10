@@ -9,6 +9,8 @@ import io.lettuce.core.pubsub.api.sync.RedisPubSubCommands
 import org.apache.logging.log4j.LogManager
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
+import java.util.concurrent.locks.ReentrantLock
+import kotlin.concurrent.withLock
 
 private val LOGGER = LogManager.getLogger(DiscoveryClient::class.java)
 private const val CHANNEL_NAME = "pangya.servers.heartbeat"
@@ -30,6 +32,7 @@ class DiscoveryClient(
             .subscribe()
     }
 
+    private val serversLock = ReentrantLock()
     private val knownServers: MutableList<KnownServer> = ArrayList()
 
     /**
@@ -88,7 +91,7 @@ class DiscoveryClient(
 
     private fun cleanup() {
         val now = LocalDateTime.now()
-        synchronized(knownServers) {
+        serversLock.withLock {
             knownServers.removeIf { ChronoUnit.MINUTES.between(it.knownSince, now) > 3 }
         }
     }

@@ -11,10 +11,6 @@ port = 10103
 Environment variables:
 
 ```
-DATABASE_HOST=localhost
-DATABASE_NAME=pangya
-DATABASE_USERNAME=postgres
-DATABASE_PASSWORD=
-LOG_LEVEL=trace
+LOG_LEVEL=debug
 REDIS_URI=redis://localhost
 ```

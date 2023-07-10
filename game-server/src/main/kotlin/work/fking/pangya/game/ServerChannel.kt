@@ -9,7 +9,7 @@ class ServerChannel(
     val id: Int,
     val name: String,
     val capacity: Int,
-    val restrictions: List<Restriction>
+    val restrictions: List<Restriction> = emptyList()
 ) {
     val roomManager: RoomManager = RoomManager()
 
@@ -56,14 +56,10 @@ class ServerChannel(
         return id
     }
 
-    enum class Restriction(private val flag: Int) {
+    enum class Restriction(val flag: Int) {
         JUNIOR_AND_LOWER(1 shl 1),
         ROOKIES_ONLY(1 shl 3),
         BEGINNERS_AND_JUNIORS_ONLY(1 shl 4),
         JUNIORS_AND_SENIORS_ONLY(1 shl 5);
-
-        fun flag(): Int {
-            return flag
-        }
     }
 }

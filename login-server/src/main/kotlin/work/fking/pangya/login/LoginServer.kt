@@ -4,7 +4,6 @@ import io.netty.bootstrap.ServerBootstrap
 import io.netty.channel.Channel
 import io.netty.channel.ChannelOption
 import org.slf4j.LoggerFactory
-import work.fking.pangya.common.server.ServerConfig
 import work.fking.pangya.discovery.DiscoveryClient
 import work.fking.pangya.login.auth.Authenticator
 import work.fking.pangya.login.auth.SessionClient
@@ -19,7 +18,7 @@ private val LOGGER = LoggerFactory.getLogger(LoginServer::class.java)
 
 class LoginServer(
     val discoveryClient: DiscoveryClient,
-    val serverConfig: ServerConfig,
+    val serverConfig: LoginServerConfig,
     val sessionClient: SessionClient,
     val authenticator: Authenticator
 ) {
@@ -58,12 +57,11 @@ class LoginServer(
             val channel = bootstrap.bind(inetAddress, serverConfig.port)
                 .sync()
                 .channel()
-            LOGGER.info("Successfully bound to port {}, server bootstrap completed!", serverConfig.port)
+            LOGGER.info("Successfully bound to {}, server bootstrap completed!", channel.localAddress())
             channel.closeFuture().sync()
         } finally {
             bossGroup.shutdownGracefully()
             workerGroup.shutdownGracefully()
         }
     }
-
 }

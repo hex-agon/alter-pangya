@@ -32,7 +32,7 @@ object ServerListReplies {
     private fun encodeServerInfo(buffer: ByteBuf, server: ServerInfo) {
         var serverFlags = 0
         for (flag in server.flags) {
-            serverFlags = serverFlags or flag.value()
+            serverFlags = serverFlags or flag.value
         }
         var serverBoosts = 0
         for (boost in server.boosts) {

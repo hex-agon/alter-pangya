@@ -27,7 +27,7 @@ class ServerChannelsPacket(
     private fun pack(restrictions: List<Restriction>): Int {
         var bitFlags = 0
         for (restriction in restrictions) {
-            bitFlags = bitFlags or restriction.flag()
+            bitFlags = bitFlags or restriction.flag
         }
         return bitFlags
     }

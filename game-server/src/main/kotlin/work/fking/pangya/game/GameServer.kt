@@ -4,7 +4,6 @@ import io.netty.bootstrap.ServerBootstrap
 import io.netty.channel.Channel
 import io.netty.channel.ChannelOption
 import org.slf4j.LoggerFactory
-import work.fking.pangya.common.server.ServerConfig
 import work.fking.pangya.game.net.ServerChannelInitializer
 import work.fking.pangya.game.player.Item
 import work.fking.pangya.game.player.Player
@@ -20,9 +19,9 @@ import java.util.concurrent.atomic.AtomicInteger
 private val LOGGER = LoggerFactory.getLogger(GameServer::class.java)
 
 class GameServer(
-    private val serverConfig: ServerConfig,
+    private val serverConfig: GameServerConfig,
     private val sessionClient: SessionClient,
-    private val serverChannels: List<ServerChannel>
+    private val serverChannels: List<ServerChannel> = serverConfig.serverChannels
 ) {
     private val executorService = Executors.newVirtualThreadPerTaskExecutor()
     private val connectionIdSequence = AtomicInteger()
@@ -138,7 +137,7 @@ class GameServer(
             val channel = bootstrap.bind(inetAddress, serverConfig.port)
                 .sync()
                 .channel()
-            LOGGER.info("Successfully bound to port {}, server bootstrap completed!", serverConfig.port)
+            LOGGER.info("Successfully bound to {}, server bootstrap completed!", channel.localAddress())
             channel.closeFuture().sync()
         } finally {
             bossGroup.shutdownGracefully()

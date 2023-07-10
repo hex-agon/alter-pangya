@@ -1,40 +1,25 @@
 package work.fking.pangya.discovery
 
 import org.apache.logging.log4j.LogManager
-import work.fking.pangya.common.server.ServerBoost
-import work.fking.pangya.common.server.ServerConfig
-import work.fking.pangya.common.server.ServerFlag
-import work.fking.pangya.common.server.ServerIcon
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import java.util.function.IntSupplier
 
 private val LOGGER = LogManager.getLogger(HeartbeatPublisher::class.java)
 
+private val executorService = Executors.newSingleThreadScheduledExecutor { runnable: Runnable? ->
+    val thread = Thread(runnable)
+    thread.isDaemon = true
+    thread.name = "HeartbeatPublisher"
+    thread
+}
+
 class HeartbeatPublisher(
     private val discoveryClient: DiscoveryClient,
-    serverType: ServerType,
-    serverConfig: ServerConfig,
+    private val serverType: ServerType,
+    private val serverConfig: ServerConfig,
     private val playerCountSupplier: IntSupplier = IntSupplier { 0 },
 ) {
-    private val staticInfo = StaticInfo(
-        serverType,
-        serverConfig.id,
-        serverConfig.name,
-        serverConfig.capacity,
-        serverConfig.advertiseAddress,
-        serverConfig.port,
-        serverConfig.flags,
-        serverConfig.boosts,
-        serverConfig.icon
-    )
-
-    private val executorService = Executors.newSingleThreadScheduledExecutor { runnable: Runnable? ->
-        val thread = Thread(runnable)
-        thread.isDaemon = true
-        thread.name = "HeartbeatPublisher"
-        thread
-    }
 
     fun start() {
         executorService.scheduleWithFixedDelay(this::publish, 0, 1, TimeUnit.MINUTES)
@@ -42,16 +27,16 @@ class HeartbeatPublisher(
 
     private fun publish() {
         val serverInfo = ServerInfo(
-            staticInfo.type,
-            staticInfo.id,
-            staticInfo.name,
-            staticInfo.capacity,
+            serverType,
+            serverConfig.id,
+            serverConfig.name,
+            serverConfig.capacity,
             playerCountSupplier.asInt,
-            staticInfo.ip,
-            staticInfo.port,
-            staticInfo.flags,
-            staticInfo.boosts,
-            staticInfo.icon
+            serverConfig.advertiseAddress,
+            serverConfig.port,
+            serverConfig.flags ?: emptyList(),
+            serverConfig.boosts ?: emptyList(),
+            serverConfig.icon ?: ServerIcon.BLACK_PAPEL
         )
         try {
             discoveryClient.publish(serverInfo)
@@ -61,14 +46,22 @@ class HeartbeatPublisher(
     }
 }
 
-private data class StaticInfo(
+@JvmRecord
+data class ServerInfo(
     val type: ServerType,
     val id: Int,
     val name: String,
     val capacity: Int,
+    val playerCount: Int,
     val ip: String,
     val port: Int,
     val flags: List<ServerFlag>,
     val boosts: List<ServerBoost>,
     val icon: ServerIcon
 )
+
+enum class ServerType {
+    LOGIN,
+    GAME,
+    SOCIAL
+}

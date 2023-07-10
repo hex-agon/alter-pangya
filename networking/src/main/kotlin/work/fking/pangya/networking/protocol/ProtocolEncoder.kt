@@ -1,12 +1,12 @@
 package work.fking.pangya.networking.protocol
 
+import dev.pangya.lzo.MiniLZO
 import io.netty.buffer.ByteBuf
 import io.netty.buffer.Unpooled
 import io.netty.channel.ChannelHandlerContext
 import io.netty.handler.codec.MessageToByteEncoder
 import org.apache.logging.log4j.LogManager
 import work.fking.pangya.networking.crypt.PangCrypt
-import dev.pangya.lzo.MiniLZO
 
 class ProtocolEncoder(
     private val cryptKey: Int

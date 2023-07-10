@@ -1,7 +1,6 @@
 package work.fking.pangya.game.player
 
 import io.netty.buffer.ByteBuf
-import work.fking.pangya.game.player.Player
 import work.fking.pangya.networking.protocol.writeFixedSizeString
 
 class PlayerBasicInfo {

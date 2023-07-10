@@ -14,7 +14,6 @@ import work.fking.pangya.game.room.RoomNaturalWindChange
 import work.fking.pangya.game.room.RoomPasswordChange
 import work.fking.pangya.game.room.RoomPlayerCountChange
 import work.fking.pangya.game.room.RoomShotTimeChange
-import work.fking.pangya.game.room.RoomType
 import work.fking.pangya.game.room.RoomTypeChange
 import work.fking.pangya.game.room.RoomUpdate
 import work.fking.pangya.game.room.courseById

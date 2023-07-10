@@ -13,14 +13,15 @@ import work.fking.pangya.game.packet.handler.RareShopOpenPacketHandler
 import work.fking.pangya.game.packet.handler.SelectChannelPacketHandler
 import work.fking.pangya.game.packet.handler.UpdateChatMacrosPacketHandler
 import work.fking.pangya.game.packet.handler.UserProfileRequestPacketHandler
-import work.fking.pangya.game.packet.handler.match.MatchPlayerHoleFinishPacketHandler
 import work.fking.pangya.game.packet.handler.match.MatchFinishPlayerPreviewPacketHandler
 import work.fking.pangya.game.packet.handler.match.MatchHoleStartPacketHandler
+import work.fking.pangya.game.packet.handler.match.MatchPlayerHoleFinishPacketHandler
+import work.fking.pangya.game.packet.handler.match.MatchPlayerQuitPacketHandler
 import work.fking.pangya.game.packet.handler.match.MatchPlayerRotateAimPacketHandler
 import work.fking.pangya.game.packet.handler.match.MatchPlayerShotCommitPacketHandler
-import work.fking.pangya.game.packet.handler.match.MatchPlayerTurnEndPacketHandler
 import work.fking.pangya.game.packet.handler.match.MatchPlayerShotStartPacketHandler
 import work.fking.pangya.game.packet.handler.match.MatchPlayerShotSyncPacketHandler
+import work.fking.pangya.game.packet.handler.match.MatchPlayerTurnEndPacketHandler
 import work.fking.pangya.game.packet.handler.match.MatchPlayerUseItemPacketHandler
 import work.fking.pangya.game.packet.handler.match.MatchTourneyShotPacketHandler
 import work.fking.pangya.game.packet.handler.match.StartGamePacketHandler
@@ -67,6 +68,7 @@ enum class ClientPacketType(
     UNKNOWN_9C(0x9c),
     UNKNOWN_C1(0xC1),
     LOCKER_INVENTORY_REQUEST(0xd3, LockerInventoryRequestPacketHandler()),
+    MATCH_PLAYER_QUIT(0x130, MatchPlayerQuitPacketHandler()),
     UNKNOWN_140(0x140),
     ACHIEVEMENT_STATUS_REQUEST(0x157),
     MATCH_PLAYER_TOURNEY_SHOT(0x12f, MatchTourneyShotPacketHandler()),

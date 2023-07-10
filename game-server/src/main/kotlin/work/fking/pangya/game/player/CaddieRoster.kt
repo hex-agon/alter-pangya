@@ -1,8 +1,8 @@
 package work.fking.pangya.game.player
 
 import work.fking.pangya.common.Rand
-import work.fking.pangya.game.model.IffContainer
 import work.fking.pangya.game.model.IFF_TYPE_CADDIE
+import work.fking.pangya.game.model.IffContainer
 import work.fking.pangya.game.model.iffTypeFromId
 
 class CaddieRoster(override val entries: MutableList<Caddie> = ArrayList()) : IffContainer<Caddie> {

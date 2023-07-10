@@ -52,10 +52,14 @@ class JoinLobbyPacketHandler : ClientPacketHandler {
             artifactIffId = 0,
             naturalWind = false
         )
-        player.writeAndFlush(RoomReplies.list(listOf(
-            roomVersus,
-            roomTournament,
-            roomLounge
-        )))
+        player.writeAndFlush(
+            RoomReplies.list(
+                listOf(
+                    roomVersus,
+                    roomTournament,
+                    roomLounge
+                )
+            )
+        )
     }
 }

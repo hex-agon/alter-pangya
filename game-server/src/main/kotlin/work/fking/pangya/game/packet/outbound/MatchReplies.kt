@@ -1,6 +1,5 @@
 package work.fking.pangya.game.packet.outbound
 
-import work.fking.pangya.common.Rand
 import work.fking.pangya.game.player.Player
 import work.fking.pangya.game.room.Room
 import work.fking.pangya.game.room.RoomPlayer
@@ -162,6 +161,50 @@ object MatchReplies {
             buffer.writeIntLE(player.connectionId)
             buffer.writeIntLE(1) // hole
             tourneyShotData.serialize(buffer)
+        }
+    }
+
+    fun gameTourneyEndingScore(): OutboundPacket {
+        return OutboundPacket { buffer ->
+            buffer.writeShortLE(0x79)
+            buffer.writeIntLE(100) // experience
+            buffer.writeIntLE(738197504) // trophy IffId
+            buffer.writeByte(0) // trophy again?
+            buffer.writeByte(0) // which team won? 0 red 1 blue 2 neither
+
+            repeat(12) { // medals
+                buffer.writeIntLE(0) // uniqueId
+                buffer.writeIntLE(0) // iffId
+            }
+        }
+    }
+
+    fun gameTourneyWinnings(): OutboundPacket {
+        return OutboundPacket { buffer ->
+            buffer.writeShortLE(0xce)
+            buffer.writeByte(0)
+            buffer.writeShortLE(1) // count
+
+            repeat(1) {
+                buffer.writeIntLE(402653195) // item iffIds
+            }
+        }
+    }
+
+    fun gameTourneyTimeout(): OutboundPacket {
+        return OutboundPacket { buffer -> buffer.writeShortLE(0x8c) }
+    }
+
+    fun gameTourneyUpdatePlayerProgress(player: RoomPlayer): OutboundPacket {
+        return OutboundPacket { buffer ->
+            buffer.writeShortLE(0x6d)
+            buffer.writeIntLE(player.connectionId)
+            buffer.writeByte(player.currentHole) // hole
+            buffer.writeByte(3) // total strokes?
+            buffer.writeIntLE(-1) // score
+            buffer.writeLongLE(30) // pang
+            buffer.writeLongLE(1) // bonus pang
+            buffer.writeByte(1) //  finished the hole 1 or 0 not
         }
     }
 }

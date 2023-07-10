@@ -26,12 +26,14 @@ class MatchPlayerShotSyncPacketHandler : ClientPacketHandler {
         val shotFrames = packet.readShortLE().toInt() // i think this is the travel time in frames?
         val grandPrixPenalties = packet.readByte().toInt()
 
-        room.handleMatchEvent(PlayerShotSyncEvent(
-            player = roomPlayer,
-            x = x,
-            z = z,
-            shotFlags = shotFlags,
-            frames = shotFrames
-        ))
+        room.handleMatchEvent(
+            PlayerShotSyncEvent(
+                player = roomPlayer,
+                x = x,
+                z = z,
+                shotFlags = shotFlags,
+                frames = shotFrames
+            )
+        )
     }
 }

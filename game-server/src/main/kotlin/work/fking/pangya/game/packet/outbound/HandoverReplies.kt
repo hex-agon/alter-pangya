@@ -1,13 +1,12 @@
 package work.fking.pangya.game.packet.outbound
 
-import io.netty.buffer.ByteBufUtil
-import work.fking.pangya.game.model.CourseStatistics
 import work.fking.pangya.game.player.Player
 import work.fking.pangya.game.player.PlayerBasicInfo
 import work.fking.pangya.game.player.PlayerStatistic
 import work.fking.pangya.game.player.PlayerTrophies
 import work.fking.pangya.game.player.write
 import work.fking.pangya.game.room.Course
+import work.fking.pangya.game.room.CourseStatistics
 import work.fking.pangya.networking.protocol.OutboundPacket
 import work.fking.pangya.networking.protocol.writeFixedSizeString
 import work.fking.pangya.networking.protocol.writeLocalDateTime

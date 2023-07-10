@@ -13,6 +13,7 @@ class PracticeMatchDirector : MatchDirector {
             is PlayerTourneyShotEvent -> handleTourneyShot(room, event)
             is PlayerShotSyncEvent -> handleShotSync(room, event)
             is PlayerUseItemEvent -> handleUseItem(room, event)
+            is PlayerQuitEvent -> handlePlayerQuit(room, event)
             else -> return
         }
     }
@@ -55,5 +56,14 @@ class PracticeMatchDirector : MatchDirector {
     private fun handleUseItem(room: Room, event: PlayerUseItemEvent) {
         val randSeed = Rand.nextInt()
         room.broadcast(MatchReplies.gamePlayerUseItem(event.player, event.itemIffId, randSeed))
+    }
+
+    private fun handlePlayerQuit(room: Room, event: PlayerQuitEvent) {
+        with(event.player) {
+            write(MatchReplies.gameTourneyEndingScore())
+            write(MatchReplies.gameTourneyWinnings())
+            write(MatchReplies.gameTourneyTimeout())
+        }
+        room.broadcast(MatchReplies.gameTourneyUpdatePlayerProgress(event.player))
     }
 }

@@ -1,9 +1,11 @@
 package work.fking.pangya.game.player
 
-import work.fking.pangya.common.Rand
 import work.fking.pangya.game.model.IFF_TYPE_CHARACTER
 import work.fking.pangya.game.model.IffContainer
 import work.fking.pangya.game.model.iffTypeFromId
+import java.util.concurrent.atomic.AtomicInteger
+
+private val uidSequence = AtomicInteger(1)
 
 private const val NURI = 0x4000000
 private const val HANA = 0x4000001
@@ -42,7 +44,7 @@ class CharacterRoster(override val entries: MutableList<Character> = ArrayList()
     fun unlockCharacter(iffId: Int) {
         require(iffTypeFromId(iffId) == IFF_TYPE_CHARACTER) { "iffId is not a character" }
         val character = Character(
-            uid = Rand.max(30000),
+            uid = uidSequence.getAndIncrement(),
             iffId = iffId,
             partIffIds = baseParts[iffId]!!,
         )

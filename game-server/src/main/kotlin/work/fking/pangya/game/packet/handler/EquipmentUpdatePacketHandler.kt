@@ -29,10 +29,7 @@ class EquipmentUpdatePacketHandler : ClientPacketHandler {
     }
 
     private fun handleUpdateCharacterParts(player: Player, buffer: ByteBuf) {
-        println(buffer.readableBytes())
-        println(ByteBufUtil.hexDump(buffer))
         val character = buffer.readCharacter()
-        println(buffer.readableBytes())
         LOGGER.debug("Updating player {} character parts", player.nickname)
         player.equippedCharacter().updateParts(character.partIffIds, character.partUids)
         player.writeAndFlush(EquipmentUpdateReplies.equipCharacterPartsAck(character))

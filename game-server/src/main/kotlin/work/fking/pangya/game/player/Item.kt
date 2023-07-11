@@ -1,15 +1,17 @@
 package work.fking.pangya.game.player
 
 import io.netty.buffer.ByteBuf
-import work.fking.pangya.common.Rand
 import work.fking.pangya.game.model.IFF_TYPE_BALL
 import work.fking.pangya.game.model.IFF_TYPE_ITEM
 import work.fking.pangya.game.model.IFF_TYPE_PASSIVE_ITEM
 import work.fking.pangya.game.model.IffObject
 import work.fking.pangya.game.model.iffTypeFromId
+import java.util.concurrent.atomic.AtomicInteger
+
+private val uidSequence = AtomicInteger(1)
 
 class Item(
-    override val uid: Int = Rand.max(10000),
+    override val uid: Int = uidSequence.getAndIncrement(),
     override val iffId: Int,
     private var quantity: Int = 0
 ) : IffObject {

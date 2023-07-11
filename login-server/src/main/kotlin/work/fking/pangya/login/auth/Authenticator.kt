@@ -1,8 +1,10 @@
 package work.fking.pangya.login.auth
 
-import work.fking.pangya.common.Rand
+import java.util.concurrent.atomic.AtomicInteger
 
-val NOOP_AUTHENTICATOR: Authenticator = Authenticator { username, password -> UserInfo(Rand.max(10000), username, username) }
+private val uidSequence = AtomicInteger(1)
+
+val NOOP_AUTHENTICATOR: Authenticator = Authenticator { username, _ -> UserInfo(uidSequence.getAndIncrement(), username, username) }
 
 fun interface Authenticator {
     fun authenticate(username: String, password: CharArray): UserInfo?

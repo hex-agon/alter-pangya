@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout disableAnsi="false" pattern="%cyan{%d{yyyy/MM/dd HH:mm:ss.SSS}}  %highlight{%-5level}{STYLE=Logback} %green{[%t]} %magenta{[%logger{2}]} - %msg%n"/>
+        </Console>
+    </Appenders>
+    <Loggers>
+        <Root level="warn">
+            <AppenderRef ref="Console"/>
+        </Root>
+        <Logger level="${env:LOG_LEVEL:-info}" name="work.fking.pangya" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
+    </Loggers>
+</Configuration>

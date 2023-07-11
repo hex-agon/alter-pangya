@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf
 import work.fking.pangya.common.Rand
 import work.fking.pangya.game.model.IFF_TYPE_BALL
 import work.fking.pangya.game.model.IFF_TYPE_ITEM
+import work.fking.pangya.game.model.IFF_TYPE_PASSIVE_ITEM
 import work.fking.pangya.game.model.IffObject
 import work.fking.pangya.game.model.iffTypeFromId
 
@@ -26,7 +27,7 @@ class Item(
         buffer.writeIntLE(iffId)
         buffer.writeIntLE(0)
         // if the item is not quantifiable, this is the item current stats
-        if (iffTypeFromId(iffId) in intArrayOf(IFF_TYPE_ITEM, IFF_TYPE_BALL)) {
+        if (iffTypeFromId(iffId) in intArrayOf(IFF_TYPE_ITEM, IFF_TYPE_PASSIVE_ITEM, IFF_TYPE_BALL)) {
             buffer.writeIntLE(quantity)
             buffer.writeZero(180)
         } else {

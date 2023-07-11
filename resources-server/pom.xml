@@ -19,11 +19,6 @@
         </dependency>
         <dependency>
             <groupId>fking.work.pangya</groupId>
-            <artifactId>common</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>fking.work.pangya</groupId>
             <artifactId>networking</artifactId>
             <version>${project.version}</version>
         </dependency>

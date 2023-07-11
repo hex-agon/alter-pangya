@@ -71,6 +71,7 @@ enum class ClientPacketType(
     MATCH_PLAYER_QUIT(0x130, MatchPlayerQuitPacketHandler()),
     UNKNOWN_140(0x140),
     ACHIEVEMENT_STATUS_REQUEST(0x157),
+    PLAYER_RING_PROC(0x15d),
     MATCH_PLAYER_TOURNEY_SHOT(0x12f, MatchTourneyShotPacketHandler()),
     PAPEL_SHOP_PLAY(0x14b, PapelShopPlayPacketHandler()),
     LOGIN_BONUS_INFO(0x16e, LoginBonusStatusPacketHandler()),

@@ -1,6 +1,5 @@
 package work.fking.pangya.game.room.match
 
-import work.fking.pangya.common.Rand
 import work.fking.pangya.game.packet.outbound.MatchReplies
 import work.fking.pangya.game.room.Room
 
@@ -12,7 +11,7 @@ class PracticeMatchDirector : MatchDirector {
             is PlayerHoleStartEvent -> handleHoleStart(matchState, event)
             is PlayerTourneyShotEvent -> handleTourneyShot(room, event)
             is PlayerShotSyncEvent -> handleShotSync(room, event)
-            is PlayerUseItemEvent -> handleUseItem(room, event)
+            is PlayerUseItemEvent -> handleUseItem(room, matchState, event)
             is PlayerQuitEvent -> handlePlayerQuit(room, event)
             else -> return
         }
@@ -53,9 +52,8 @@ class PracticeMatchDirector : MatchDirector {
         )
     }
 
-    private fun handleUseItem(room: Room, event: PlayerUseItemEvent) {
-        val randSeed = Rand.nextInt()
-        room.broadcast(MatchReplies.gamePlayerUseItem(event.player, event.itemIffId, randSeed))
+    private fun handleUseItem(room: Room, matchState: MatchState, event: PlayerUseItemEvent) {
+        room.broadcast(MatchReplies.gamePlayerUseItem(event.player, event.itemIffId, matchState.randSeed))
     }
 
     private fun handlePlayerQuit(room: Room, event: PlayerQuitEvent) {

@@ -1,7 +1,6 @@
 package work.fking.pangya.login
 
 import io.netty.channel.Channel
-import work.fking.pangya.common.Rand
 import work.fking.pangya.login.auth.UserInfo
 import work.fking.pangya.login.net.LoginState
 

@@ -1,7 +1,7 @@
 package work.fking.pangya.game.room.match
 
 import io.netty.buffer.ByteBuf
-import work.fking.pangya.common.Rand
+import work.fking.pangya.game.Rand
 import work.fking.pangya.game.room.Course
 import work.fking.pangya.game.room.HoleMode
 import work.fking.pangya.game.room.write

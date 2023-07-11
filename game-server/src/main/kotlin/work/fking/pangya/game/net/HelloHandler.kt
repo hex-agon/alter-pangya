@@ -5,8 +5,8 @@ import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.ChannelInboundHandlerAdapter
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder
 import org.apache.logging.log4j.LogManager
-import work.fking.pangya.common.Rand
 import work.fking.pangya.game.GameServer
+import work.fking.pangya.game.Rand
 import work.fking.pangya.game.packet.outbound.HelloPacket
 import work.fking.pangya.networking.crypt.PangCrypt
 import work.fking.pangya.networking.protocol.ProtocolEncoder

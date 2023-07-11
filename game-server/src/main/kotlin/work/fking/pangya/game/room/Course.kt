@@ -1,7 +1,7 @@
 package work.fking.pangya.game.room
 
 import io.netty.buffer.ByteBuf
-import work.fking.pangya.common.Rand
+import work.fking.pangya.game.Rand
 
 enum class Course {
     BLUE_LAGOON,

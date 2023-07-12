@@ -12,17 +12,18 @@ class Character(
     override val uid: Int,
     override val iffId: Int,
     private val hairColor: Int = 0,
-    val partIffIds: IntArray,
-    val partUids: IntArray = IntArray(PARTS),
-    val auxParts: IntArray = IntArray(AUX_PARTS),
-    val cutInIffId: Int = 0,
+    private val partIffIds: IntArray,
+    private val partUids: IntArray = IntArray(PARTS),
+    private val auxParts: IntArray = IntArray(AUX_PARTS),
+    private val cutInIffId: Int = 0,
     private val stats: IntArray = IntArray(STATS),
-    val cardIffIds: IntArray = IntArray(CARDS)
+    private val mastery: Int = 0,
+    private val cardIffIds: IntArray = IntArray(CARDS)
 ) : IffObject {
 
-    fun updateParts(partIffIds: IntArray, partUids: IntArray) {
-        partIffIds.copyInto(this.partIffIds)
-        partUids.copyInto(this.partUids)
+    fun updateParts(character: Character) {
+        character.partIffIds.copyInto(partIffIds)
+        character.partUids.copyInto(partUids)
     }
 
     override fun encode(buffer: ByteBuf) {
@@ -35,8 +36,9 @@ class Character(
             writeZero(216)
             auxParts.forEach { writeIntLE(it) }
             writeIntLE(cutInIffId)
-            writeZero(16)
+            writeZero(12)
             stats.forEach { writeByte(it) }
+            writeIntLE(mastery)
             cardIffIds.forEach { writeIntLE(it) }
         }
     }
@@ -51,8 +53,9 @@ fun ByteBuf.readCharacter(): Character {
     skipBytes(216)
     val auxParts = IntArray(AUX_PARTS) { readIntLE() }
     val cutInIffId = readIntLE()
-    skipBytes(16)
+    skipBytes(12)
     val stats = IntArray(STATS) { readUnsignedByte().toInt() }
+    val mastery = readIntLE()
     val cardIffIds = IntArray(CARDS) { readIntLE() }
     return Character(
         uid = uid,
@@ -63,6 +66,7 @@ fun ByteBuf.readCharacter(): Character {
         auxParts = auxParts,
         cutInIffId = cutInIffId,
         stats = stats,
+        mastery = mastery,
         cardIffIds = cardIffIds
     )
 }

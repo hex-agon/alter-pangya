@@ -5,12 +5,9 @@ import work.fking.pangya.game.model.IffContainer
 import work.fking.pangya.game.model.IffObject
 import work.fking.pangya.networking.protocol.OutboundPacket
 
-private const val CHUNK_SIZE = 50
-
-fun <I : IffObject> chunkIffContainer(packetId: Int, container: IffContainer<I>): List<IffContainerChunkPacket<I>> {
-
+fun <I : IffObject> chunkIffContainer(packetId: Int, container: IffContainer<I>, size: Int = 50): List<IffContainerChunkPacket<I>> {
     return container.entries
-        .chunked(CHUNK_SIZE)
+        .chunked(size)
         .map { IffContainerChunkPacket(packetId, container.entries.size, it) }
 }
 

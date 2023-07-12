@@ -6,6 +6,7 @@ import io.netty.channel.ChannelOption
 import org.slf4j.LoggerFactory
 import work.fking.pangya.game.net.ServerChannelInitializer
 import work.fking.pangya.game.player.Player
+import work.fking.pangya.game.player.PlayerAchievements
 import work.fking.pangya.networking.selectBestEventLoopAvailable
 import work.fking.pangya.networking.selectBestServerChannelAvailable
 import java.net.InetAddress
@@ -56,7 +57,13 @@ class GameServer(
     }
 
     fun registerPlayer(channel: Channel, uid: Int, username: String, nickname: String): Player {
-        val player = Player(channel, uid, connectionIdSequence.incrementAndGet(), username, nickname)
+        val player = Player(
+            channel = channel,
+            uid = uid,
+            connectionId = connectionIdSequence.incrementAndGet(),
+            username = username,
+            nickname = nickname,
+        )
         giveTestStuff(player)
 
         players[player.connectionId] = player

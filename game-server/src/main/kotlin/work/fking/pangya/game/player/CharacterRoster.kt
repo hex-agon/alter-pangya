@@ -3,6 +3,7 @@ package work.fking.pangya.game.player
 import work.fking.pangya.game.model.IFF_TYPE_CHARACTER
 import work.fking.pangya.game.model.IffContainer
 import work.fking.pangya.game.model.iffTypeFromId
+import java.lang.IllegalStateException
 import java.util.concurrent.atomic.AtomicInteger
 
 private val uidSequence = AtomicInteger(1)
@@ -43,10 +44,11 @@ class CharacterRoster(override val entries: MutableList<Character> = ArrayList()
 
     fun unlockCharacter(iffId: Int) {
         require(iffTypeFromId(iffId) == IFF_TYPE_CHARACTER) { "iffId is not a character" }
+        val partIffIds = baseParts[iffId] ?: throw IllegalStateException("Missing base parts for character $iffId")
         val character = Character(
             uid = uidSequence.getAndIncrement(),
             iffId = iffId,
-            partIffIds = baseParts[iffId]!!,
+            partIffIds = partIffIds.copyOf(),
         )
         entries.add(character)
     }

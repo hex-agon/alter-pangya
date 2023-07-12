@@ -1,5 +1,6 @@
 package work.fking.pangya.game.net
 
+import work.fking.pangya.game.packet.handler.AchievementStatusRequestPacketHandler
 import work.fking.pangya.game.packet.handler.EquipmentUpdatePacketHandler
 import work.fking.pangya.game.packet.handler.JoinLobbyPacketHandler
 import work.fking.pangya.game.packet.handler.LeaveLobbyPacketHandler
@@ -70,7 +71,7 @@ enum class ClientPacketType(
     LOCKER_INVENTORY_REQUEST(0xd3, LockerInventoryRequestPacketHandler()),
     MATCH_PLAYER_QUIT(0x130, MatchPlayerQuitPacketHandler()),
     UNKNOWN_140(0x140),
-    ACHIEVEMENT_STATUS_REQUEST(0x157),
+    ACHIEVEMENT_STATUS_REQUEST(0x157, AchievementStatusRequestPacketHandler()),
     PLAYER_RING_PROC(0x15d),
     MATCH_PLAYER_TOURNEY_SHOT(0x12f, MatchTourneyShotPacketHandler()),
     PAPEL_SHOP_PLAY(0x14b, PapelShopPlayPacketHandler()),

@@ -11,7 +11,8 @@ class Player(
     val uid: Int,
     val connectionId: Int,
     val username: String,
-    val nickname: String
+    val nickname: String,
+    val achievements: PlayerAchievements = createPlayerAchievements()
 ) {
     val inventory = Inventory()
     val equipment = Equipment(this)

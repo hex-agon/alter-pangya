@@ -26,6 +26,7 @@ fun generateHoles(course: Course): List<Hole> {
     var cloudy = false
     return List(MAX_HOLES) { idx ->
         val weather = if (cloudy) {
+            cloudy = false
             HoleWeather.RAINING
         } else if (Rand.max(RAIN_CHANCE) == 0) {
             cloudy = true
@@ -37,6 +38,7 @@ fun generateHoles(course: Course): List<Hole> {
         Hole(
             course = course,
             number = idx + 1,
+            holePosition = Rand.between(0, 2),
             wind = Rand.between(1, 9),
             windDirection = Rand.between(0, 360),
             weather = weather
@@ -48,6 +50,7 @@ data class Hole(
     val randomId: Int = Rand.nextInt(),
     val course: Course,
     val number: Int,
+    val holePosition: Int,
     val wind: Int,
     val windDirection: Int,
     val weather: HoleWeather
@@ -55,7 +58,7 @@ data class Hole(
 
 fun ByteBuf.write(hole: Hole) {
     writeIntLE(hole.randomId)
-    writeByte(0)
+    writeByte(hole.holePosition)
     write(hole.course)
     writeByte(hole.number)
 }

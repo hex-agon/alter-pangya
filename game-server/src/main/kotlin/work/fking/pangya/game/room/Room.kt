@@ -86,7 +86,7 @@ class Room(
         if (state != RoomState.LOBBY) {
             throw IllegalStateException("Cannot handle room update, room $id state is $state")
         }
-        LOGGER.debug("Room [$id] update with {}", id, updates)
+        LOGGER.debug("Room [$id] update with {}", updates)
         updates.forEach { settings.handleUpdate(it) }
         broadcast(RoomReplies.roomSettings(this))
     }

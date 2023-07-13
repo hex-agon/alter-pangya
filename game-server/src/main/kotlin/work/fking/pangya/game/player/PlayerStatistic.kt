@@ -51,7 +51,7 @@ fun ByteBuf.write(playerStatistic: PlayerStatistic) {
         writeFloatLE(33.7f) // longest putt !
         writeFloatLE(242.2f) // longest chip in !
         writeIntLE(24) // experience !
-        writeByte(0) // level !
+        writeByte(70) // level !
         writeLongLE(4456) // total pang earned?
         writeIntLE(-5) // total score (sum of all final scores, under par = negative values) !
         writeZero(5)

@@ -54,7 +54,8 @@ object MatchReplies {
             buffer.writeIntLE(matchState.shotTimeMs)
             buffer.writeIntLE(matchState.gameTimeMs)
             matchState.holes.forEach { buffer.write(it) }
-            buffer.writeIntLE(matchState.randSeed)
+            buffer.writeIntLE(matchState.randSeed) // it seems like the original server can only generate short random values
+            // collectibles, each byte is the count for each hole
             buffer.writeZero(18)
         }
     }
@@ -167,8 +168,8 @@ object MatchReplies {
     fun gameTourneyEndingScore(): OutboundPacket {
         return OutboundPacket { buffer ->
             buffer.writeShortLE(0x79)
-            buffer.writeIntLE(100) // experience
-            buffer.writeIntLE(738197504) // trophy IffId
+            buffer.writeIntLE(4) // experience
+            buffer.writeIntLE(0x2C000000) // trophy IffId
             buffer.writeByte(0) // trophy again?
             buffer.writeByte(0) // which team won? 0 red 1 blue 2 neither
 

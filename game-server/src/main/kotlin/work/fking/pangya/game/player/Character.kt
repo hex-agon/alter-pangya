@@ -16,8 +16,8 @@ class Character(
     private val partUids: IntArray = IntArray(PARTS),
     private val auxParts: IntArray = IntArray(AUX_PARTS),
     private val cutInIffId: Int = 0,
-    private val stats: IntArray = IntArray(STATS),
-    private val mastery: Int = 0,
+    private val stats: IntArray = IntArray(STATS) { 30 },
+    private val mastery: Int = 10,
     private val cardIffIds: IntArray = IntArray(CARDS)
 ) : IffObject {
 

@@ -39,7 +39,7 @@ fun generateHoles(course: Course): List<Hole> {
             course = course,
             number = idx + 1,
             holePosition = Rand.between(0, 2),
-            wind = Rand.between(1, 9),
+            wind = Rand.between(0, 8),
             windDirection = Rand.between(0, 360),
             weather = weather
         )

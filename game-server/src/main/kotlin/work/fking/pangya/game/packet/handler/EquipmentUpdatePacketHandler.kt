@@ -1,13 +1,13 @@
 package work.fking.pangya.game.packet.handler
 
 import io.netty.buffer.ByteBuf
-import io.netty.buffer.ByteBufUtil
 import org.slf4j.LoggerFactory
 import work.fking.pangya.game.GameServer
 import work.fking.pangya.game.net.ClientPacketHandler
 import work.fking.pangya.game.packet.outbound.EquipmentUpdateReplies
 import work.fking.pangya.game.player.EQUIPPED_ITEMS_SIZE
 import work.fking.pangya.game.player.Player
+import work.fking.pangya.game.player.nullCaddie
 import work.fking.pangya.game.player.readCharacter
 
 private val LOGGER = LoggerFactory.getLogger(EquipmentUpdatePacketHandler::class.java)
@@ -38,7 +38,11 @@ class EquipmentUpdatePacketHandler : ClientPacketHandler {
     private fun handleUpdateCaddie(player: Player, buffer: ByteBuf) {
         val caddieUid = buffer.readIntLE()
         LOGGER.debug("Updating player {} caddie to {}", player.nickname, Integer.toHexString(caddieUid))
-        val caddie = player.caddieRoster.findByUid(caddieUid) ?: throw IllegalStateException("Player ${player.nickname} tried to equip a caddie it does not own")
+        val caddie = if (caddieUid == 0) {
+            nullCaddie()
+        } else {
+            player.caddieRoster.findByUid(caddieUid) ?: throw IllegalStateException("Player ${player.nickname} tried to equip a caddie it does not own ($caddieUid)")
+        }
         player.equipment.equipCaddie(caddie)
         player.writeAndFlush(EquipmentUpdateReplies.equipCaddieAck(caddie))
     }
@@ -46,7 +50,7 @@ class EquipmentUpdatePacketHandler : ClientPacketHandler {
     private fun handleUpdateComet(player: Player, buffer: ByteBuf) {
         val cometIffId = buffer.readIntLE()
         LOGGER.debug("Updating player {} comet to {}", player.nickname, Integer.toHexString(cometIffId))
-        val comet = player.inventory.findByIffId(cometIffId) ?: throw IllegalStateException("Player ${player.nickname} tried to equip a comet it does not own")
+        val comet = player.inventory.findByIffId(cometIffId) ?: throw IllegalStateException("Player ${player.nickname} tried to equip a comet it does not own ($cometIffId)")
         player.equipment.equipComet(comet)
         player.writeAndFlush(EquipmentUpdateReplies.equipCometAck(comet))
     }

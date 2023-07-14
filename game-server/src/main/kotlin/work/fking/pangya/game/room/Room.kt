@@ -24,17 +24,20 @@ class Room(
     private var ownerUid = -1
 
     private val playersLock = ReentrantLock()
-    private val players = ArrayList<RoomPlayer>() // TODO: we can't use a list because lists shuffle when elements are removed
+    private val players = ArrayList<RoomPlayer>()
 
     fun addPlayer(player: Player) {
         playersLock.withLock {
             player.currentRoom = this
+            // TODO: check if there's enough capacity on the room
+            // TODO: if the player is allowed to join, first broadcast a room census add with the new player, then add the player to the room
             players.add(RoomPlayer(player))
 
             if (ownerUid == -1) {
                 ownerUid = findNewOwner()
                 LOGGER.debug("Room $id had no owner, ${player.nickname} is now the owner ($ownerUid)")
             }
+            // TODO: Do we want to couple network logic with our room logic? If not, do it event based? (RoomPlayerJoin, RoomPlayerLeave etc...)
             // for a practice room...
             player.write(RoomReplies.roomSettings(this))
             player.write(RoomReplies.joinAck(this))

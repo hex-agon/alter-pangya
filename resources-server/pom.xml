@@ -23,4 +23,27 @@
             <version>${project.version}</version>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <configuration>
+                    <from>
+                        <image>${jib.base.image}</image>
+                    </from>
+                    <to>
+                        <image>ghcr.io/hex-agon/resources-server:latest</image>
+                    </to>
+                    <container>
+                        <appRoot>/alter-pangya/resources-server</appRoot>
+                        <ports>
+                            <port>50009/tcp</port>
+                        </ports>
+                    </container>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

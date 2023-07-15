@@ -64,4 +64,7 @@ class PracticeMatchDirector : MatchDirector {
         }
         room.broadcast(MatchReplies.gameTourneyUpdatePlayerProgress(event.player))
     }
+
+    override fun tick() {
+    }
 }

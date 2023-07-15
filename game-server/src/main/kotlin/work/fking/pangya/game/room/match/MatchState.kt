@@ -11,15 +11,15 @@ private const val MAX_HOLES = 18
 private const val RAIN_CHANCE = 100 // 1 in x
 
 data class MatchState(
-    val startTime: LocalDateTime = LocalDateTime.now(),
     val course: Course,
     val holeMode: HoleMode,
     val holeCount: Int,
     val shotTimeMs: Int,
     val gameTimeMs: Int,
-    val holes: List<Hole> = generateHoles(course),
 ) {
+    val startTime: LocalDateTime = LocalDateTime.now()
     val randSeed: Int = Rand.nextInt()
+    val holes: List<Hole> = generateHoles(course)
 }
 
 fun generateHoles(course: Course): List<Hole> {

@@ -1,16 +1,37 @@
 package work.fking.pangya.game.room
 
 import org.slf4j.LoggerFactory
+import work.fking.pangya.game.room.RoomState.PENDING_REMOVAL
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.locks.ReentrantReadWriteLock
+import kotlin.concurrent.read
+import kotlin.concurrent.write
 
 private val LOGGER = LoggerFactory.getLogger(Room::class.java)
 
+private val executorService = Executors.newSingleThreadScheduledExecutor()
+
 class RoomManager {
     private val idSequence = AtomicInteger()
-    private val rooms = HashMap<Int, Room>()
+    private val roomsLock = ReentrantReadWriteLock()
+    private val rooms = LinkedHashMap<Int, Room>()
+
+    init {
+        executorService.scheduleAtFixedRate(this::tickRooms, 1, 1, TimeUnit.SECONDS)
+    }
+
+    fun activeRooms(): List<Room> {
+        roomsLock.read {
+            return rooms.values.filter { it.state != PENDING_REMOVAL }
+        }
+    }
 
     fun findRoom(roomId: Int): Room? {
-        return rooms[roomId]
+        roomsLock.read {
+            return rooms[roomId]
+        }
     }
 
     fun createRoom(
@@ -26,34 +47,44 @@ class RoomManager {
         artifactIffId: Int,
         naturalWind: Boolean
     ): Room {
-        val id = idSequence.getAndIncrement()
-        val room = Room(
-            id = id,
-            settings = RoomSettings(
-                name = name,
-                password = password,
-                roomType = roomType,
-                course = course,
-                holeMode = holeMode,
-                holeCount = holeCount,
-                maxPlayers = maxPlayers,
-                shotTime = shotTime,
-                gameTime = gameTime,
-                artifactIffId = artifactIffId,
-                naturalWind = naturalWind,
-            ),
-            playerLeaveListener = this::onPlayerRoomLeave
-        )
-
-        rooms[id] = room
-        LOGGER.debug("Room $id created")
-        return room
+        roomsLock.write {
+            val id = idSequence.getAndIncrement()
+            val room = Room(
+                id = id,
+                settings = RoomSettings(
+                    name = name,
+                    password = password,
+                    roomType = roomType,
+                    course = course,
+                    holeMode = holeMode,
+                    holeCount = holeCount,
+                    maxPlayers = maxPlayers,
+                    shotTime = shotTime,
+                    gameTime = gameTime,
+                    artifactIffId = artifactIffId,
+                    naturalWind = naturalWind,
+                )
+            )
+            rooms[id] = room
+            LOGGER.debug("Room $id created")
+            return room
+        }
     }
 
-    private fun onPlayerRoomLeave(room: Room, player: RoomPlayer) {
-        if (room.isEmpty()) {
-            rooms.remove(room.id)
-            LOGGER.debug("Destroying room ${room.id} as it was empty")
+    private fun tickRooms() {
+        roomsLock.write {
+            val iterator = rooms.values.iterator()
+
+            while (iterator.hasNext()) {
+                val room = iterator.next()
+
+                if (room.state == PENDING_REMOVAL) {
+                    LOGGER.debug("Room [${room.id}] destroyed")
+                    iterator.remove()
+                    continue
+                }
+                runCatching { room.tick() }.onFailure { LOGGER.error("Error while ticking room [${room.id}]", it) }
+            }
         }
     }
 }

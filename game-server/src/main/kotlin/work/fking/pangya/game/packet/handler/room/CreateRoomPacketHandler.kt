@@ -26,7 +26,7 @@ class CreateRoomPacketHandler : ClientPacketHandler {
         val password = packet.readPString()
         val artifactIffId = packet.readIntLE()
 
-        val serverChannel = player.currentChannel ?: throw IllegalStateException("Attempted to create a room while not in a server channel")
+        val serverChannel = player.currentChannel ?: throw IllegalStateException("Player ${player.nickname} attempted to create a room while not in a server channel")
 
         val room = serverChannel.roomManager.createRoom(
             name = name,
@@ -41,6 +41,6 @@ class CreateRoomPacketHandler : ClientPacketHandler {
             artifactIffId = artifactIffId,
             naturalWind = false
         )
-        room.addPlayer(player)
+        room.attemptJoin(player)
     }
 }

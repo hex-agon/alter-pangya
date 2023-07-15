@@ -2,13 +2,23 @@ package work.fking.pangya.game.room
 
 import io.netty.buffer.ByteBuf
 import work.fking.pangya.game.player.Player
+import work.fking.pangya.game.room.RoomPlayerFlag.AWAY
+import work.fking.pangya.game.room.RoomPlayerFlag.MASTER
+import work.fking.pangya.game.room.RoomPlayerFlag.READY
 import work.fking.pangya.networking.protocol.writeFixedSizeString
 
 class RoomPlayer(
     val player: Player,
+    var slot: Int
 ) {
+    val uid: Int = player.uid
     val connectionId: Int = player.connectionId
 
+    // lobby state
+    var ready: Boolean = false
+    var away: Boolean = false
+
+    // in game state
     var currentHole: Int = 1
     var finishedHole: Boolean = false
 
@@ -24,12 +34,30 @@ class RoomPlayer(
         player.flush()
     }
 
-    fun encode(buffer: ByteBuf, extendedInfo: Boolean) {
+    private fun computeRoomFlags(roomOwner: Boolean): List<RoomPlayerFlag> {
+        val playerFlags = mutableListOf<RoomPlayerFlag>()
+
+        if (roomOwner) {
+            playerFlags += MASTER
+        }
+
+        if (ready) {
+            playerFlags += AWAY
+        }
+
+        if (ready) {
+            playerFlags += READY
+        }
+        return playerFlags
+    }
+
+    fun encode(buffer: ByteBuf, roomOwner: Boolean, extendedInfo: Boolean) {
+
         with(buffer) {
             writeIntLE(player.connectionId)
             writeFixedSizeString(player.nickname, 22)
             writeFixedSizeString("", 17) // guildName
-            writeByte(1) // room slot, starting at 1
+            writeByte(slot)
             writeIntLE(0) // unknown
             writeIntLE(0) // title
             writeIntLE(player.equipment.equippedCharacterUid) // character iff
@@ -39,17 +67,17 @@ class RoomPlayer(
             writeIntLE(0) // skin id slot
             writeIntLE(0) // unknown
             writeIntLE(0) // duplicate skin id title
-            writeShortLE(520) // room status (master, away, ready)
+            writeShortLE(pack(computeRoomFlags(roomOwner))) // room status (master, away, ready)
             writeByte(player.rank)
             writeShortLE(0x2560)
             writeIntLE(0) // guild id
-            writeFixedSizeString("", 12)
+            writeFixedSizeString("", 12) // guildmark
             writeIntLE(player.uid)
 
             // lounge stuff
             writeIntLE(0) // animation/pose
             writeShortLE(0)
-            writeIntLE(0) //
+            writeIntLE(0)
 
             // lounge location
             writeFloatLE(0f) // x
@@ -82,8 +110,16 @@ class RoomPlayer(
     }
 }
 
-enum class RoomPlayerFlags(
-    private val flag: Int
+private fun pack(flags: List<RoomPlayerFlag>): Int {
+    var pack = 0;
+    for (flag in flags) {
+        pack = pack or flag.flag
+    }
+    return pack;
+}
+
+enum class RoomPlayerFlag(
+    val flag: Int
 ) {
     RED_TEAM(1 shl 0),
     BLUE_TEAM(1 shl 1),

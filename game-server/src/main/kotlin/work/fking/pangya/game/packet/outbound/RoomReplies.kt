@@ -2,6 +2,7 @@ package work.fking.pangya.game.packet.outbound
 
 import work.fking.pangya.game.room.Room
 import work.fking.pangya.game.room.RoomPlayer
+import work.fking.pangya.game.room.write
 import work.fking.pangya.networking.protocol.OutboundPacket
 
 object RoomReplies {
@@ -27,7 +28,7 @@ object RoomReplies {
             buffer.writeByte(0)
 
             buffer.writeShortLE(-1)
-            rooms.forEach { it.encodeInfo(buffer) }
+            rooms.forEach { buffer.write(it) }
         }
     }
 
@@ -49,7 +50,7 @@ object RoomReplies {
         return OutboundPacket { buffer ->
             buffer.writeShortLE(PACKET_JOIN)
             buffer.writeShortLE(JOIN_SUCCESS)
-            room.encodeInfo(buffer)
+            buffer.write(room)
         }
     }
 
@@ -64,27 +65,29 @@ object RoomReplies {
         return OutboundPacket { buffer ->
             buffer.writeShortLE(PACKET_ROOM_SETTINGS)
             buffer.writeShortLE(-1)
-            room.encodeSettings(buffer)
+            buffer.write(room.settings)
         }
     }
 
-    fun roomCensusList(roomPlayers: List<RoomPlayer>, extendedInfo: Boolean): OutboundPacket {
+    fun roomCensusList(roomPlayers: List<RoomPlayer>, roomOwner: Boolean, extendedInfo: Boolean): OutboundPacket {
         // it seems like this packet can be chunked
         return OutboundPacket { buffer ->
             buffer.writeShortLE(PACKET_PLAYER_CENSUS)
             buffer.writeByte(CENSUS_LIST)
             buffer.writeShortLE(-1)
             buffer.writeByte(roomPlayers.size)
-            roomPlayers.forEach { it.encode(buffer, extendedInfo) }
+            roomPlayers.forEach { it.encode(buffer, roomOwner, extendedInfo) }
             buffer.writeByte(0)
         }
     }
 
-    fun roomCensusAdd(player: RoomPlayer, extendedInfo: Boolean): OutboundPacket {
+    fun roomCensusAdd(player: RoomPlayer, roomOwner: Boolean, extendedInfo: Boolean): OutboundPacket {
         return OutboundPacket { buffer ->
             buffer.writeShortLE(PACKET_PLAYER_CENSUS)
             buffer.writeByte(CENSUS_ADD)
-            player.encode(buffer, extendedInfo)
+            buffer.writeShortLE(-1)
+            buffer.writeByte(1)
+            player.encode(buffer, roomOwner, extendedInfo)
         }
     }
 
@@ -92,16 +95,18 @@ object RoomReplies {
         return OutboundPacket { buffer ->
             buffer.writeShortLE(PACKET_PLAYER_CENSUS)
             buffer.writeByte(CENSUS_REMOVE)
+            buffer.writeShortLE(-1)
             buffer.writeIntLE(player.connectionId)
         }
     }
 
-    fun roomCensusUpdate(player: RoomPlayer, extendedInfo: Boolean): OutboundPacket {
+    fun roomCensusUpdate(player: RoomPlayer, roomOwner: Boolean, extendedInfo: Boolean): OutboundPacket {
         return OutboundPacket { buffer ->
             buffer.writeShortLE(PACKET_PLAYER_CENSUS)
             buffer.writeByte(CENSUS_UPDATE)
             buffer.writeIntLE(player.connectionId) // intentionally duplicated
-            player.encode(buffer, extendedInfo)
+            player.encode(buffer, roomOwner, extendedInfo)
+            buffer.writeByte(0)
         }
     }
 

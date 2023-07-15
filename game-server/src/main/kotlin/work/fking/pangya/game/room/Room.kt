@@ -5,47 +5,66 @@ import org.slf4j.LoggerFactory
 import work.fking.pangya.game.packet.outbound.MatchReplies
 import work.fking.pangya.game.packet.outbound.RoomReplies
 import work.fking.pangya.game.player.Player
+import work.fking.pangya.game.room.RoomJoinError.GAME_ALREADY_STARTED
+import work.fking.pangya.game.room.RoomJoinError.ROOM_DOES_NOT_EXIST
+import work.fking.pangya.game.room.RoomJoinError.ROOM_FULL
 import work.fking.pangya.game.room.match.MatchDirector
 import work.fking.pangya.game.room.match.MatchEvent
 import work.fking.pangya.game.room.match.MatchState
 import work.fking.pangya.networking.protocol.writeFixedSizeString
-import java.util.concurrent.locks.ReentrantLock
 import java.util.concurrent.locks.ReentrantReadWriteLock
 import kotlin.concurrent.read
-import kotlin.concurrent.withLock
 import kotlin.concurrent.write
 
 private val LOGGER = LoggerFactory.getLogger(Room::class.java)
 
 class Room(
     val id: Int,
-    val settings: RoomSettings,
-    private val playerLeaveListener: PlayerLeaveRoomListener
+    val settings: RoomSettings
 ) {
-    private var state: RoomState = RoomState.LOBBY
-    private var matchEventHandler: MatchEventHandler? = null
-    private var ownerUid = -1
+    var state: RoomState = RoomState.LOBBY
+        private set
+    var ownerUid = -1
+        private set
+    private var activeMatch: Match? = null
+
 
     private val playersLock = ReentrantReadWriteLock()
     private val players = ArrayList<RoomPlayer>()
+    private var nextFreeSlot: Int = 1
 
-    fun addPlayer(player: Player) {
+    fun tick() {
+
+    }
+
+    fun attemptJoin(player: Player): RoomJoinError? {
         playersLock.write {
             player.currentRoom = this
-            // TODO: check if there's enough capacity on the room
-            // TODO: if the player is allowed to join, first broadcast a room census add with the new player, then add the player to the room
-            players.add(RoomPlayer(player))
+            if (state == RoomState.PENDING_REMOVAL) {
+                return ROOM_DOES_NOT_EXIST
+            }
+            if (state == RoomState.IN_GAME) {
+                return GAME_ALREADY_STARTED
+            }
+            if (players.size >= settings.maxPlayers) {
+                return ROOM_FULL
+            }
+            val roomPlayer = RoomPlayer(player, nextFreeSlot++)
+            // always broadcast the player join to the room before adding it to the list
+            broadcast(RoomReplies.roomCensusAdd(roomPlayer, isOwner(roomPlayer), settings.type.extendedInfo))
+            players.add(roomPlayer)
 
             if (ownerUid == -1) {
-                ownerUid = findNewOwner()
+                ownerUid = roomPlayer.uid
                 LOGGER.debug("Room $id had no owner, ${player.nickname} is now the owner ($ownerUid)")
             }
             // TODO: Do we want to couple network logic with our room logic? If not, do it event based? (RoomPlayerJoin, RoomPlayerLeave etc...)
             // for a practice room...
             player.write(RoomReplies.roomSettings(this))
             player.write(RoomReplies.joinAck(this))
-            player.writeAndFlush(RoomReplies.roomCensusList(players, settings.type.extendedInfo))
+            player.writeAndFlush(RoomReplies.roomCensusList(players, isOwner(roomPlayer), settings.type.extendedInfo))
         }
+        return null
     }
 
     fun removePlayer(player: Player) {
@@ -54,11 +73,17 @@ class Room(
             val roomPlayer = findSelf(player)
             players.remove(roomPlayer)
 
-            if (ownerUid == player.uid) {
-                ownerUid = findNewOwner()
-                LOGGER.debug("${player.nickname} was the owner of room $id, new owner is now $ownerUid")
+            broadcast(RoomReplies.roomCensusRemove(roomPlayer))
+
+            if (ownerUid != player.uid) return
+
+            val owner = players.firstOrNull()
+            ownerUid = owner?.player?.uid ?: -1
+
+            if (ownerUid == -1) {
+                state = RoomState.PENDING_REMOVAL
             }
-            playerLeaveListener.onPlayerLeave(this, roomPlayer)
+            LOGGER.debug("${player.nickname} was the owner of room $id, new owner is now $ownerUid")
         }
     }
 
@@ -68,9 +93,7 @@ class Room(
         }
     }
 
-    fun isEmpty(): Boolean {
-        return playerCount() == 0
-    }
+    fun isOwner(roomPlayer: RoomPlayer): Boolean = roomPlayer.uid == ownerUid
 
     fun findSelf(player: Player): RoomPlayer {
         playersLock.read {
@@ -78,14 +101,8 @@ class Room(
         }
     }
 
-    private fun findNewOwner(): Int {
-        playersLock.read {
-            return players.firstNotNullOfOrNull { it.player.uid } ?: -1
-        }
-    }
-
     fun handleMatchEvent(event: MatchEvent) {
-        matchEventHandler?.onMatchEvent(event) ?: throw IllegalStateException("Room[$id] Cannot handle match event, no bound handler")
+        activeMatch?.onMatchEvent(this, event) ?: throw IllegalStateException("Room[$id] Cannot handle match event, no bound handler")
     }
 
     fun handleUpdates(updates: List<RoomUpdate>) {
@@ -112,7 +129,7 @@ class Room(
             shotTimeMs = settings.shotTimeMs,
             gameTimeMs = settings.gameTimeMs
         )
-        matchEventHandler = MatchEventHandler(this, matchState, settings.type.matchDirector)
+        activeMatch = Match(matchState, settings.type.matchDirector)
 
         playersLock.read {
             players.forEach { player ->
@@ -122,44 +139,6 @@ class Room(
                 player.write(MatchReplies.start76(this, matchState))
                 player.writeAndFlush(MatchReplies.matchInfo(this, matchState))
             }
-        }
-    }
-
-    fun encodeSettings(buffer: ByteBuf) {
-        settings.encode(buffer)
-    }
-
-    fun encodeInfo(buffer: ByteBuf) {
-        with(buffer) {
-            writeFixedSizeString(settings.name, 64)
-            writeBoolean(settings.password == null) // public room
-            writeBoolean(state == RoomState.LOBBY)
-            writeBoolean(state == RoomState.IN_GAME_JOINABLE)
-            writeByte(settings.maxPlayers)
-            writeByte(playerCount())
-            writeZero(17)
-            writeByte(30)
-            writeByte(settings.holeCount)
-            writeByte(settings.type.uiType)
-            writeShortLE(id)
-            write(settings.holeMode)
-            write(settings.course)
-            writeIntLE(settings.shotTimeMs)
-            writeIntLE(settings.gameTimeMs)
-            writeIntLE(settings.trophyIffId())
-            writeShortLE(0)
-            writeZero(66) // guildInfo
-            writeIntLE(100)
-            writeIntLE(100)
-            writeIntLE(ownerUid)
-            writeByte(settings.type.id)
-            writeIntLE(settings.artifactIffId)
-            writeIntLE(if (settings.naturalWind) 1 else 0)
-            // event info
-            writeIntLE(0)
-            writeIntLE(0)
-            writeIntLE(0)
-            writeIntLE(0)
         }
     }
 
@@ -175,20 +154,52 @@ class Room(
     override fun hashCode(): Int {
         return id
     }
+
+}
+
+fun ByteBuf.write(room: Room) {
+    with(room) {
+        writeFixedSizeString(settings.name, 64)
+        writeBoolean(settings.password.isNullOrBlank()) // public room
+        writeBoolean(state == RoomState.LOBBY)
+        writeBoolean(state == RoomState.IN_GAME_JOINABLE)
+        writeByte(settings.maxPlayers)
+        writeByte(playerCount())
+        writeZero(17)
+        writeByte(30)
+        writeByte(settings.holeCount)
+        writeByte(settings.type.uiType)
+        writeShortLE(id)
+        write(settings.holeMode)
+        write(settings.course)
+        writeIntLE(settings.shotTimeMs)
+        writeIntLE(settings.gameTimeMs)
+        writeIntLE(settings.trophyIffId())
+        writeShortLE(0)
+        writeZero(66) // guildInfo
+        writeIntLE(100)
+        writeIntLE(100)
+        writeIntLE(ownerUid)
+        writeByte(settings.type.id)
+        writeIntLE(settings.artifactIffId)
+        writeIntLE(if (settings.naturalWind) 1 else 0)
+        // event info
+        writeIntLE(0)
+        writeIntLE(0)
+        writeIntLE(0)
+        writeIntLE(0)
+    }
 }
 
 enum class RoomState {
     LOBBY,
     IN_GAME_JOINABLE,
-    IN_GAME
+    IN_GAME,
+    PENDING_REMOVAL
 }
 
-private class MatchEventHandler(val room: Room, val matchState: MatchState, val matchDirector: MatchDirector) {
-    fun onMatchEvent(event: MatchEvent) {
+private class Match(val matchState: MatchState, val matchDirector: MatchDirector) {
+    fun onMatchEvent(room: Room, event: MatchEvent) {
         matchDirector.handleMatchEvent(room, matchState, event)
     }
-}
-
-fun interface PlayerLeaveRoomListener {
-    fun onPlayerLeave(room: Room, player: RoomPlayer)
 }

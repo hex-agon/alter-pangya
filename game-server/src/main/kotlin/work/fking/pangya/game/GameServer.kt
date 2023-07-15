@@ -48,8 +48,8 @@ class GameServer(
     }
 
     private fun onPlayerDisconnect(player: Player) {
-        val channel = player.currentChannel
-        channel?.removePlayer(player)
+        player.currentRoom?.removePlayer(player)
+        player.currentChannel?.removePlayer(player)
         players.remove(player)
         LOGGER.debug("{} disconnected", player.nickname)
     }

@@ -27,6 +27,7 @@ import work.fking.pangya.game.packet.handler.match.MatchPlayerUseItemPacketHandl
 import work.fking.pangya.game.packet.handler.match.MatchTourneyShotPacketHandler
 import work.fking.pangya.game.packet.handler.match.StartGamePacketHandler
 import work.fking.pangya.game.packet.handler.room.CreateRoomPacketHandler
+import work.fking.pangya.game.packet.handler.room.JoinRoomHandler
 import work.fking.pangya.game.packet.handler.room.LeaveRoomPacketHandler
 import work.fking.pangya.game.packet.handler.room.RoomSettingsUpdatePacketHandler
 
@@ -37,6 +38,7 @@ enum class ClientPacketType(
     SELECT_CHANNEL(0x4, SelectChannelPacketHandler()),
     MATCH_FINAL_STATS(0x6),
     ROOM_CREATE(0x8, CreateRoomPacketHandler()),
+    ROOM_JOIN(0x9, JoinRoomHandler()),
     ROOM_SETTINGS_UPDATE(0xa, RoomSettingsUpdatePacketHandler()),
     EQUIPMENT_UPDATE_IN_LOBBY(0xb),
     EQUIPMENT_UPDATE_IN_GAME_ROOM(0xc),

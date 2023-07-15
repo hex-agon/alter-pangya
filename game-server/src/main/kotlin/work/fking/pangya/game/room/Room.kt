@@ -10,7 +10,10 @@ import work.fking.pangya.game.room.match.MatchEvent
 import work.fking.pangya.game.room.match.MatchState
 import work.fking.pangya.networking.protocol.writeFixedSizeString
 import java.util.concurrent.locks.ReentrantLock
+import java.util.concurrent.locks.ReentrantReadWriteLock
+import kotlin.concurrent.read
 import kotlin.concurrent.withLock
+import kotlin.concurrent.write
 
 private val LOGGER = LoggerFactory.getLogger(Room::class.java)
 
@@ -23,11 +26,11 @@ class Room(
     private var matchEventHandler: MatchEventHandler? = null
     private var ownerUid = -1
 
-    private val playersLock = ReentrantLock()
+    private val playersLock = ReentrantReadWriteLock()
     private val players = ArrayList<RoomPlayer>()
 
     fun addPlayer(player: Player) {
-        playersLock.withLock {
+        playersLock.write {
             player.currentRoom = this
             // TODO: check if there's enough capacity on the room
             // TODO: if the player is allowed to join, first broadcast a room census add with the new player, then add the player to the room
@@ -46,7 +49,7 @@ class Room(
     }
 
     fun removePlayer(player: Player) {
-        playersLock.withLock {
+        playersLock.write {
             player.currentRoom = null
             val roomPlayer = findSelf(player)
             players.remove(roomPlayer)
@@ -60,7 +63,7 @@ class Room(
     }
 
     fun playerCount(): Int {
-        playersLock.withLock {
+        playersLock.read {
             return players.size
         }
     }
@@ -70,13 +73,13 @@ class Room(
     }
 
     fun findSelf(player: Player): RoomPlayer {
-        playersLock.withLock {
+        playersLock.read {
             return players.firstOrNull { it.player == player } ?: throw IllegalStateException("Player ${player.nickname} was not found in room $id")
         }
     }
 
     private fun findNewOwner(): Int {
-        playersLock.withLock {
+        playersLock.read {
             return players.firstNotNullOfOrNull { it.player.uid } ?: -1
         }
     }
@@ -95,7 +98,7 @@ class Room(
     }
 
     fun broadcast(message: Any) {
-        playersLock.withLock {
+        playersLock.read {
             players.forEach { it.player.writeAndFlush(message) }
         }
     }
@@ -111,7 +114,7 @@ class Room(
         )
         matchEventHandler = MatchEventHandler(this, matchState, settings.type.matchDirector)
 
-        playersLock.withLock {
+        playersLock.read {
             players.forEach { player ->
                 player.write(MatchReplies.start230())
                 player.write(MatchReplies.start231())

@@ -6,12 +6,10 @@ import io.netty.channel.ChannelOption
 import org.slf4j.LoggerFactory
 import work.fking.pangya.game.net.ServerChannelInitializer
 import work.fking.pangya.game.player.Player
-import work.fking.pangya.game.player.PlayerAchievements
+import work.fking.pangya.game.player.PlayerGroup
 import work.fking.pangya.networking.selectBestEventLoopAvailable
 import work.fking.pangya.networking.selectBestServerChannelAvailable
 import java.net.InetAddress
-import java.util.Collections
-import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -19,41 +17,19 @@ private val LOGGER = LoggerFactory.getLogger(GameServer::class.java)
 
 class GameServer(
     private val serverConfig: GameServerConfig,
-    private val sessionClient: SessionClient,
-    private val serverChannels: List<ServerChannel> = serverConfig.serverChannels
+    val sessionClient: SessionClient,
+    val serverChannels: List<ServerChannel> = serverConfig.serverChannels
 ) {
     private val executorService = Executors.newVirtualThreadPerTaskExecutor()
     private val connectionIdSequence = AtomicInteger()
-    private val playerCount = AtomicInteger()
-    private val players: MutableMap<Int, Player> = ConcurrentHashMap()
-
-    fun playerCount(): Int {
-        return playerCount.get()
-    }
-
-    fun serverChannels(): List<ServerChannel> {
-        return Collections.unmodifiableList(serverChannels)
-    }
+    val players = PlayerGroup()
 
     fun serverChannelById(id: Int): ServerChannel? {
-        for (serverChannel in serverChannels) {
-            if (serverChannel.id == id) {
-                return serverChannel
-            }
-        }
-        return null
-    }
-
-    fun sessionClient(): SessionClient {
-        return sessionClient
+        return serverChannels.firstOrNull { it.id == id }
     }
 
     fun submitTask(runnable: Runnable) {
         executorService.execute(runnable)
-    }
-
-    fun findPlayer(connectionId: Int): Player? {
-        return players[connectionId]
     }
 
     fun registerPlayer(channel: Channel, uid: Int, username: String, nickname: String): Player {
@@ -66,8 +42,7 @@ class GameServer(
         )
         giveTestStuff(player)
 
-        players[player.connectionId] = player
-        playerCount.incrementAndGet()
+        players.add(player)
         channel.closeFuture().addListener { onPlayerDisconnect(player) }
         return player
     }
@@ -75,8 +50,7 @@ class GameServer(
     private fun onPlayerDisconnect(player: Player) {
         val channel = player.currentChannel
         channel?.removePlayer(player)
-        players.remove(player.connectionId)
-        playerCount.decrementAndGet()
+        players.remove(player)
         LOGGER.debug("{} disconnected", player.nickname)
     }
 

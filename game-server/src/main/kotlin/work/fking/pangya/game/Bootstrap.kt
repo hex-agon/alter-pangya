@@ -28,7 +28,7 @@ object Bootstrap {
         val sessionClient = SessionClient(redisClient)
 
         val server = GameServer(serverConfig, sessionClient)
-        HeartbeatPublisher(discoveryClient, GAME, serverConfig) { server.playerCount() }.start()
+        HeartbeatPublisher(discoveryClient, GAME, serverConfig) { server.players.count() }.start()
         server.start()
     }
 }

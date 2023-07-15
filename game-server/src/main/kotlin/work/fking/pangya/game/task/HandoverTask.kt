@@ -19,7 +19,7 @@ import work.fking.pangya.game.packet.outbound.TreasureHunterPacket
 import work.fking.pangya.game.packet.outbound.chunkIffContainer
 
 private val LOGGER = LoggerFactory.getLogger(HandoverTask::class.java)
-private val PROTOCOL = ClientProtocol(ClientPacketType.values())
+private val PROTOCOL = ClientProtocol(ClientPacketType.entries.toTypedArray())
 
 class HandoverTask(
     private val gameServer:
@@ -30,7 +30,7 @@ class HandoverTask(
 
     override fun run() {
         val sessionInfo: SessionClient.SessionInfo? = try {
-            gameServer.sessionClient().loadSession(sessionKey)
+            gameServer.sessionClient.loadSession(sessionKey)
         } catch (e: Exception) {
             LOGGER.warn("Handover error sessionKey={}, message={}", sessionKey, e.message)
             channel.writeAndFlush(HandoverReplies.error(HandoverResult.CANNOT_CONNECT_LOGIN_SERVER))
@@ -45,13 +45,9 @@ class HandoverTask(
 
         // load all the player stuff
         for (i in 1..15) {
-            try {
-                // do some fancy fake loading
-                channel.writeAndFlush(HandoverReplies.updateProgressBar(i))
-                Thread.sleep(25)
-            } catch (e: InterruptedException) {
-                throw RuntimeException(e)
-            }
+            // do some fancy fake loading
+            channel.writeAndFlush(HandoverReplies.updateProgressBar(i))
+            Thread.sleep(25)
         }
         // if no error, register it
         val player = gameServer.registerPlayer(channel, sessionInfo.uid, sessionInfo.username, sessionInfo.nickname)
@@ -71,7 +67,7 @@ class HandoverTask(
         channel.write(MascotRosterPacket())
         channel.write(CookieBalancePacket(player))
         channel.write(PangBalancePacket(player))
-        channel.writeAndFlush(ServerChannelsPacket(gameServer.serverChannels()))
+        channel.writeAndFlush(ServerChannelsPacket(gameServer.serverChannels))
     }
 
 }

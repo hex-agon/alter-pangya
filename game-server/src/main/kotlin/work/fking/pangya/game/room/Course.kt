@@ -24,8 +24,7 @@ enum class Course {
     UNKNOWN_17,
     ICE_INFERNO,
     WIZ_CITY,
-    ABBOT_MINE;
-
+    ABBOT_MINE
 }
 
 fun ByteBuf.write(course: Course) {

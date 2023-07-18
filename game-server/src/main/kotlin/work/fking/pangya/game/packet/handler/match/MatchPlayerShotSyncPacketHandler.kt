@@ -31,6 +31,8 @@ class MatchPlayerShotSyncPacketHandler : ClientPacketHandler {
                 player = roomPlayer,
                 x = x,
                 z = z,
+                pang = pang,
+                bonusPang = bonusPang,
                 shotFlags = shotFlags,
                 frames = shotFrames
             )

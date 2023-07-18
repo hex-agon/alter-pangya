@@ -10,17 +10,17 @@ class UserProfileRequestPacketHandler : ClientPacketHandler {
 
     override fun handle(server: GameServer, player: Player, packet: ByteBuf) {
         val playerUid = packet.readIntLE()
-        val type = packet.readByte()
+        val type = packet.readByte().toInt()
 
-        if (type.toInt() == 5) {
-            player.write(UserStatisticsReplies.username(type.toInt(), player))
+        if (type == 5) {
+            player.write(UserStatisticsReplies.username(type, player))
             player.write(UserStatisticsReplies.character(player))
-            player.write(UserStatisticsReplies.equipment(type.toInt(), player))
+            player.write(UserStatisticsReplies.equipment(type, player))
         }
-        player.write(UserStatisticsReplies.userStatistic(type.toInt(), playerUid))
-        player.write(UserStatisticsReplies.courseStatistic(type.toInt(), playerUid))
-        player.write(UserStatisticsReplies.trophies(type.toInt(), playerUid))
-        player.write(UserStatisticsReplies.ack(true, type.toInt(), playerUid))
+        player.write(UserStatisticsReplies.userStatistic(type, playerUid, player.statistics))
+        player.write(UserStatisticsReplies.courseStatistic(type, playerUid))
+        player.write(UserStatisticsReplies.trophies(type, playerUid))
+        player.write(UserStatisticsReplies.ack(true, type, playerUid))
         player.flush()
     }
 }

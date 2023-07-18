@@ -9,6 +9,7 @@ class PracticeMatchDirector : MatchDirector {
         when (event) {
             is PlayerFinishedPreviewEvent -> handleFinishedPreview(event)
             is PlayerHoleStartEvent -> handleHoleStart(matchState, event)
+            is PlayerHoleFinishEvent -> handleHoleFinish(event)
             is PlayerTourneyShotEvent -> handleTourneyShot(room, event)
             is PlayerShotSyncEvent -> handleShotSync(room, event)
             is PlayerUseItemEvent -> handleUseItem(room, matchState, event)
@@ -19,7 +20,7 @@ class PracticeMatchDirector : MatchDirector {
 
 
     private fun handleFinishedPreview(event: PlayerFinishedPreviewEvent) {
-        event.player.writeAndFlush(MatchReplies.gameFinishPlayerPreviewAck())
+        event.player.writeAndFlush(MatchReplies.finishPlayerPreviewAck())
     }
 
     private fun handleHoleStart(matchState: MatchState, event: PlayerHoleStartEvent) {
@@ -29,20 +30,26 @@ class PracticeMatchDirector : MatchDirector {
             currentHole = event.hole
             write(MatchReplies.holeWeather(hole))
             write(MatchReplies.holeWind(hole))
-            write(MatchReplies.gamePlayerStartHole(this))
+            write(MatchReplies.playerStartHole(this))
             flush()
         }
     }
 
+    private fun handleHoleFinish(event: PlayerHoleFinishEvent) {
+        event.player.statistics = event.statistics
+    }
+
     private fun handleTourneyShot(room: Room, event: PlayerTourneyShotEvent) {
         val player = event.player
-        room.broadcast(MatchReplies.gameTourneyShotAck(player, event.tourneyShotData))
+        room.broadcast(MatchReplies.tourneyShotAck(player, event.tourneyShotData))
     }
 
     private fun handleShotSync(room: Room, event: PlayerShotSyncEvent) {
         val player = event.player
+        player.pang = event.pang
+        player.bonusPang = event.bonusPang
         room.broadcast(
-            MatchReplies.gameTourneyShotGhost(
+            MatchReplies.tourneyShotGhost(
                 player = player,
                 x = event.x,
                 z = event.z,
@@ -53,18 +60,15 @@ class PracticeMatchDirector : MatchDirector {
     }
 
     private fun handleUseItem(room: Room, matchState: MatchState, event: PlayerUseItemEvent) {
-        room.broadcast(MatchReplies.gamePlayerUseItem(event.player, event.itemIffId, matchState.randSeed))
+        room.broadcast(MatchReplies.playerUseItem(event.player, event.itemIffId, matchState.randSeed))
     }
 
     private fun handlePlayerQuit(room: Room, event: PlayerQuitEvent) {
         with(event.player) {
-            write(MatchReplies.gameTourneyEndingScore())
-            write(MatchReplies.gameTourneyWinnings())
-            write(MatchReplies.gameTourneyTimeout())
+            write(MatchReplies.tourneyEndingScore())
+            write(MatchReplies.tourneyWinnings(listOf()))
+            write(MatchReplies.tourneyTimeout())
         }
-        room.broadcast(MatchReplies.gameTourneyUpdatePlayerProgress(event.player))
-    }
-
-    override fun tick() {
+        room.broadcast(MatchReplies.tourneyUpdatePlayerProgress(event.player))
     }
 }

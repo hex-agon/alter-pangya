@@ -14,6 +14,7 @@ import work.fking.pangya.game.packet.handler.RareShopOpenPacketHandler
 import work.fking.pangya.game.packet.handler.SelectChannelPacketHandler
 import work.fking.pangya.game.packet.handler.UpdateChatMacrosPacketHandler
 import work.fking.pangya.game.packet.handler.UserProfileRequestPacketHandler
+import work.fking.pangya.game.packet.handler.match.MatchFinalStatsPacketHandler
 import work.fking.pangya.game.packet.handler.match.MatchFinishPlayerPreviewPacketHandler
 import work.fking.pangya.game.packet.handler.match.MatchHoleStartPacketHandler
 import work.fking.pangya.game.packet.handler.match.MatchPlayerHoleFinishPacketHandler
@@ -24,6 +25,7 @@ import work.fking.pangya.game.packet.handler.match.MatchPlayerShotStartPacketHan
 import work.fking.pangya.game.packet.handler.match.MatchPlayerShotSyncPacketHandler
 import work.fking.pangya.game.packet.handler.match.MatchPlayerTurnEndPacketHandler
 import work.fking.pangya.game.packet.handler.match.MatchPlayerUseItemPacketHandler
+import work.fking.pangya.game.packet.handler.match.MatchPlayerUseTimeBoosterPacketHandler
 import work.fking.pangya.game.packet.handler.match.MatchTourneyShotPacketHandler
 import work.fking.pangya.game.packet.handler.match.StartGamePacketHandler
 import work.fking.pangya.game.packet.handler.room.CreateRoomPacketHandler
@@ -36,7 +38,7 @@ enum class ClientPacketType(
     private val handler: ClientPacketHandler = ClientPacketHandler { _, _, _ -> }
 ) {
     SELECT_CHANNEL(0x4, SelectChannelPacketHandler()),
-    MATCH_FINAL_STATS(0x6),
+    MATCH_FINAL_STATS(0x6, MatchFinalStatsPacketHandler()),
     ROOM_CREATE(0x8, CreateRoomPacketHandler()),
     ROOM_JOIN(0x9, JoinRoomHandler()),
     ROOM_SETTINGS_UPDATE(0xa, RoomSettingsUpdatePacketHandler()),
@@ -62,6 +64,7 @@ enum class ClientPacketType(
     MATCH_PLAYER_SHOT_ARROW(0x42),
     PLAYER_LOAD_PROGRESS(0x48),
     LOUNGE_USER_ACTION(0x63),
+    MATCH_PLAYER_USE_TIME_BOOSTER(0x65, MatchPlayerUseTimeBoosterPacketHandler()),
     UPDATE_MACROS(0x69, UpdateChatMacrosPacketHandler()),
     JOIN_LOBBY(0x81, JoinLobbyPacketHandler()),
     LEAVE_LOBBY(0x82, LeaveLobbyPacketHandler()),

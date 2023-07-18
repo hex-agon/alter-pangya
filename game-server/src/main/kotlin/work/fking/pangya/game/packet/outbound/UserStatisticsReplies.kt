@@ -2,7 +2,7 @@ package work.fking.pangya.game.packet.outbound
 
 import work.fking.pangya.game.player.Player
 import work.fking.pangya.game.player.PlayerBasicInfo
-import work.fking.pangya.game.player.PlayerStatistic
+import work.fking.pangya.game.player.PlayerStatistics
 import work.fking.pangya.game.player.PlayerTrophies
 import work.fking.pangya.game.player.write
 import work.fking.pangya.game.room.Course
@@ -38,12 +38,12 @@ object UserStatisticsReplies {
         }
     }
 
-    fun userStatistic(requestType: Int, playerUid: Int): OutboundPacket {
+    fun userStatistic(requestType: Int, playerUid: Int, statistics: PlayerStatistics): OutboundPacket {
         return OutboundPacket { buffer ->
             buffer.writeShortLE(0x158)
             buffer.writeByte(requestType)
             buffer.writeIntLE(playerUid)
-            buffer.write(PlayerStatistic())
+            buffer.write(statistics)
         }
     }
 

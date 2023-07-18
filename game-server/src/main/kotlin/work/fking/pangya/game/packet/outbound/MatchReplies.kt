@@ -1,8 +1,11 @@
 package work.fking.pangya.game.packet.outbound
 
+import work.fking.pangya.game.Rand
+import work.fking.pangya.game.model.write
 import work.fking.pangya.game.player.Player
 import work.fking.pangya.game.room.Room
 import work.fking.pangya.game.room.RoomPlayer
+import work.fking.pangya.game.room.mapHoleCollectibles
 import work.fking.pangya.game.room.match.Hole
 import work.fking.pangya.game.room.match.MatchState
 import work.fking.pangya.game.room.match.ShotCommitData
@@ -55,8 +58,23 @@ object MatchReplies {
             buffer.writeIntLE(matchState.gameTimeMs)
             matchState.holes.forEach { buffer.write(it) }
             buffer.writeIntLE(matchState.randSeed) // it seems like the original server can only generate short random values
-            // collectibles, each byte is the count for each hole
-            buffer.writeZero(18)
+
+            val mapHoleCollectibles = mapHoleCollectibles[matchState.course] ?: Array(18) { emptyArray() }
+
+            for ((holeIdx, holeCollectibles) in mapHoleCollectibles.withIndex()) {
+                buffer.writeByte(holeCollectibles.size)
+                for (collectible in holeCollectibles) {
+                    buffer.writeIntLE(collectible.type.ordinal)
+                    buffer.writeIntLE(Rand.nextInt())
+                    buffer.writeIntLE(0)
+                    buffer.writeIntLE(matchState.course.ordinal)
+                    buffer.writeByte(holeIdx + 1)
+                    buffer.writeByte(holeIdx)
+                    buffer.writeShortLE(0)
+                    buffer.write(collectible.position)
+                    buffer.writeIntLE(collectible.type.ordinal)
+                }
+            }
         }
     }
 
@@ -78,7 +96,7 @@ object MatchReplies {
         }
     }
 
-    fun gamePlayerUseItem(player: RoomPlayer, itemIffId: Int, randSeed: Int): OutboundPacket {
+    fun playerUseItem(player: RoomPlayer, itemIffId: Int, randSeed: Int): OutboundPacket {
         return OutboundPacket { buffer ->
             buffer.writeShortLE(0x5a)
             buffer.writeIntLE(itemIffId)
@@ -90,14 +108,14 @@ object MatchReplies {
     /**
      * Tells the client to play the player intro & start music
      */
-    fun gamePlayerStartHole(player: RoomPlayer): OutboundPacket {
+    fun playerStartHole(player: RoomPlayer): OutboundPacket {
         return OutboundPacket { buffer ->
             buffer.writeShortLE(0x53)
             buffer.writeIntLE(player.connectionId)
         }
     }
 
-    fun gameFinishPlayerPreviewAck(): OutboundPacket {
+    fun finishPlayerPreviewAck(): OutboundPacket {
         return OutboundPacket { buffer ->
             buffer.writeShortLE(0x90)
         }
@@ -141,7 +159,7 @@ object MatchReplies {
     }
 
     // used for drawing the white dots across the map
-    fun gameTourneyShotGhost(player: RoomPlayer, x: Float, z: Float, shotFlags: Int, frames: Int): OutboundPacket {
+    fun tourneyShotGhost(player: RoomPlayer, x: Float, z: Float, shotFlags: Int, frames: Int): OutboundPacket {
         return OutboundPacket { buffer ->
             buffer.writeShortLE(0x6e)
             buffer.writeIntLE(player.connectionId)
@@ -156,7 +174,7 @@ object MatchReplies {
         }
     }
 
-    fun gameTourneyShotAck(player: RoomPlayer, tourneyShotData: TourneyShotData): OutboundPacket {
+    fun tourneyShotAck(player: RoomPlayer, tourneyShotData: TourneyShotData): OutboundPacket {
         return OutboundPacket { buffer ->
             buffer.writeShortLE(0x1f7)
             buffer.writeIntLE(player.connectionId)
@@ -165,7 +183,7 @@ object MatchReplies {
         }
     }
 
-    fun gameTourneyEndingScore(): OutboundPacket {
+    fun tourneyEndingScore(): OutboundPacket {
         return OutboundPacket { buffer ->
             buffer.writeShortLE(0x79)
             buffer.writeIntLE(4) // experience
@@ -180,32 +198,37 @@ object MatchReplies {
         }
     }
 
-    fun gameTourneyWinnings(): OutboundPacket {
+    fun tourneyWinnings(itemIffIds: List<Int>): OutboundPacket {
         return OutboundPacket { buffer ->
             buffer.writeShortLE(0xce)
             buffer.writeByte(0)
-            buffer.writeShortLE(1) // count
-
-            repeat(1) {
-                buffer.writeIntLE(402653195) // item iffIds
-            }
+            buffer.writeShortLE(itemIffIds.size)
+            itemIffIds.forEach { buffer.writeIntLE(it) }
         }
     }
 
-    fun gameTourneyTimeout(): OutboundPacket {
+    fun tourneyTimeout(): OutboundPacket {
         return OutboundPacket { buffer -> buffer.writeShortLE(0x8c) }
     }
 
-    fun gameTourneyUpdatePlayerProgress(player: RoomPlayer): OutboundPacket {
+    fun tourneyUpdatePlayerProgress(player: RoomPlayer): OutboundPacket {
         return OutboundPacket { buffer ->
             buffer.writeShortLE(0x6d)
             buffer.writeIntLE(player.connectionId)
             buffer.writeByte(player.currentHole) // hole
             buffer.writeByte(3) // total strokes?
             buffer.writeIntLE(-1) // score
-            buffer.writeLongLE(30) // pang
-            buffer.writeLongLE(1) // bonus pang
-            buffer.writeByte(1) //  finished the hole 1 or 0 not
+            buffer.writeLongLE(player.pang.toLong()) // pang
+            buffer.writeLongLE(player.bonusPang.toLong()) // bonus pang
+            buffer.writeByte(1) //  finished the hole, 1 or 0 not
+        }
+    }
+
+    fun useTimeBoosterAck(player: RoomPlayer, boostValue: Float): OutboundPacket {
+        return OutboundPacket { buffer ->
+            buffer.writeShortLE(0xC7)
+            buffer.writeFloatLE(boostValue)
+            buffer.writeIntLE(player.connectionId)
         }
     }
 }

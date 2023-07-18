@@ -2,6 +2,7 @@ package work.fking.pangya.game.room
 
 import io.netty.buffer.ByteBuf
 import work.fking.pangya.game.player.Player
+import work.fking.pangya.game.player.PlayerStatistics
 import work.fking.pangya.game.room.RoomPlayerFlag.AWAY
 import work.fking.pangya.game.room.RoomPlayerFlag.MASTER
 import work.fking.pangya.game.room.RoomPlayerFlag.READY
@@ -21,6 +22,9 @@ class RoomPlayer(
     // in game state
     var currentHole: Int = 1
     var finishedHole: Boolean = false
+    var pang: Int = 0
+    var bonusPang: Int = 0
+    var statistics: PlayerStatistics = PlayerStatistics()
 
     fun write(message: Any) {
         player.write(message)
@@ -52,7 +56,6 @@ class RoomPlayer(
     }
 
     fun encode(buffer: ByteBuf, roomOwner: Boolean, extendedInfo: Boolean) {
-
         with(buffer) {
             writeIntLE(player.connectionId)
             writeFixedSizeString(player.nickname, 22)
@@ -68,7 +71,7 @@ class RoomPlayer(
             writeIntLE(0) // unknown
             writeIntLE(0) // duplicate skin id title
             writeShortLE(pack(computeRoomFlags(roomOwner))) // room status (master, away, ready)
-            writeByte(player.rank)
+            writeByte(player.statistics.level)
             writeShortLE(0x2560)
             writeIntLE(0) // guild id
             writeFixedSizeString("", 12) // guildmark

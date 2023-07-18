@@ -2,7 +2,7 @@ package work.fking.pangya.game.packet.outbound
 
 import work.fking.pangya.game.player.Player
 import work.fking.pangya.game.player.PlayerBasicInfo
-import work.fking.pangya.game.player.PlayerStatistic
+import work.fking.pangya.game.player.PlayerStatistics
 import work.fking.pangya.game.player.PlayerTrophies
 import work.fking.pangya.game.player.write
 import work.fking.pangya.game.room.Course
@@ -57,7 +57,7 @@ object HandoverReplies {
             PlayerBasicInfo().encode(buffer, player)
 
             // Player Statistics (verified ok by comparing with struct sent on hole end)
-            buffer.write(PlayerStatistic())
+            buffer.write(player.statistics)
 
             // trophies (verified ok by checking my room trophies and confirming there's 1 ama 6 gold trophy and 1 bronze pro 7 trophy)
             PlayerTrophies().encode(buffer)

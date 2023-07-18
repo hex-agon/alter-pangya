@@ -19,7 +19,6 @@ class MatchHoleStartPacketHandler : ClientPacketHandler {
         val teeCoord = Coord2D(packet.readFloatLE(), packet.readFloatLE())
         val holeCoord = Coord2D(packet.readFloatLE(), packet.readFloatLE())
 
-
         room.handleMatchEvent(
             PlayerHoleStartEvent(
                 player = roomPlayer,

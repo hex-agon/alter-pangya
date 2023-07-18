@@ -12,20 +12,15 @@ class Player(
     val connectionId: Int,
     val username: String,
     val nickname: String,
-    val achievements: PlayerAchievements = createPlayerAchievements()
+    val achievements: PlayerAchievements = createPlayerAchievements(),
+    var statistics: PlayerStatistics = PlayerStatistics(
+        level = 70
+    )
 ) {
     val inventory = Inventory()
     val equipment = Equipment(this)
     val characterRoster = CharacterRoster()
     val caddieRoster = CaddieRoster()
-
-    var rank = 0
-        private set
-    var experience = 0
-        set(value) {
-            require(value >= 0) { "Cannot add negative experience" }
-            field += value
-        }
 
     var pangBalance = 10000
         set(value) {

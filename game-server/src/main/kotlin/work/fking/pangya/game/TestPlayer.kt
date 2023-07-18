@@ -42,6 +42,7 @@ fun giveTestStuff(player: Player) {
     inventory.add(Item(iffId = 402653230, quantity = 100)) // Double Strength Boost
     inventory.add(Item(iffId = 402653228, quantity = 100)) // Silent Nerve Stabilizer
     inventory.add(Item(iffId = 436207680, quantity = 1000)) // Auto Caliper
+    inventory.add(Item(iffId = 436207633, quantity = 1000)) // Time booster
 
     luciaItems.forEach { inventory.add(Item(iffId = it)) }
     arinItems.forEach { inventory.add(Item(iffId = it)) }

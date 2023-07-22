@@ -4,7 +4,6 @@ import io.netty.channel.Channel
 import work.fking.pangya.game.ServerChannel
 import work.fking.pangya.game.room.Room
 import java.util.Objects
-import kotlin.math.max
 
 class Player(
     private val channel: Channel,
@@ -12,25 +11,14 @@ class Player(
     val connectionId: Int,
     val username: String,
     val nickname: String,
-    val achievements: PlayerAchievements = createPlayerAchievements(),
-    var statistics: PlayerStatistics = PlayerStatistics(
-        level = 70
-    )
+    val wallet: PlayerWallet = PlayerWallet(),
+    val characterRoster: CharacterRoster = CharacterRoster(),
+    val caddieRoster: CaddieRoster = CaddieRoster(),
+    val inventory: Inventory = Inventory(),
+    val equipment: Equipment = Equipment(),
+    var statistics: PlayerStatistics = PlayerStatistics(),
+    val achievements: PlayerAchievements = createPlayerAchievements()
 ) {
-    val inventory = Inventory()
-    val equipment = Equipment(this)
-    val characterRoster = CharacterRoster()
-    val caddieRoster = CaddieRoster()
-
-    var pangBalance = 10000
-        set(value) {
-            field = max(0, value)
-        }
-    var cookieBalance = 0
-        set(value) {
-            field = max(0, value)
-        }
-
     var currentChannel: ServerChannel? = null
         set(value) {
             require(currentChannel == null) { "Player is already in a channel" }

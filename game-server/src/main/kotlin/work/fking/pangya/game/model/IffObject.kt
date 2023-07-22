@@ -6,8 +6,8 @@ const val IFF_TYPE_CHARACTER = 4
 const val IFF_TYPE_PART = 8
 const val IFF_TYPE_CLUBSET = 16
 const val IFF_TYPE_BALL = 20
-const val IFF_TYPE_ITEM = 24
-const val IFF_TYPE_PASSIVE_ITEM = 26
+const val IFF_TYPE_EQUIPITEM_ITEM = 24
+const val IFF_TYPE_NOEQUIP_ITEM = 26
 const val IFF_TYPE_CADDIE = 28
 
 interface IffObject {

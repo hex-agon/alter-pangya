@@ -22,8 +22,8 @@ private val LOGGER = LoggerFactory.getLogger(HandoverTask::class.java)
 private val PROTOCOL = ClientProtocol(ClientPacketType.entries.toTypedArray())
 
 class HandoverTask(
-    private val gameServer:
-    GameServer, private val channel: Channel,
+    private val gameServer: GameServer,
+    private val channel: Channel,
     private val cryptKey: Int,
     private val sessionKey: String
 ) : Runnable {
@@ -43,14 +43,53 @@ class HandoverTask(
         }
         channel.write(HandoverReplies.ok())
 
-        // load all the player stuff
-        for (i in 1..15) {
-            // do some fancy fake loading
-            channel.writeAndFlush(HandoverReplies.updateProgressBar(i))
-            Thread.sleep(25)
+        val persistenceCtx = gameServer.persistenceContext
+        val playerId = sessionInfo.uid
+
+        val playerWalletFuture = gameServer.submitTask { persistenceCtx.playerRepository.loadWallet(playerId) }
+        val characterRosterFuture = gameServer.submitTask { persistenceCtx.characterRepository.loadRoster(playerId) }
+        val caddieRosterFuture = gameServer.submitTask { persistenceCtx.caddieRepository.loadRoster(playerId) }
+        val inventoryFuture = gameServer.submitTask { persistenceCtx.inventoryRepository.load(playerId) }
+        val equipmentFuture = gameServer.submitTask { persistenceCtx.equipmentRepository.load(playerId) }
+        val statisticsFuture = gameServer.submitTask { persistenceCtx.statisticsRepository.load(playerId) }
+        val achievementsFuture = gameServer.submitTask { persistenceCtx.achievementsRepository.load(playerId) }
+
+        val futures = listOf(
+            playerWalletFuture,
+            characterRosterFuture,
+            caddieRosterFuture,
+            inventoryFuture,
+            equipmentFuture,
+            statisticsFuture,
+            achievementsFuture
+        )
+
+        // wait and check if all futures completed normally
+        var progress = 1
+        for (future in futures) {
+            try {
+                future.get()
+            } catch (e: Exception) {
+                LOGGER.warn("Failed to process playerId $playerId handover", e)
+                channel.disconnect()
+                futures.forEach { it.cancel(true) }
+                return
+            }
+            channel.writeAndFlush(HandoverReplies.updateProgressBar(progress))
+            progress++
         }
-        // if no error, register it
-        val player = gameServer.registerPlayer(channel, sessionInfo.uid, sessionInfo.username, sessionInfo.nickname)
+
+        val player = gameServer.registerPlayer(
+            channel = channel,
+            sessionInfo = sessionInfo,
+            playerWallet = playerWalletFuture.get(),
+            characterRoster = characterRosterFuture.get(),
+            caddieRoster = caddieRosterFuture.get(),
+            inventory = inventoryFuture.get(),
+            equipment = equipmentFuture.get(),
+            statistics = statisticsFuture.get(),
+            achievements = achievementsFuture.get()
+        )
 
         // modify the pipeline
         val pipeline = channel.pipeline()

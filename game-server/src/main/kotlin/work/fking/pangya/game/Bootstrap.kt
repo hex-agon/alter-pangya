@@ -9,7 +9,7 @@ import org.apache.logging.log4j.LogManager
 import work.fking.pangya.discovery.DiscoveryClient
 import work.fking.pangya.discovery.HeartbeatPublisher
 import work.fking.pangya.discovery.ServerType.GAME
-import work.fking.pangya.game.ServerChannel.Restriction
+import work.fking.pangya.game.persistence.PersistenceContext
 import java.nio.file.Files
 import java.nio.file.Path
 
@@ -27,7 +27,11 @@ object Bootstrap {
         val discoveryClient = DiscoveryClient(redisClient)
         val sessionClient = SessionClient(redisClient)
 
-        val server = GameServer(serverConfig, sessionClient)
+        val server = GameServer(
+            serverConfig = serverConfig,
+            persistenceContext = PersistenceContext(),
+            sessionClient = sessionClient
+        )
         HeartbeatPublisher(discoveryClient, GAME, serverConfig) { server.players.count() }.start()
         server.start()
     }

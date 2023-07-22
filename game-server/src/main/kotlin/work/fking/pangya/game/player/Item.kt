@@ -2,44 +2,51 @@ package work.fking.pangya.game.player
 
 import io.netty.buffer.ByteBuf
 import work.fking.pangya.game.model.IFF_TYPE_BALL
-import work.fking.pangya.game.model.IFF_TYPE_ITEM
-import work.fking.pangya.game.model.IFF_TYPE_PASSIVE_ITEM
+import work.fking.pangya.game.model.IFF_TYPE_EQUIPITEM_ITEM
+import work.fking.pangya.game.model.IFF_TYPE_NOEQUIP_ITEM
 import work.fking.pangya.game.model.IffObject
 import work.fking.pangya.game.model.iffTypeFromId
-import java.util.concurrent.atomic.AtomicInteger
 
-private val uidSequence = AtomicInteger(1)
-
-class Item(
-    override val uid: Int = uidSequence.getAndIncrement(),
+data class Item(
+    override val uid: Int = -1,
     override val iffId: Int,
-    private var quantity: Int = 0
+    val quantity: Int = 0,
+    val stats: IntArray = IntArray(5)
 ) : IffObject {
 
-    fun increment(delta: Int) {
-        quantity += delta
-    }
-
-    fun decrement(delta: Int) {
-        quantity -= delta
+    private fun quantifiable(): Boolean {
+        return when (iffTypeFromId(iffId)) {
+            IFF_TYPE_EQUIPITEM_ITEM, IFF_TYPE_NOEQUIP_ITEM, IFF_TYPE_BALL -> true
+            else -> false
+        }
     }
 
     override fun encode(buffer: ByteBuf) {
-        buffer.writeIntLE(uid)
-        buffer.writeIntLE(iffId)
-        buffer.writeIntLE(0)
-        // if the item is not quantifiable, this is the item current stats
-        if (iffTypeFromId(iffId) in intArrayOf(IFF_TYPE_ITEM, IFF_TYPE_PASSIVE_ITEM, IFF_TYPE_BALL)) {
-            buffer.writeIntLE(quantity)
-            buffer.writeZero(180)
-        } else {
-            // item stats
-            buffer.writeShortLE(1)
-            buffer.writeShortLE(1)
-            buffer.writeShortLE(1)
-            buffer.writeShortLE(1)
-            buffer.writeShortLE(1)
-            buffer.writeZero(174)
+        with(buffer) {
+            writeIntLE(uid)
+            writeIntLE(iffId)
+            writeIntLE(0)
+
+            if (quantifiable()) {
+                writeIntLE(quantity)
+                writeZero(6)
+            } else {
+                stats.forEach { buffer.writeShortLE(it) }
+            }
+            writeZero(174)
         }
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Item
+
+        return uid == other.uid
+    }
+
+    override fun hashCode(): Int {
+        return uid
     }
 }

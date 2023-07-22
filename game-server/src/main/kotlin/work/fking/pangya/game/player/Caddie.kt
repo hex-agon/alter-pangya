@@ -5,20 +5,20 @@ import work.fking.pangya.game.model.IffObject
 
 @JvmRecord
 data class Caddie(
-    override val uid: Int,
+    override val uid: Int = -1,
     override val iffId: Int,
-    private val levelsGained: Int,
-    private val experience: Int
+    private val level: Int = 0,
+    private val experience: Int = 0
 ) : IffObject {
 
     override fun encode(buffer: ByteBuf) {
         buffer.writeIntLE(uid)
         buffer.writeIntLE(iffId)
         buffer.writeIntLE(0)
-        buffer.writeByte(levelsGained)
+        buffer.writeByte(level)
         buffer.writeIntLE(experience)
         buffer.writeLongLE(0)
     }
 }
 
-fun nullCaddie() = Caddie(uid = 0, iffId = 0, levelsGained = 0, experience = 0)
+fun nullCaddie() = Caddie(iffId = 0)

@@ -5,18 +5,29 @@ import io.netty.channel.Channel
 import io.netty.channel.ChannelOption
 import org.slf4j.LoggerFactory
 import work.fking.pangya.game.net.ServerChannelInitializer
+import work.fking.pangya.game.persistence.PersistenceContext
+import work.fking.pangya.game.player.CaddieRoster
+import work.fking.pangya.game.player.CharacterRoster
+import work.fking.pangya.game.player.Equipment
+import work.fking.pangya.game.player.Inventory
 import work.fking.pangya.game.player.Player
+import work.fking.pangya.game.player.PlayerAchievements
 import work.fking.pangya.game.player.PlayerGroup
+import work.fking.pangya.game.player.PlayerStatistics
+import work.fking.pangya.game.player.PlayerWallet
 import work.fking.pangya.networking.selectBestEventLoopAvailable
 import work.fking.pangya.networking.selectBestServerChannelAvailable
 import java.net.InetAddress
+import java.util.concurrent.Callable
 import java.util.concurrent.Executors
+import java.util.concurrent.Future
 import java.util.concurrent.atomic.AtomicInteger
 
 private val LOGGER = LoggerFactory.getLogger(GameServer::class.java)
 
 class GameServer(
     private val serverConfig: GameServerConfig,
+    val persistenceContext: PersistenceContext,
     val sessionClient: SessionClient,
     val serverChannels: List<ServerChannel> = serverConfig.serverChannels
 ) {
@@ -24,23 +35,37 @@ class GameServer(
     private val connectionIdSequence = AtomicInteger()
     val players = PlayerGroup()
 
-    fun serverChannelById(id: Int): ServerChannel? {
-        return serverChannels.firstOrNull { it.id == id }
-    }
+    fun serverChannelById(id: Int): ServerChannel? = serverChannels.firstOrNull { it.id == id }
 
-    fun submitTask(runnable: Runnable) {
-        executorService.execute(runnable)
-    }
+    fun <R> submitTask(callable: Callable<R>): Future<R> = executorService.submit(callable)
 
-    fun registerPlayer(channel: Channel, uid: Int, username: String, nickname: String): Player {
+    fun runTask(runnable: Runnable): Future<*> = executorService.submit(runnable)
+
+    fun registerPlayer(
+        channel: Channel,
+        sessionInfo: SessionClient.SessionInfo,
+        playerWallet: PlayerWallet,
+        characterRoster: CharacterRoster,
+        caddieRoster: CaddieRoster,
+        inventory: Inventory,
+        equipment: Equipment,
+        statistics: PlayerStatistics,
+        achievements: PlayerAchievements
+    ): Player {
         val player = Player(
             channel = channel,
-            uid = uid,
-            connectionId = connectionIdSequence.incrementAndGet(),
-            username = username,
-            nickname = nickname,
+            uid = sessionInfo.uid,
+            connectionId = connectionIdSequence.getAndIncrement(),
+            username = sessionInfo.username,
+            nickname = sessionInfo.nickname,
+            wallet = playerWallet,
+            characterRoster = characterRoster,
+            caddieRoster = caddieRoster,
+            inventory = inventory,
+            equipment = equipment,
+            statistics = statistics,
+            achievements = achievements,
         )
-        giveTestStuff(player)
 
         players.add(player)
         channel.closeFuture().addListener { onPlayerDisconnect(player) }

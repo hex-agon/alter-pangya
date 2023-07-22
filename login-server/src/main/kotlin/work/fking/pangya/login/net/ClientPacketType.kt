@@ -14,8 +14,7 @@ enum class ClientPacketType(
     GHOST_CLIENT(0x4),
     SET_NICKNAME(0x6, SetNicknamePacketHandler()),
     CHECK_NICKNAME(0x7, CheckNicknamePacketHandler()),
-    SELECT_CHARACTER(0x8, SelectCharacterPacketHandler()),
-    RECONNECT_REQUEST(0xb, ReconnectPacketHandler());
+    SELECT_CHARACTER(0x8, SelectCharacterPacketHandler());
 
     fun id(): Int {
         return id

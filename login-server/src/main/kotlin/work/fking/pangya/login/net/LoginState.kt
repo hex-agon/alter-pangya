@@ -28,6 +28,7 @@ enum class LoginState {
 
     fun validTransition(to: LoginState): Boolean {
         return when (this) {
+            to -> true
             AUTHENTICATED -> to == SELECTING_NICKNAME || to == SELECTING_CHARACTER || to == LOGGED_IN
             SELECTING_NICKNAME -> to == SELECTED_NICKNAME
             SELECTED_NICKNAME -> to == LOGGED_IN || to == SELECTING_CHARACTER

@@ -1,4 +1,4 @@
-package work.fking.pangya.login.net
+package work.fking.pangya.login.net.pipe
 
 import io.netty.buffer.ByteBuf
 import io.netty.channel.ChannelHandlerContext

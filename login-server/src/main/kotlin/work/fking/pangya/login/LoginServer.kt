@@ -5,10 +5,13 @@ import io.netty.channel.Channel
 import io.netty.channel.ChannelOption
 import org.slf4j.LoggerFactory
 import work.fking.pangya.discovery.DiscoveryClient
+import work.fking.pangya.discovery.ServerType
 import work.fking.pangya.login.auth.Authenticator
 import work.fking.pangya.login.auth.SessionClient
 import work.fking.pangya.login.auth.UserInfo
-import work.fking.pangya.login.net.ServerChannelInitializer
+import work.fking.pangya.login.net.pipe.ServerChannelInitializer
+import work.fking.pangya.login.packet.outbound.LoginReplies
+import work.fking.pangya.login.packet.outbound.ServerListReplies
 import work.fking.pangya.networking.selectBestEventLoopAvailable
 import work.fking.pangya.networking.selectBestServerChannelAvailable
 import java.net.InetAddress
@@ -17,8 +20,8 @@ import java.util.concurrent.Executors
 private val LOGGER = LoggerFactory.getLogger(LoginServer::class.java)
 
 class LoginServer(
-    val discoveryClient: DiscoveryClient,
-    val serverConfig: LoginServerConfig,
+    private val discoveryClient: DiscoveryClient,
+    private val serverConfig: LoginServerConfig,
     val sessionClient: SessionClient,
     val authenticator: Authenticator
 ) {
@@ -36,6 +39,21 @@ class LoginServer(
         return player
     }
 
+    fun proceedPlayerToLoggedIn(player: Player) {
+        val nickname = player.nickname
+        requireNotNull(nickname) { "Cannot proceed player to logged in, player doesn't have a nickname" }
+
+        val gameServers = discoveryClient.instances(ServerType.GAME)
+        val socialServers = discoveryClient.instances(ServerType.SOCIAL)
+
+        player.write(LoginReplies.loginKey(player.loginKey))
+        player.write(LoginReplies.chatMacros())
+        player.write(LoginReplies.success(player.uid, player.username, nickname))
+        player.write(ServerListReplies.gameServers(gameServers))
+        player.write(ServerListReplies.socialServers(socialServers))
+        player.flush()
+    }
+
     private fun onPlayerDisconnect(player: Player) {
         LOGGER.debug("{} disconnected", player.username)
         sessionClient.unregisterSession(player)
@@ -51,7 +69,6 @@ class LoginServer(
             .childOption(ChannelOption.TCP_NODELAY, true)
             .childHandler(ServerChannelInitializer(this))
 
-        LOGGER.info("Binding to port {}...", serverConfig.port)
         try {
             val inetAddress = InetAddress.getByName(serverConfig.bindAddress)
             val channel = bootstrap.bind(inetAddress, serverConfig.port)

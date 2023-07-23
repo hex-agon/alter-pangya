@@ -19,9 +19,12 @@ class SessionClient(
 
     @JvmRecord
     data class SessionInfo(
+        val targetServerId: Int,
         val sessionKey: String,
         val uid: Int,
         val username: String,
-        val nickname: String
+        val nickname: String,
+        val characterIffId: Int?,
+        val characterHairColor: Int?
     )
 }

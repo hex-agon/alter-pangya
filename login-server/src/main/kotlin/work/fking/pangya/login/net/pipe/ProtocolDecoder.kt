@@ -1,13 +1,15 @@
-package work.fking.pangya.login.net
+package work.fking.pangya.login.net.pipe
 
 import io.netty.buffer.ByteBuf
 import io.netty.buffer.ByteBufUtil
 import io.netty.channel.ChannelHandlerContext
 import io.netty.handler.codec.ByteToMessageDecoder
-import org.apache.logging.log4j.LogManager
+import org.slf4j.LoggerFactory
+import work.fking.pangya.login.net.ClientPacket
+import work.fking.pangya.login.net.ClientProtocol
 import work.fking.pangya.networking.crypt.PangCrypt
 
-private val LOGGER = LogManager.getLogger(ProtocolDecoder::class.java)
+private val LOGGER = LoggerFactory.getLogger(ProtocolDecoder::class.java)
 
 class ProtocolDecoder(
     private val protocol: ClientProtocol,
@@ -30,4 +32,3 @@ class ProtocolDecoder(
         out.add(ClientPacket(packetType, buffer.readRetainedSlice(buffer.readableBytes())))
     }
 }
-

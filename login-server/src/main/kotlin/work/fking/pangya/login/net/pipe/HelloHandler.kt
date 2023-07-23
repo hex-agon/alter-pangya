@@ -1,10 +1,10 @@
-package work.fking.pangya.login.net
+package work.fking.pangya.login.net.pipe
 
-import io.netty.channel.ChannelHandler.Sharable
+import io.netty.channel.ChannelHandler
 import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.ChannelInboundHandlerAdapter
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder
-import org.apache.logging.log4j.LogManager
+import org.slf4j.LoggerFactory
 import work.fking.pangya.login.LoginServer
 import work.fking.pangya.login.Rand
 import work.fking.pangya.login.packet.outbound.HelloPacket
@@ -12,9 +12,9 @@ import work.fking.pangya.networking.crypt.PangCrypt
 import work.fking.pangya.networking.protocol.ProtocolEncoder
 import java.nio.ByteOrder
 
-private val LOGGER = LogManager.getLogger(HelloHandler::class.java)
+private val LOGGER = LoggerFactory.getLogger(HelloHandler::class.java)
 
-@Sharable
+@ChannelHandler.Sharable
 class HelloHandler(
     private val loginServer: LoginServer
 ) : ChannelInboundHandlerAdapter() {
@@ -30,5 +30,4 @@ class HelloHandler(
         pipeline.addLast("framer", LengthFieldBasedFrameDecoder(ByteOrder.LITTLE_ENDIAN, 10000, 1, 2, 1, 0, true))
         pipeline.addLast("loginHandler", LoginHandler(loginServer, cryptKey))
     }
-
 }

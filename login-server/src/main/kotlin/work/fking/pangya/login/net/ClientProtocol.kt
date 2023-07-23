@@ -11,8 +11,8 @@ class ClientProtocol(
 
     init {
         for (packet in packetTypes) {
-            packets[packet.id()] = packet
-            handlers[packet.id()] = packet.handler()
+            packets[packet.id] = packet
+            handlers[packet.id] = packet.handler
         }
     }
 

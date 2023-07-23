@@ -15,7 +15,7 @@ class ClientPacketDispatcher(
 ) : SimpleChannelInboundHandler<ClientPacket>() {
 
     override fun channelRead0(ctx: ChannelHandlerContext, packet: ClientPacket) {
-        val packetId = packet.type.id()
+        val packetId = packet.type.id
         val handler = handlers[packetId] ?: throw IllegalStateException("Packet " + packet.type + " has no attached handler")
         val buffer = packet.buffer
         try {

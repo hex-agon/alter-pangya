@@ -48,6 +48,7 @@
                     </to>
                     <container>
                         <appRoot>/alter-pangya/game-server</appRoot>
+                        <jvmFlags>--enable-preview</jvmFlags>
                     </container>
                 </configuration>
             </plugin>

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.dataformat.toml.TomlMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 
-val achievements = loadAchievements()
+val achievements = emptyMap<Int, Achievement>()
 
 class Achievement(
     val iffId: Int,

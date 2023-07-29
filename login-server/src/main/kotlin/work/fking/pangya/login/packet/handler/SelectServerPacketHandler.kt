@@ -9,7 +9,7 @@ import work.fking.pangya.login.task.HandoverTask
 class SelectServerPacketHandler : ClientPacketHandler {
 
     override fun handle(server: LoginServer, player: Player, packet: ByteBuf) {
-        require(player.needCharacterSelect && player.pickedCharacterIffId != null) { "Cannot proceed with handover, player didn't pick a default character" }
+        require(player.hasBaseCharacter || player.pickedCharacterIffId != null) { "Cannot proceed with handover, player didn't pick a default character" }
         requireNotNull(player.nickname) { "Cannot proceed with handover, player doesn't have a nickname set" }
 
         val serverId = packet.readShortLE().toInt()

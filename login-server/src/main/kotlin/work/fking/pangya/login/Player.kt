@@ -12,13 +12,14 @@ class Player(
     val sessionKey: String = Rand.randomHexString(16),
     val username: String,
     var nickname: String?,
-    val needCharacterSelect: Boolean = false
+    val hasBaseCharacter: Boolean = false
 ) {
     var state: LoginState = AUTHENTICATED
         set(value) {
             require(state.validTransition(value)) { "Invalid loginState transition, from $state to $value" }
             field = value
         }
+
     // these values are passed through the SessionInfo for the Game Server to create the desired starting character.
     // It is done like this to avoid having to copy over character creation logic from the game server code base.
     var pickedCharacterIffId: Int? = null
@@ -29,7 +30,7 @@ class Player(
         uid = userInfo.uid,
         username = userInfo.username,
         nickname = userInfo.nickname,
-        needCharacterSelect = userInfo.needCharacterSelect
+        hasBaseCharacter = userInfo.hasBaseCharacter
     )
 
     fun write(message: Any) {

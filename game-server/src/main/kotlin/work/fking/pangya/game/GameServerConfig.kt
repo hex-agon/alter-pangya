@@ -15,5 +15,17 @@ data class GameServerConfig(
     override val boosts: List<ServerBoost>?,
     override val icon: ServerIcon?,
     val bindAddress: String,
-    val serverChannels: List<ServerChannel> = emptyList()
+    val serverChannels: List<ServerChannel> = emptyList(),
+    val database: DatabaseConfig,
+    val redis: RedisConfig
 ) : ServerConfig
+
+data class DatabaseConfig(
+    val url: String,
+    val username: String,
+    val password: String
+)
+
+data class RedisConfig(
+    val url: String
+)

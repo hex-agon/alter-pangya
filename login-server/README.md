@@ -6,11 +6,12 @@ name = "Login Server 1"
 bindAddress = "127.0.0.1"
 advertiseAddress = "127.0.0.1"
 port = 10103
-```
 
-Environment variables:
+[database]
+url = "jdbc:postgresql://localhost/alter_pangya"
+username = "alter_pangya"
+password = "alter_pangya"
 
-```
-LOG_LEVEL=debug
-REDIS_URI=redis://localhost
+[redis]
+url = "redis://cubi.link"
 ```

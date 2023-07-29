@@ -27,11 +27,15 @@ private val LOGGER = LoggerFactory.getLogger(GameServer::class.java)
 
 class GameServer(
     private val serverConfig: GameServerConfig,
-    val persistenceContext: PersistenceContext,
+    val persistenceCtx: PersistenceContext,
     val sessionClient: SessionClient,
     val serverChannels: List<ServerChannel> = serverConfig.serverChannels
 ) {
-    private val executorService = Executors.newVirtualThreadPerTaskExecutor()
+    private val executorService = Executors.newThreadPerTaskExecutor(
+        Thread.ofVirtual()
+            .uncaughtExceptionHandler { _, throwable -> LOGGER.error("Uncaught exception while running task", throwable) }
+            .factory()
+    )
     private val connectionIdSequence = AtomicInteger()
     val players = PlayerGroup()
 
@@ -39,7 +43,10 @@ class GameServer(
 
     fun <R> submitTask(callable: Callable<R>): Future<R> = executorService.submit(callable)
 
-    fun runTask(runnable: Runnable): Future<*> = executorService.submit(runnable)
+    fun runTask(runnable: Runnable) {
+        LOGGER.debug("Running task {}", runnable.javaClass.simpleName)
+        executorService.execute(runnable)
+    }
 
     fun registerPlayer(
         channel: Channel,

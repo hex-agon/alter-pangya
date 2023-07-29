@@ -17,7 +17,7 @@ class Player(
     val inventory: Inventory = Inventory(),
     val equipment: Equipment = Equipment(),
     var statistics: PlayerStatistics = PlayerStatistics(),
-    val achievements: PlayerAchievements = createPlayerAchievements()
+    val achievements: PlayerAchievements = PlayerAchievements(emptyList())
 ) {
     var currentChannel: ServerChannel? = null
         set(value) {
@@ -31,15 +31,15 @@ class Player(
         }
 
     fun equippedCharacter(): Character {
-        return characterRoster.findByUid(equipment.equippedCharacterUid) ?: throw IllegalStateException("Player does not have a equipped character")
+        return characterRoster.findByUid(equipment.characterUid) ?: throw IllegalStateException("Player does not have a equipped character")
     }
 
     fun equippedCaddie(): Caddie {
-        return caddieRoster.findByUid(equipment.equippedCaddieUid) ?: nullCaddie()
+        return caddieRoster.findByUid(equipment.caddieUid) ?: nullCaddie()
     }
 
     fun equippedClubSet(): Item? {
-        return inventory.findByUid(equipment.equippedClubSetUid)
+        return inventory.findByUid(equipment.clubSetUid)
     }
 
     fun write(message: Any) {

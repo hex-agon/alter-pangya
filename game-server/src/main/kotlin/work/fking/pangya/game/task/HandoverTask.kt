@@ -17,6 +17,7 @@ import work.fking.pangya.game.packet.outbound.PangBalancePacket
 import work.fking.pangya.game.packet.outbound.ServerChannelsPacket
 import work.fking.pangya.game.packet.outbound.TreasureHunterPacket
 import work.fking.pangya.game.packet.outbound.chunkIffContainer
+import java.util.concurrent.TimeUnit
 
 private val LOGGER = LoggerFactory.getLogger(HandoverTask::class.java)
 private val PROTOCOL = ClientProtocol(ClientPacketType.entries.toTypedArray())
@@ -43,8 +44,26 @@ class HandoverTask(
         }
         channel.write(HandoverReplies.ok())
 
-        val persistenceCtx = gameServer.persistenceContext
         val playerId = sessionInfo.uid
+        sessionInfo.characterIffId?.let {
+            val future = gameServer.submitTask(
+                NewPlayerSetupTask(
+                    playerUid = sessionInfo.uid,
+                    characterIffId = sessionInfo.characterIffId,
+                    characterHairColor = sessionInfo.characterHairColor ?: 0,
+                    persistenceContext = gameServer.persistenceCtx
+                )
+            )
+            try {
+                future.get(10, TimeUnit.SECONDS)
+            } catch (e: Exception) {
+                LOGGER.warn("Failed to process playerId $playerId handover", e)
+                channel.disconnect()
+                return
+            }
+        }
+
+        val persistenceCtx = gameServer.persistenceCtx
 
         val playerWalletFuture = gameServer.submitTask { persistenceCtx.playerRepository.loadWallet(playerId) }
         val characterRosterFuture = gameServer.submitTask { persistenceCtx.characterRepository.loadRoster(playerId) }
@@ -64,11 +83,10 @@ class HandoverTask(
             achievementsFuture
         )
 
-        // wait and check if all futures completed normally
         var progress = 1
         for (future in futures) {
             try {
-                future.get()
+                future.get(10, TimeUnit.SECONDS)
             } catch (e: Exception) {
                 LOGGER.warn("Failed to process playerId $playerId handover", e)
                 channel.disconnect()

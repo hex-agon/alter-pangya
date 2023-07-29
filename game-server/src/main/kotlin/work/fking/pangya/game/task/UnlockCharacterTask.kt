@@ -16,8 +16,13 @@ class UnlockCharacterTask(
     override fun run() {
         require(iffTypeFromId(iffId) == IFF_TYPE_CHARACTER) { "iffId is not a character" }
         val partIffIds = characterBaseParts(iffId)
-        val character = Character(iffId = iffId, partIffIds = partIffIds)
-        val persistedCharacter = persistenceContext.characterRepository.save(player, character)
-        player.characterRoster.entries.add(persistedCharacter)
+        val character = persistenceContext.characterRepository.save(
+            playerUid = player.uid,
+            character = Character(
+                iffId = iffId,
+                partIffIds = partIffIds
+            )
+        )
+        player.characterRoster.entries.add(character)
     }
 }

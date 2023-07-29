@@ -6,14 +6,14 @@ import work.fking.pangya.game.model.IffObject
 data class Character(
     override val uid: Int = -1,
     override val iffId: Int,
-    private val hairColor: Int = 0,
-    private val partIffIds: IntArray,
-    private val partUids: IntArray = IntArray(CHARACTER_PARTS_SIZE),
-    private val auxParts: IntArray = IntArray(CHARACTER_AUX_PARTS_SIZE),
-    private val cutInIffId: Int = 0,
-    private val stats: IntArray = IntArray(CHARACTER_STATS_SIZE),
-    private val mastery: Int = 0,
-    private val cardIffIds: IntArray = IntArray(CHARACTER_CARDS_SIZE)
+    val hairColor: Int = 0,
+    val partIffIds: IntArray,
+    val partUids: IntArray = IntArray(CHARACTER_PARTS_SIZE),
+    val auxParts: IntArray = IntArray(CHARACTER_AUX_PARTS_SIZE),
+    val cutInIffId: Int = 0,
+    val stats: IntArray = IntArray(CHARACTER_STATS_SIZE),
+    val mastery: Int = 0,
+    val cardIffIds: IntArray = IntArray(CHARACTER_CARDS_SIZE)
 ) : IffObject {
 
     fun updateParts(character: Character) {
@@ -77,6 +77,10 @@ fun ByteBuf.readCharacter(): Character {
         mastery = mastery,
         cardIffIds = cardIffIds
     )
+}
+
+fun ByteBuf.write(character: Character) {
+    character.encode(this)
 }
 
 const val CHARACTER_PARTS_SIZE = 24

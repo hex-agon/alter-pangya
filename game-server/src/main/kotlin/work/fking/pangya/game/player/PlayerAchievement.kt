@@ -5,9 +5,9 @@ import work.fking.pangya.game.model.IffObject
 import java.time.OffsetDateTime
 
 data class PlayerAchievement(
-    override val iffId: Int,
     override val uid: Int,
-    val quests: List<PlayerQuest>
+    override val iffId: Int,
+    val milestones: List<PlayerAchievementMilestone>
 ) : IffObject {
 
     override fun encode(buffer: ByteBuf) {
@@ -15,15 +15,15 @@ data class PlayerAchievement(
             writeIntLE(iffId)
             writeIntLE(uid)
 
-            writeIntLE(quests.size)
-            quests.forEach { it.encode(buffer) }
+            writeIntLE(milestones.size)
+            milestones.forEach { it.encode(buffer) }
         }
     }
 }
 
-data class PlayerQuest(
-    val iffId: Int,
+data class PlayerAchievementMilestone(
     val uid: Int,
+    val iffId: Int,
     val progress: Int = 0,
     val completedAt: OffsetDateTime? = null
 ) {

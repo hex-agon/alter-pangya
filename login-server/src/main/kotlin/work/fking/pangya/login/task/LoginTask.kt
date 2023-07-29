@@ -2,7 +2,6 @@ package work.fking.pangya.login.task
 
 import io.netty.channel.Channel
 import org.slf4j.LoggerFactory
-import work.fking.pangya.discovery.ServerType
 import work.fking.pangya.login.LoginServer
 import work.fking.pangya.login.auth.ExceptionResult
 import work.fking.pangya.login.auth.InvalidCredentialsResult
@@ -16,7 +15,6 @@ import work.fking.pangya.login.net.LoginState.SELECTING_CHARACTER
 import work.fking.pangya.login.net.LoginState.SELECTING_NICKNAME
 import work.fking.pangya.login.net.pipe.ProtocolDecoder
 import work.fking.pangya.login.packet.outbound.LoginReplies
-import work.fking.pangya.login.packet.outbound.ServerListReplies
 
 private val PROTOCOL: ClientProtocol = ClientProtocol(ClientPacketType.values())
 private val LOGGER = LoggerFactory.getLogger(LoginTask::class.java)
@@ -51,7 +49,7 @@ class LoginTask(
         player.state = if (nickname == null) {
             channel.write(LoginReplies.createNickname())
             SELECTING_NICKNAME
-        } else if (player.needCharacterSelect) {
+        } else if (!player.hasBaseCharacter) {
             channel.write(LoginReplies.selectCharacter())
             SELECTING_CHARACTER
         } else {

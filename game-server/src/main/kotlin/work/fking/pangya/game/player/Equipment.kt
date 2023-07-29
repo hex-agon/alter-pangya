@@ -9,20 +9,19 @@ import work.fking.pangya.game.model.iffTypeFromId
 const val EQUIPPED_ITEMS_SIZE = 10
 
 class Equipment(
-    private val equippedItemIffIds: IntArray = IntArray(10),
-    equippedClubSetUid: Int = 0,
-    equippedCometIffId: Int = 0,
-    equippedCharacterUid: Int = 0,
-    equippedCaddieUid: Int = 0
+    val itemIffIds: IntArray = IntArray(10),
+    characterUid: Int = 0,
+    caddieUid: Int = 0,
+    clubSetUid: Int = 0,
+    cometIffId: Int = 0
 ) {
-
-    var equippedClubSetUid = equippedClubSetUid
+    var characterUid = characterUid
         private set
-    var equippedCometIffId = equippedCometIffId
+    var caddieUid = caddieUid
         private set
-    var equippedCharacterUid = equippedCharacterUid
+    var clubSetUid = clubSetUid
         private set
-    var equippedCaddieUid = equippedCaddieUid
+    var cometIffId = cometIffId
         private set
 
     fun updateEquippedItems(itemIffIds: IntArray) {
@@ -30,36 +29,36 @@ class Equipment(
         for (i in itemIffIds.indices) {
             val iffId = itemIffIds[i]
             require(iffId == 0 || iffTypeFromId(iffId) == IFF_TYPE_EQUIPITEM_ITEM) { "Iff object $iffId is not an item" }
-            equippedItemIffIds[i] = iffId
+            this.itemIffIds[i] = iffId
         }
     }
 
     fun equipClubSet(clubSet: Item) {
         require(clubSet.iffTypeId() == IFF_TYPE_CLUBSET) { "Item is not a clubSet" }
-        equippedClubSetUid = clubSet.uid
+        clubSetUid = clubSet.uid
     }
 
     fun equipComet(comet: Item) {
         require(comet.iffTypeId() == IFF_TYPE_BALL) { "Item is not a comet" }
-        equippedCometIffId = comet.iffId
+        cometIffId = comet.iffId
     }
 
     fun equipCharacter(character: Character) {
-        equippedCharacterUid = character.uid
+        characterUid = character.uid
     }
 
     fun equipCaddie(caddie: Caddie) {
-        equippedCaddieUid = caddie.uid
+        caddieUid = caddie.uid
     }
 
     fun encode(buffer: ByteBuf) {
         with(buffer) {
-            writeIntLE(equippedCaddieUid)
-            writeIntLE(equippedCharacterUid)
-            writeIntLE(equippedClubSetUid)
-            writeIntLE(equippedCometIffId)
+            writeIntLE(caddieUid)
+            writeIntLE(characterUid)
+            writeIntLE(clubSetUid)
+            writeIntLE(cometIffId)
 
-            for (itemIffId in equippedItemIffIds) {
+            for (itemIffId in itemIffIds) {
                 writeIntLE(itemIffId)
             }
             writeIntLE(0) // background

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<configuration xmlns="http://www.jooq.org/xsd/jooq-codegen-3.18.0.xsd">
+    <generator>
+        <name>org.jooq.codegen.KotlinGenerator</name>
+        <database>
+            <name>org.jooq.meta.postgres.PostgresDatabase</name>
+            <inputSchema>public</inputSchema>
+            <forcedTypes>
+                <forcedType>
+                    <userType>kotlin.IntArray</userType>
+                    <jsonConverter>true</jsonConverter>
+                    <includeTypes>JSON</includeTypes>
+                </forcedType>
+            </forcedTypes>
+        </database>
+        <target>
+            <packageName>work.fking.pangya.game.persistence.jooq</packageName>
+            <directory>game-server/src/main/kotlin</directory>
+        </target>
+        <generate>
+            <kotlinNotNullRecordAttributes>true</kotlinNotNullRecordAttributes>
+        </generate>
+    </generator>
+</configuration>

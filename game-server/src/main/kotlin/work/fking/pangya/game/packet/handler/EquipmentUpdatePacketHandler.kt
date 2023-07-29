@@ -1,75 +1,111 @@
 package work.fking.pangya.game.packet.handler
 
 import io.netty.buffer.ByteBuf
-import org.slf4j.LoggerFactory
 import work.fking.pangya.game.GameServer
 import work.fking.pangya.game.net.ClientPacketHandler
-import work.fking.pangya.game.packet.outbound.EquipmentUpdateReplies
+import work.fking.pangya.game.packet.outbound.EquipmentUpdateReplies.EquipmentUpdateType
+import work.fking.pangya.game.packet.outbound.EquipmentUpdateReplies.EquipmentUpdateType.CADDIE
+import work.fking.pangya.game.packet.outbound.EquipmentUpdateReplies.EquipmentUpdateType.CHARACTER
+import work.fking.pangya.game.packet.outbound.EquipmentUpdateReplies.EquipmentUpdateType.CHARACTER_PARTS
+import work.fking.pangya.game.packet.outbound.EquipmentUpdateReplies.EquipmentUpdateType.COMET_CLUBSET
+import work.fking.pangya.game.packet.outbound.EquipmentUpdateReplies.EquipmentUpdateType.CUT_IN
+import work.fking.pangya.game.packet.outbound.EquipmentUpdateReplies.EquipmentUpdateType.DECORATION
+import work.fking.pangya.game.packet.outbound.EquipmentUpdateReplies.EquipmentUpdateType.EQUIPPED_ITEMS
+import work.fking.pangya.game.packet.outbound.EquipmentUpdateReplies.EquipmentUpdateType.MASCOT
 import work.fking.pangya.game.player.EQUIPPED_ITEMS_SIZE
 import work.fking.pangya.game.player.Player
 import work.fking.pangya.game.player.nullCaddie
 import work.fking.pangya.game.player.readCharacter
-
-private val LOGGER = LoggerFactory.getLogger(EquipmentUpdatePacketHandler::class.java)
+import work.fking.pangya.game.task.UpdatePlayerCaddieTask
+import work.fking.pangya.game.task.UpdatePlayerCharacterPartsTask
+import work.fking.pangya.game.task.UpdatePlayerCharacterTask
+import work.fking.pangya.game.task.UpdatePlayerCometClubSetTask
+import work.fking.pangya.game.task.UpdatePlayerEquippedItemsTask
 
 class EquipmentUpdatePacketHandler : ClientPacketHandler {
 
     override fun handle(server: GameServer, player: Player, packet: ByteBuf) {
-        when (val type = packet.readUnsignedByte().toInt()) {
-            0 -> handleUpdateCharacterParts(player, packet)
-            1 -> handleUpdateCaddie(player, packet)
-            2 -> handleEquippedItems(player, packet)
-            3 -> handleUpdateComet(player, packet)
-            4 -> handleUpdateDecoration(packet)
-            5 -> handleEquipCharacter(player, packet)
-            8 -> handleMascot(packet)
-            9 -> handleEquipCutIn(packet)
-            else -> println("Unhandled equipment update type $type")
+        val typeId = packet.readUnsignedByte().toInt()
+        val type = EquipmentUpdateType.entries.find { it.id == typeId } ?: throw IllegalStateException("Unsupported equipment update type=$typeId")
+
+        when (type) {
+            CHARACTER_PARTS -> handleUpdateCharacterParts(server, player, packet)
+            CADDIE -> handleUpdateCaddie(server, player, packet)
+            EQUIPPED_ITEMS -> handleEquippedItems(server, player, packet)
+            COMET_CLUBSET -> handleUpdateComet(server, player, packet)
+            DECORATION -> handleUpdateDecoration(packet)
+            CHARACTER -> handleEquipCharacter(server, player, packet)
+            MASCOT -> handleMascot(packet)
+            CUT_IN -> handleEquipCutIn(packet)
         }
     }
 
-    private fun handleUpdateCharacterParts(player: Player, buffer: ByteBuf) {
+    private fun handleUpdateCharacterParts(server: GameServer, player: Player, buffer: ByteBuf) {
         val character = buffer.readCharacter()
-        LOGGER.debug("Updating player {} character parts", player.nickname)
-        player.equippedCharacter().updateParts(character)
-        player.writeAndFlush(EquipmentUpdateReplies.equipCharacterPartsAck(character))
+        server.runTask(
+            UpdatePlayerCharacterPartsTask(
+                server = server,
+                player = player,
+                character = character
+            )
+        )
     }
 
-    private fun handleUpdateCaddie(player: Player, buffer: ByteBuf) {
+    private fun handleUpdateCaddie(server: GameServer, player: Player, buffer: ByteBuf) {
         val caddieUid = buffer.readIntLE()
-        LOGGER.debug("Updating player {} caddie to {}", player.nickname, Integer.toHexString(caddieUid))
         val caddie = if (caddieUid == 0) {
             nullCaddie()
         } else {
             player.caddieRoster.findByUid(caddieUid) ?: throw IllegalStateException("Player ${player.nickname} tried to equip a caddie it does not own ($caddieUid)")
         }
-        player.equipment.equipCaddie(caddie)
-        player.writeAndFlush(EquipmentUpdateReplies.equipCaddieAck(caddie))
+        server.runTask(
+            UpdatePlayerCaddieTask(
+                server = server,
+                player = player,
+                caddie = caddie
+            )
+        )
     }
 
-    private fun handleUpdateComet(player: Player, buffer: ByteBuf) {
+    private fun handleUpdateComet(server: GameServer, player: Player, buffer: ByteBuf) {
         val cometIffId = buffer.readIntLE()
-        LOGGER.debug("Updating player {} comet to {}", player.nickname, Integer.toHexString(cometIffId))
+        val clubSetUid = buffer.readIntLE()
         val comet = player.inventory.findByIffId(cometIffId) ?: throw IllegalStateException("Player ${player.nickname} tried to equip a comet it does not own ($cometIffId)")
-        player.equipment.equipComet(comet)
-        player.writeAndFlush(EquipmentUpdateReplies.equipCometAck(comet))
+        val clubSet = player.inventory.findByUid(clubSetUid) ?: throw IllegalStateException("Player ${player.nickname} tried to equip a clubSet it does not own ($clubSetUid)")
+        server.runTask(
+            UpdatePlayerCometClubSetTask(
+                server = server,
+                player = player,
+                comet = comet,
+                clubSet = clubSet
+            )
+        )
     }
 
     private fun handleUpdateDecoration(buffer: ByteBuf) {
     }
 
-    private fun handleEquipCharacter(player: Player, buffer: ByteBuf) {
+    private fun handleEquipCharacter(server: GameServer, player: Player, buffer: ByteBuf) {
         val characterUid = buffer.readIntLE()
-        LOGGER.debug("Updating player {} equipped character to {}", player.nickname, Integer.toHexString(characterUid))
         val character = player.characterRoster.findByUid(characterUid) ?: throw IllegalStateException("Player ${player.nickname} tried to equip a character it does not own")
-        player.equipment.equipCharacter(character)
-        player.writeAndFlush(EquipmentUpdateReplies.equipCharacterAck(character))
+        server.runTask(
+            UpdatePlayerCharacterTask(
+                server = server,
+                player = player,
+                character = character
+            )
+        )
     }
 
-    private fun handleEquippedItems(player: Player, buffer: ByteBuf) {
-        val equippedItems = IntArray(EQUIPPED_ITEMS_SIZE) { buffer.readIntLE() }
-        player.equipment.updateEquippedItems(equippedItems)
-        player.writeAndFlush(EquipmentUpdateReplies.equipItemsAck(equippedItems))
+    private fun handleEquippedItems(server: GameServer, player: Player, buffer: ByteBuf) {
+        val itemIffIds = IntArray(EQUIPPED_ITEMS_SIZE) { buffer.readIntLE() }
+        server.runTask(
+            UpdatePlayerEquippedItemsTask(
+                server = server,
+                player = player,
+                itemIffIds = itemIffIds
+            )
+        )
     }
 
     private fun handleMascot(buffer: ByteBuf) {

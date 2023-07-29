@@ -3,12 +3,11 @@ package work.fking.pangya.game.player
 import io.netty.buffer.ByteBuf
 import work.fking.pangya.game.model.IffObject
 
-@JvmRecord
 data class Caddie(
     override val uid: Int = -1,
     override val iffId: Int,
-    private val level: Int = 0,
-    private val experience: Int = 0
+    val level: Int = 0,
+    val experience: Int = 0
 ) : IffObject {
 
     override fun encode(buffer: ByteBuf) {

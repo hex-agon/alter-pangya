@@ -15,11 +15,12 @@ serverChannels = [
     { id = 1, name = "Rookies", capacity = 20, restrictions = ["ROOKIES_ONLY"] },
     { id = 2, name = "Free", capacity = 300 }
 ]
-```
 
-Environment variables:
+[database]
+url = "jdbc:postgresql://localhost/alter_pangya"
+username = "alter_pangya"
+password = "alter_pangya"
 
-```
-LOG_LEVEL=trace
-REDIS_URI=redis://localhost
+[redis]
+url = "redis://localhost"
 ```

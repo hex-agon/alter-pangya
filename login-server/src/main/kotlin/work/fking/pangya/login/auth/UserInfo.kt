@@ -5,5 +5,5 @@ data class UserInfo(
     val uid: Int,
     val username: String,
     val nickname: String? = null,
-    val needCharacterSelect: Boolean = false
+    val hasBaseCharacter: Boolean = false
 )

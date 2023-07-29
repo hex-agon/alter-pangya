@@ -1,54 +1,34 @@
 package work.fking.pangya.game.packet.outbound
 
-import work.fking.pangya.game.player.Caddie
-import work.fking.pangya.game.player.Character
-import work.fking.pangya.game.player.Item
+import io.netty.buffer.ByteBuf
 import work.fking.pangya.networking.protocol.OutboundPacket
 
 object EquipmentUpdateReplies {
 
-    fun equipCharacterPartsAck(character: Character): OutboundPacket {
-        return OutboundPacket { buffer ->
-            buffer.writeShortLE(0x6b)
-            buffer.writeByte(4)
-            buffer.writeByte(0)
-            character.encode(buffer)
-        }
+    enum class EquipmentUpdateType(val id: Int) {
+        CHARACTER_PARTS(0),
+        CADDIE(1),
+        EQUIPPED_ITEMS(2),
+        COMET_CLUBSET(3),
+        DECORATION(4),
+        CHARACTER(5),
+        MASCOT(8),
+        CUT_IN(9)
     }
 
-    fun equipCaddieAck(caddie: Caddie): OutboundPacket {
-        return OutboundPacket { buffer ->
-            buffer.writeShortLE(0x6b)
-            buffer.writeByte(4)
-            buffer.writeByte(1)
-            buffer.writeIntLE(caddie.uid)
-        }
+    enum class EquipmentUpdateResult(val id: Int) {
+        INCORRECT_ITEM_CODE(0),
+        FAILED_BECAUSE_OF_DB_ERROR(1),
+        SUCCESS(4),
+        FAILED_TO_UPGRADE(5)
     }
 
-    fun equipItemsAck(equippedItems: IntArray): OutboundPacket {
+    fun ack(result: EquipmentUpdateResult, type: EquipmentUpdateType, body: (buffer: ByteBuf) -> Unit = {}): OutboundPacket {
         return OutboundPacket { buffer ->
             buffer.writeShortLE(0x6b)
-            buffer.writeByte(4) // result code, 4 = 'ok'
-            buffer.writeByte(2) // equipment ack type
-            equippedItems.forEach { buffer.writeIntLE(it) }
-        }
-    }
-
-    fun equipCometAck(comet: Item): OutboundPacket {
-        return OutboundPacket { buffer ->
-            buffer.writeShortLE(0x6b)
-            buffer.writeByte(4)
-            buffer.writeByte(3)
-            buffer.writeIntLE(comet.iffId)
-        }
-    }
-
-    fun equipCharacterAck(character: Character): OutboundPacket {
-        return OutboundPacket { buffer ->
-            buffer.writeShortLE(0x6b)
-            buffer.writeByte(4)
-            buffer.writeByte(5)
-            buffer.writeIntLE(character.uid)
+            buffer.writeByte(result.id)
+            buffer.writeByte(type.id)
+            body(buffer)
         }
     }
 }

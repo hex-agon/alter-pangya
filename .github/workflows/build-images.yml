@@ -1,6 +1,20 @@
 name: Build Images
 
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+    inputs:
+      game_server_image:
+        description: 'Build game server image'
+        required: true
+        type: boolean
+      login_server_image:
+        description: 'Build login server image'
+        required: true
+        type: boolean
+      resources_server_image:
+        description: 'Build resources server image'
+        required: true
+        type: boolean
 
 jobs:
   build:
@@ -24,8 +38,17 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build images
+      - name: Build game server image
+        if:  ${{ inputs.game_server_image }}
+        run: |
+          mvn package jib:build --no-transfer-progress --pl game-server -am
+
+      - name: Build login server image
+        if:  ${{ inputs.login_server_image }}
+        run: |
+          mvn package jib:build --no-transfer-progress --pl login-server -am
+
+      - name: Build resources server image
+        if:  ${{ inputs.resources_server_image }}
         run: |
           mvn package jib:build --no-transfer-progress --pl resources-server -am
-          mvn package jib:build --no-transfer-progress --pl login-server -am
-          mvn package jib:build --no-transfer-progress --pl game-server -am

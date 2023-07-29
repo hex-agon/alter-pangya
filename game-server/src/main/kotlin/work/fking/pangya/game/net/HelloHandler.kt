@@ -27,8 +27,8 @@ class HelloHandler(
 
         val pipeline = ctx.pipeline()
         pipeline.remove(this)
-        pipeline.replace("encoder", "encoder", ProtocolEncoder(cryptKey))
-        pipeline.addLast("framer", LengthFieldBasedFrameDecoder(ByteOrder.LITTLE_ENDIAN, 10000, 1, 2, 1, 0, true))
+        pipeline.replace("encoder", "protocolEncoder", ProtocolEncoder(cryptKey))
+        pipeline.addLast("framer", LengthFieldBasedFrameDecoder(ByteOrder.LITTLE_ENDIAN, 2500, 1, 2, 1, 0, true))
         pipeline.addLast("handoverHandler", HandoverHandler(gameServer, cryptKey))
     }
 }

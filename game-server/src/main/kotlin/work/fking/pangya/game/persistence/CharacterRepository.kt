@@ -11,23 +11,23 @@ import java.util.concurrent.atomic.AtomicInteger
 
 
 interface CharacterRepository {
-    fun loadRoster(playerUid: Int): CharacterRoster
-    fun save(playerUid: Int, character: Character): Character
+    fun loadRoster(txCtx: TransactionalContext, playerUid: Int): CharacterRoster
+    fun save(txCtx: TransactionalContext, playerUid: Int, character: Character): Character
 }
 
 class InMemoryCharacterRepository : CharacterRepository {
     private val uidSequence = AtomicInteger(1)
     private val playerCharacters = mutableMapOf<Int, MutableList<Character>>()
 
-    override fun loadRoster(playerUid: Int): CharacterRoster = CharacterRoster(playerCharacters[playerUid] ?: mutableListOf())
+    override fun loadRoster(txCtx: TransactionalContext, playerUid: Int): CharacterRoster = CharacterRoster(playerCharacters[playerUid] ?: mutableListOf())
 
-    override fun save(playerUid: Int, character: Character): Character {
+    override fun save(txCtx: TransactionalContext, playerUid: Int, character: Character): Character {
         val characters = playerCharacters[playerUid] ?: mutableListOf()
         return characters.find { it.uid == character.uid } ?: character.copy(uid = uidSequence.getAndIncrement())
     }
 }
 
-class JooqCharacterRepository(private val jooq: DSLContext) : CharacterRepository {
+class JooqCharacterRepository : CharacterRepository {
     private val characterMapper = RecordMapper<PlayerCharacterRecord, Character> {
         Character(
             uid = it.uid!!,
@@ -43,15 +43,15 @@ class JooqCharacterRepository(private val jooq: DSLContext) : CharacterRepositor
         )
     }
 
-    override fun loadRoster(playerUid: Int): CharacterRoster {
-        val characters = jooq.selectFrom(PLAYER_CHARACTER)
+    override fun loadRoster(txCtx: TransactionalContext, playerUid: Int): CharacterRoster {
+        val characters = txCtx.jooq().selectFrom(PLAYER_CHARACTER)
             .where(PLAYER_CHARACTER.ACCOUNT_UID.eq(playerUid))
             .fetch(characterMapper)
         return CharacterRoster(characters)
     }
 
-    override fun save(playerUid: Int, character: Character): Character {
-        val insert = jooq.insertInto(PLAYER_CHARACTER)
+    override fun save(txCtx: TransactionalContext, playerUid: Int, character: Character): Character {
+        val insert = txCtx.jooq().insertInto(PLAYER_CHARACTER)
 
         if (character.uid != -1) insert.set(PLAYER_CHARACTER.UID, character.uid)
 

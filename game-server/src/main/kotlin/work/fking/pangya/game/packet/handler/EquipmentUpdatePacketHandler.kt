@@ -44,7 +44,7 @@ class EquipmentUpdatePacketHandler : ClientPacketHandler {
         val character = buffer.readCharacter()
         server.runTask(
             UpdatePlayerCharacterPartsTask(
-                server = server,
+                persistenceCtx = server.persistenceCtx,
                 player = player,
                 character = character
             )
@@ -60,7 +60,7 @@ class EquipmentUpdatePacketHandler : ClientPacketHandler {
         }
         server.runTask(
             UpdatePlayerCaddieTask(
-                server = server,
+                persistenceCtx = server.persistenceCtx,
                 player = player,
                 caddie = caddie
             )
@@ -74,7 +74,7 @@ class EquipmentUpdatePacketHandler : ClientPacketHandler {
         val clubSet = player.inventory.findByUid(clubSetUid) ?: throw IllegalStateException("Player ${player.nickname} tried to equip a clubSet it does not own ($clubSetUid)")
         server.runTask(
             UpdatePlayerCometClubSetTask(
-                server = server,
+                persistenceCtx = server.persistenceCtx,
                 player = player,
                 comet = comet,
                 clubSet = clubSet
@@ -90,7 +90,7 @@ class EquipmentUpdatePacketHandler : ClientPacketHandler {
         val character = player.characterRoster.findByUid(characterUid) ?: throw IllegalStateException("Player ${player.nickname} tried to equip a character it does not own")
         server.runTask(
             UpdatePlayerCharacterTask(
-                server = server,
+                persistenceCtx = server.persistenceCtx,
                 player = player,
                 character = character
             )
@@ -101,7 +101,7 @@ class EquipmentUpdatePacketHandler : ClientPacketHandler {
         val itemIffIds = IntArray(EQUIPPED_ITEMS_SIZE) { buffer.readIntLE() }
         server.runTask(
             UpdatePlayerEquippedItemsTask(
-                server = server,
+                persistenceCtx = server.persistenceCtx,
                 player = player,
                 itemIffIds = itemIffIds
             )

@@ -1,6 +1,5 @@
 package work.fking.pangya.game.persistence
 
-import org.jooq.DSLContext
 import org.jooq.RecordMapper
 import work.fking.pangya.game.persistence.jooq.keys.PLAYER_STATISTICS_PKEY
 import work.fking.pangya.game.persistence.jooq.tables.records.PlayerStatisticsRecord
@@ -8,17 +7,17 @@ import work.fking.pangya.game.persistence.jooq.tables.references.PLAYER_STATISTI
 import work.fking.pangya.game.player.PlayerStatistics
 
 interface StatisticsRepository {
-    fun load(playerUid: Int): PlayerStatistics
-    fun save(playerUid: Int, statistics: PlayerStatistics)
+    fun load(txCtx: TransactionalContext, playerUid: Int): PlayerStatistics
+    fun save(txCtx: TransactionalContext, playerUid: Int, statistics: PlayerStatistics)
 }
 
 class InMemoryStatisticsRepository : StatisticsRepository {
-    override fun load(playerUid: Int): PlayerStatistics = PlayerStatistics()
-    override fun save(playerUid: Int, statistics: PlayerStatistics) {
+    override fun load(txCtx: TransactionalContext, playerUid: Int): PlayerStatistics = PlayerStatistics()
+    override fun save(txCtx: TransactionalContext, playerUid: Int, statistics: PlayerStatistics) {
     }
 }
 
-class JooqStatisticsRepository(private val jooq: DSLContext) : StatisticsRepository {
+class JooqStatisticsRepository : StatisticsRepository {
     private val statisticsMapper = RecordMapper<PlayerStatisticsRecord, PlayerStatistics> {
         PlayerStatistics(
             totalShots = it.totalShots,
@@ -55,14 +54,14 @@ class JooqStatisticsRepository(private val jooq: DSLContext) : StatisticsReposit
         )
     }
 
-    override fun load(playerUid: Int): PlayerStatistics {
-        return jooq.selectFrom(PLAYER_STATISTICS)
+    override fun load(txCtx: TransactionalContext, playerUid: Int): PlayerStatistics {
+        return txCtx.jooq().selectFrom(PLAYER_STATISTICS)
             .where(PLAYER_STATISTICS.ACCOUNT_UID.eq(playerUid))
             .fetchOne(statisticsMapper) ?: throw throw IllegalStateException("could not load statistics for playerId=$playerUid")
     }
 
-    override fun save(playerUid: Int, statistics: PlayerStatistics) {
-        jooq.insertInto(PLAYER_STATISTICS)
+    override fun save(txCtx: TransactionalContext, playerUid: Int, statistics: PlayerStatistics) {
+        txCtx.jooq().insertInto(PLAYER_STATISTICS)
             .set(PLAYER_STATISTICS.ACCOUNT_UID, playerUid)
             .set(PLAYER_STATISTICS.TOTAL_SHOTS, statistics.totalShots)
             .set(PLAYER_STATISTICS.TOTAL_PUTTS, statistics.totalPutts)

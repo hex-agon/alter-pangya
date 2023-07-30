@@ -44,20 +44,22 @@ class HandoverTask(
         }
         channel.write(HandoverReplies.ok())
 
-        val playerId = sessionInfo.uid
+        val playerUid = sessionInfo.uid
+
+        // The player picked a new character on the login server, this is a brand-new account
         sessionInfo.characterIffId?.let {
             val future = gameServer.submitTask(
                 NewPlayerSetupTask(
                     playerUid = sessionInfo.uid,
                     characterIffId = sessionInfo.characterIffId,
                     characterHairColor = sessionInfo.characterHairColor ?: 0,
-                    persistenceContext = gameServer.persistenceCtx
+                    persistenceCtx = gameServer.persistenceCtx
                 )
             )
             try {
                 future.get(10, TimeUnit.SECONDS)
             } catch (e: Exception) {
-                LOGGER.warn("Failed to process playerId $playerId handover", e)
+                LOGGER.warn("Failed to process playerId $playerUid handover", e)
                 channel.disconnect()
                 return
             }
@@ -65,15 +67,17 @@ class HandoverTask(
 
         val persistenceCtx = gameServer.persistenceCtx
 
-        val playerWalletFuture = gameServer.submitTask { persistenceCtx.playerRepository.loadWallet(playerId) }
-        val characterRosterFuture = gameServer.submitTask { persistenceCtx.characterRepository.loadRoster(playerId) }
-        val caddieRosterFuture = gameServer.submitTask { persistenceCtx.caddieRepository.loadRoster(playerId) }
-        val inventoryFuture = gameServer.submitTask { persistenceCtx.inventoryRepository.load(playerId) }
-        val equipmentFuture = gameServer.submitTask { persistenceCtx.equipmentRepository.load(playerId) }
-        val statisticsFuture = gameServer.submitTask { persistenceCtx.statisticsRepository.load(playerId) }
-        val achievementsFuture = gameServer.submitTask { persistenceCtx.achievementsRepository.load(playerId) }
+        val updateNicknameFuture = gameServer.submitTask { persistenceCtx.playerRepository.updateNickname(persistenceCtx.noTxContext(), playerUid, sessionInfo.nickname) }
+        val playerWalletFuture = gameServer.submitTask { persistenceCtx.playerRepository.loadWallet(persistenceCtx.noTxContext(), playerUid) }
+        val characterRosterFuture = gameServer.submitTask { persistenceCtx.characterRepository.loadRoster(persistenceCtx.noTxContext(), playerUid) }
+        val caddieRosterFuture = gameServer.submitTask { persistenceCtx.caddieRepository.loadRoster(persistenceCtx.noTxContext(), playerUid) }
+        val inventoryFuture = gameServer.submitTask { persistenceCtx.inventoryRepository.load(persistenceCtx.noTxContext(), playerUid) }
+        val equipmentFuture = gameServer.submitTask { persistenceCtx.equipmentRepository.load(persistenceCtx.noTxContext(), playerUid) }
+        val statisticsFuture = gameServer.submitTask { persistenceCtx.statisticsRepository.load(persistenceCtx.noTxContext(), playerUid) }
+        val achievementsFuture = gameServer.submitTask { persistenceCtx.achievementsRepository.load(persistenceCtx.noTxContext(), playerUid) }
 
         val futures = listOf(
+            updateNicknameFuture,
             playerWalletFuture,
             characterRosterFuture,
             caddieRosterFuture,
@@ -88,7 +92,7 @@ class HandoverTask(
             try {
                 future.get(10, TimeUnit.SECONDS)
             } catch (e: Exception) {
-                LOGGER.warn("Failed to process playerId $playerId handover", e)
+                LOGGER.warn("Failed to process playerId $playerUid handover", e)
                 channel.disconnect()
                 futures.forEach { it.cancel(true) }
                 return

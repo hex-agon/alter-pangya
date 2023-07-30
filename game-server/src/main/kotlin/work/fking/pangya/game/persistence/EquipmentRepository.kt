@@ -1,6 +1,5 @@
 package work.fking.pangya.game.persistence
 
-import org.jooq.DSLContext
 import org.jooq.RecordMapper
 import work.fking.pangya.game.persistence.jooq.keys.PLAYER_EQUIPMENT_PKEY
 import work.fking.pangya.game.persistence.jooq.tables.records.PlayerEquipmentRecord
@@ -8,24 +7,24 @@ import work.fking.pangya.game.persistence.jooq.tables.references.PLAYER_EQUIPMEN
 import work.fking.pangya.game.player.Equipment
 
 interface EquipmentRepository {
-    fun load(playerUid: Int): Equipment
-    fun save(playerUid: Int, equipment: Equipment)
+    fun load(txCtx: TransactionalContext, playerUid: Int): Equipment
+    fun save(txCtx: TransactionalContext, playerUid: Int, equipment: Equipment)
 }
 
 class InMemoryEquipmentRepository : EquipmentRepository {
     private val equipments = mutableMapOf<Int, Equipment>()
 
-    override fun load(playerUid: Int): Equipment = Equipment(
+    override fun load(txCtx: TransactionalContext, playerUid: Int): Equipment = Equipment(
         clubSetUid = 200,
         characterUid = 100,
         cometIffId = 0x14000000
     )
 
-    override fun save(playerUid: Int, equipment: Equipment) {
+    override fun save(txCtx: TransactionalContext, playerUid: Int, equipment: Equipment) {
     }
 }
 
-class JooqEquipmentRepository(private val jooq: DSLContext) : EquipmentRepository {
+class JooqEquipmentRepository : EquipmentRepository {
     private val equipmentMapper = RecordMapper<PlayerEquipmentRecord, Equipment> {
         Equipment(
             itemIffIds = it.itemIffIds,
@@ -36,14 +35,14 @@ class JooqEquipmentRepository(private val jooq: DSLContext) : EquipmentRepositor
         )
     }
 
-    override fun load(playerUid: Int): Equipment {
-        return jooq.selectFrom(PLAYER_EQUIPMENT)
+    override fun load(txCtx: TransactionalContext, playerUid: Int): Equipment {
+        return txCtx.jooq().selectFrom(PLAYER_EQUIPMENT)
             .where(PLAYER_EQUIPMENT.ACCOUNT_UID.eq(playerUid))
             .fetchOne(equipmentMapper) ?: throw IllegalStateException("could not load equipment for playerId=$playerUid")
     }
 
-    override fun save(playerUid: Int, equipment: Equipment) {
-        jooq.insertInto(PLAYER_EQUIPMENT)
+    override fun save(txCtx: TransactionalContext, playerUid: Int, equipment: Equipment) {
+        txCtx.jooq().insertInto(PLAYER_EQUIPMENT)
             .set(PLAYER_EQUIPMENT.ACCOUNT_UID, playerUid)
             .set(PLAYER_EQUIPMENT.ITEM_IFF_IDS, equipment.itemIffIds)
             .set(PLAYER_EQUIPMENT.CHARACTER_UID, equipment.characterUid)

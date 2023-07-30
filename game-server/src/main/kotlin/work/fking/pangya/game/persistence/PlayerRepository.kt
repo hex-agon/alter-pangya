@@ -1,23 +1,25 @@
 package work.fking.pangya.game.persistence
 
-import org.jooq.DSLContext
 import work.fking.pangya.game.persistence.jooq.tables.references.ACCOUNT
 import work.fking.pangya.game.player.PlayerWallet
 
 interface PlayerRepository {
-    fun loadWallet(playerUid: Int): PlayerWallet
+    fun loadWallet(txCtx: TransactionalContext, playerUid: Int): PlayerWallet
+    fun updateNickname(txCtx: TransactionalContext, playerUid: Int, nickname: String)
 }
 
 class InMemoryPlayerRepository : PlayerRepository {
     private val wallets = mutableMapOf<Int, PlayerWallet>()
 
-    override fun loadWallet(playerUid: Int): PlayerWallet = wallets[playerUid] ?: PlayerWallet()
+    override fun loadWallet(txCtx: TransactionalContext, playerUid: Int): PlayerWallet = wallets[playerUid] ?: PlayerWallet()
+    override fun updateNickname(txCtx: TransactionalContext, playerUid: Int, nickname: String) {
+    }
 }
 
-class JooqPlayerRepository(private val jooq: DSLContext) : PlayerRepository {
+class JooqPlayerRepository : PlayerRepository {
 
-    override fun loadWallet(playerUid: Int): PlayerWallet {
-        val wallet = jooq.select(ACCOUNT.PANG_BALANCE, ACCOUNT.COOKIE_BALANCE)
+    override fun loadWallet(txCtx: TransactionalContext, playerUid: Int): PlayerWallet {
+        val wallet = txCtx.jooq().select(ACCOUNT.PANG_BALANCE, ACCOUNT.COOKIE_BALANCE)
             .from(ACCOUNT)
             .where(ACCOUNT.UID.eq(playerUid))
             .fetchOne {
@@ -27,5 +29,13 @@ class JooqPlayerRepository(private val jooq: DSLContext) : PlayerRepository {
                 )
             }
         return wallet ?: throw IllegalStateException("could not load player wallet for playerUid=$playerUid")
+    }
+
+    override fun updateNickname(txCtx: TransactionalContext, playerUid: Int, nickname: String) {
+        txCtx.jooq().update(ACCOUNT)
+            .set(ACCOUNT.NICKNAME, nickname)
+            .where(ACCOUNT.UID.eq(playerUid))
+            .and(ACCOUNT.NICKNAME.isNull)
+            .execute()
     }
 }

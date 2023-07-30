@@ -57,13 +57,14 @@ object Bootstrap {
 
     private fun setupPersistenceContext(jooq: DSLContext): PersistenceContext {
         return PersistenceContext(
-            playerRepository = JooqPlayerRepository(jooq),
-            characterRepository = JooqCharacterRepository(jooq),
-            caddieRepository = JooqCaddieRepository(jooq),
-            inventoryRepository = JooqInventoryRepository(jooq),
-            equipmentRepository = JooqEquipmentRepository(jooq),
-            statisticsRepository = JooqStatisticsRepository(jooq),
-            achievementsRepository = JooqAchievementsRepository(jooq)
+            jooq = jooq,
+            playerRepository = JooqPlayerRepository(),
+            characterRepository = JooqCharacterRepository(),
+            caddieRepository = JooqCaddieRepository(),
+            inventoryRepository = JooqInventoryRepository(),
+            equipmentRepository = JooqEquipmentRepository(),
+            statisticsRepository = JooqStatisticsRepository(),
+            achievementsRepository = JooqAchievementsRepository()
         )
     }
 

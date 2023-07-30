@@ -18,37 +18,46 @@ class NewPlayerSetupTask(
     private val playerUid: Int,
     private val characterIffId: Int,
     private val characterHairColor: Int,
-    private val persistenceContext: PersistenceContext
+    private val persistenceCtx: PersistenceContext
 ) : Callable<Unit> {
 
     override fun call() {
-        // TODO: We have to run everything within a transaction, somehow
-        LOGGER.debug("Creating base entities for playerUid=$playerUid")
-        persistenceContext.statisticsRepository.save(playerUid, PlayerStatistics())
+        persistenceCtx.transactional { tx ->
+            LOGGER.debug("Creating base entities for playerUid=$playerUid")
+            persistenceCtx.statisticsRepository.save(tx, playerUid, PlayerStatistics())
 
-        val character = persistenceContext.characterRepository.save(
-            playerUid, Character(
-                iffId = characterIffId,
-                hairColor = characterHairColor,
-                partIffIds = characterBaseParts(characterIffId)
+            val character = persistenceCtx.characterRepository.save(
+                txCtx = tx,
+                playerUid = playerUid,
+                character = Character(
+                    iffId = characterIffId,
+                    hairColor = characterHairColor,
+                    partIffIds = characterBaseParts(characterIffId)
+                )
             )
-        )
 
-        val clubSet = persistenceContext.inventoryRepository.saveItem(
-            playerUid, Item(iffId = airKnightClubSetIffId)
-        )
-        persistenceContext.inventoryRepository.saveItem(
-            playerUid, Item(iffId = baseCometIffId)
-        )
-
-        persistenceContext.equipmentRepository.save(
-            playerUid, Equipment(
-                characterUid = character.uid,
-                clubSetUid = clubSet.uid,
-                cometIffId = baseCometIffId
+            val clubSet = persistenceCtx.inventoryRepository.saveItem(
+                txCtx = tx,
+                playerUid = playerUid,
+                item = Item(iffId = airKnightClubSetIffId)
             )
-        )
+            persistenceCtx.inventoryRepository.saveItem(
+                txCtx = tx,
+                playerUid = playerUid,
+                item = Item(iffId = baseCometIffId)
+            )
 
-        persistenceContext.achievementsRepository.createAchievements(playerUid)
+            persistenceCtx.equipmentRepository.save(
+                txCtx = tx,
+                playerUid = playerUid,
+                equipment = Equipment(
+                    characterUid = character.uid,
+                    clubSetUid = clubSet.uid,
+                    cometIffId = baseCometIffId
+                )
+            )
+
+            persistenceCtx.achievementsRepository.createAchievements(tx, playerUid)
+        }
     }
 }

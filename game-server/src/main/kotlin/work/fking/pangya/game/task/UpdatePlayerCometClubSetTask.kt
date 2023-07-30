@@ -1,11 +1,11 @@
 package work.fking.pangya.game.task
 
 import org.slf4j.LoggerFactory
-import work.fking.pangya.game.GameServer
 import work.fking.pangya.game.packet.outbound.EquipmentUpdateReplies
 import work.fking.pangya.game.packet.outbound.EquipmentUpdateReplies.EquipmentUpdateResult.FAILED_BECAUSE_OF_DB_ERROR
 import work.fking.pangya.game.packet.outbound.EquipmentUpdateReplies.EquipmentUpdateResult.SUCCESS
 import work.fking.pangya.game.packet.outbound.EquipmentUpdateReplies.EquipmentUpdateType.COMET_CLUBSET
+import work.fking.pangya.game.persistence.PersistenceContext
 import work.fking.pangya.game.player.Item
 import work.fking.pangya.game.player.Player
 import java.sql.SQLException
@@ -13,7 +13,7 @@ import java.sql.SQLException
 private val LOGGER = LoggerFactory.getLogger(UpdatePlayerCometClubSetTask::class.java)
 
 class UpdatePlayerCometClubSetTask(
-    private val server: GameServer,
+    private val persistenceCtx: PersistenceContext,
     private val player: Player,
     private val comet: Item,
     private val clubSet: Item
@@ -23,7 +23,7 @@ class UpdatePlayerCometClubSetTask(
         try {
             player.equipment.equipComet(comet)
             player.equipment.equipClubSet(clubSet)
-            server.persistenceCtx.equipmentRepository.save(player.uid, player.equipment)
+            persistenceCtx.equipmentRepository.save(persistenceCtx.noTxContext(), player.uid, player.equipment)
             player.writeAndFlush(EquipmentUpdateReplies.ack(result = SUCCESS, type = COMET_CLUBSET) {
                 it.writeIntLE(comet.iffId)
                 it.writeIntLE(clubSet.uid)

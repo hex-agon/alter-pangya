@@ -1,6 +1,5 @@
 package work.fking.pangya.game.persistence
 
-import org.jooq.DSLContext
 import org.jooq.RecordMapper
 import work.fking.pangya.game.persistence.jooq.keys.PLAYER_INVENTORY_ITEM_PKEY
 import work.fking.pangya.game.persistence.jooq.tables.records.PlayerInventoryItemRecord
@@ -10,8 +9,8 @@ import work.fking.pangya.game.player.Item
 import java.util.concurrent.atomic.AtomicInteger
 
 interface InventoryRepository {
-    fun load(playerUid: Int): Inventory
-    fun saveItem(playerUid: Int, item: Item): Item
+    fun load(txCtx: TransactionalContext, playerUid: Int): Inventory
+    fun saveItem(txCtx: TransactionalContext, playerUid: Int, item: Item): Item
 }
 
 class InMemoryInventoryRepository : InventoryRepository {
@@ -25,18 +24,18 @@ class InMemoryInventoryRepository : InventoryRepository {
         )
     }
 
-    override fun load(playerUid: Int): Inventory {
+    override fun load(txCtx: TransactionalContext, playerUid: Int): Inventory {
         return Inventory(findInventory(playerUid))
     }
 
-    override fun saveItem(playerUid: Int, item: Item): Item {
+    override fun saveItem(txCtx: TransactionalContext, playerUid: Int, item: Item): Item {
         val persistedItem = item.copy(uid = uidSequence.getAndIncrement())
         findInventory(playerUid).add(persistedItem)
         return persistedItem
     }
 }
 
-class JooqInventoryRepository(private val jooq: DSLContext) : InventoryRepository {
+class JooqInventoryRepository : InventoryRepository {
     private val itemMapper = RecordMapper<PlayerInventoryItemRecord, Item> {
         Item(
             uid = it.uid!!,
@@ -46,15 +45,15 @@ class JooqInventoryRepository(private val jooq: DSLContext) : InventoryRepositor
         )
     }
 
-    override fun load(playerUid: Int): Inventory {
-        val items = jooq.selectFrom(PLAYER_INVENTORY_ITEM)
+    override fun load(txCtx: TransactionalContext, playerUid: Int): Inventory {
+        val items = txCtx.jooq().selectFrom(PLAYER_INVENTORY_ITEM)
             .where(PLAYER_INVENTORY_ITEM.ACCOUNT_UID.eq(playerUid))
             .fetch(itemMapper)
         return Inventory(items)
     }
 
-    override fun saveItem(playerUid: Int, item: Item): Item {
-        val insert = jooq.insertInto(PLAYER_INVENTORY_ITEM)
+    override fun saveItem(txCtx: TransactionalContext, playerUid: Int, item: Item): Item {
+        val insert = txCtx.jooq().insertInto(PLAYER_INVENTORY_ITEM)
 
         if (item.uid != -1) insert.set(PLAYER_INVENTORY_ITEM.UID, item.uid)
 

@@ -1,6 +1,5 @@
 package work.fking.pangya.game.persistence
 
-import org.jooq.DSLContext
 import org.jooq.impl.DSL.value
 import work.fking.pangya.game.persistence.jooq.tables.references.ACHIEVEMENT
 import work.fking.pangya.game.persistence.jooq.tables.references.ACHIEVEMENT_MILESTONE
@@ -14,18 +13,18 @@ import java.util.stream.Collectors.groupingBy
 import java.util.stream.Collectors.mapping
 
 interface AchievementsRepository {
-    fun load(playerUid: Int): PlayerAchievements
-    fun createAchievements(playerUid: Int)
+    fun load(txCtx: TransactionalContext, playerUid: Int): PlayerAchievements
+    fun createAchievements(txCtx: TransactionalContext, playerUid: Int)
 }
 
 class InMemoryAchievementsRepository : AchievementsRepository {
-    override fun load(playerUid: Int): PlayerAchievements = PlayerAchievements(emptyList())
-    override fun createAchievements(playerUid: Int) {}
+    override fun load(txCtx: TransactionalContext, playerUid: Int): PlayerAchievements = PlayerAchievements(emptyList())
+    override fun createAchievements(txCtx: TransactionalContext, playerUid: Int) {}
 }
 
-class JooqAchievementsRepository(private val jooq: DSLContext) : AchievementsRepository {
-    override fun load(playerUid: Int): PlayerAchievements {
-        val achievements = jooq.select(
+class JooqAchievementsRepository : AchievementsRepository {
+    override fun load(txCtx: TransactionalContext, playerUid: Int): PlayerAchievements {
+        val achievements = txCtx.jooq().select(
             PLAYER_ACHIEVEMENT.UID,
             PLAYER_ACHIEVEMENT.IFF_ID,
             PLAYER_ACHIEVEMENT_MILESTONE.UID,
@@ -60,8 +59,8 @@ class JooqAchievementsRepository(private val jooq: DSLContext) : AchievementsRep
         })
     }
 
-    override fun createAchievements(playerUid: Int) {
-        jooq.transaction { tx ->
+    override fun createAchievements(txCtx: TransactionalContext, playerUid: Int) {
+        txCtx.jooq().transaction { tx ->
             tx.dsl().insertInto(
                 PLAYER_ACHIEVEMENT,
                 PLAYER_ACHIEVEMENT.ACCOUNT_UID,

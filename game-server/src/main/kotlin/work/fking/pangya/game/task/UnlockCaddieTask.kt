@@ -7,7 +7,7 @@ import work.fking.pangya.game.player.Caddie
 import work.fking.pangya.game.player.Player
 
 class UnlockCaddieTask(
-    private val persistenceContext: PersistenceContext,
+    private val persistenceCtx: PersistenceContext,
     private val player: Player,
     private val iffId: Int
 ) : Runnable {
@@ -15,7 +15,7 @@ class UnlockCaddieTask(
     override fun run() {
         require(iffTypeFromId(iffId) == IFF_TYPE_CADDIE) { "iffId is not a caddie" }
         val caddie = Caddie(iffId = iffId)
-        val persistedCaddie = persistenceContext.caddieRepository.save(player.uid, caddie)
+        val persistedCaddie = persistenceCtx.caddieRepository.save(persistenceCtx.noTxContext(), player.uid, caddie)
         player.caddieRoster.entries.add(persistedCaddie)
     }
 }

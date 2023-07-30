@@ -1,6 +1,5 @@
 package work.fking.pangya.game.persistence
 
-import org.jooq.DSLContext
 import org.jooq.RecordMapper
 import work.fking.pangya.game.persistence.jooq.keys.PLAYER_CADDIE_PKEY
 import work.fking.pangya.game.persistence.jooq.tables.records.PlayerCaddieRecord
@@ -10,23 +9,23 @@ import work.fking.pangya.game.player.CaddieRoster
 import java.util.concurrent.atomic.AtomicInteger
 
 interface CaddieRepository {
-    fun loadRoster(playerUid: Int): CaddieRoster
-    fun save(playerUid: Int, caddie: Caddie): Caddie
+    fun loadRoster(txCtx: TransactionalContext, playerUid: Int): CaddieRoster
+    fun save(txCtx: TransactionalContext, playerUid: Int, caddie: Caddie): Caddie
 }
 
 class InMemoryCaddieRepository : CaddieRepository {
     private val uidSequence = AtomicInteger(1)
     private val playerCaddies = mutableMapOf<Int, MutableList<Caddie>>()
 
-    override fun loadRoster(playerUid: Int): CaddieRoster = CaddieRoster(playerCaddies[playerUid] ?: mutableListOf())
+    override fun loadRoster(txCtx: TransactionalContext, playerUid: Int): CaddieRoster = CaddieRoster(playerCaddies[playerUid] ?: mutableListOf())
 
-    override fun save(playerUid: Int, caddie: Caddie): Caddie {
+    override fun save(txCtx: TransactionalContext, playerUid: Int, caddie: Caddie): Caddie {
         val characters = playerCaddies[playerUid] ?: mutableListOf()
         return characters.find { it.uid == caddie.uid } ?: caddie.copy(uid = uidSequence.getAndIncrement())
     }
 }
 
-class JooqCaddieRepository(private val jooq: DSLContext) : CaddieRepository {
+class JooqCaddieRepository : CaddieRepository {
     private val caddieMapper = RecordMapper<PlayerCaddieRecord, Caddie> {
         Caddie(
             uid = it.uid!!,
@@ -36,15 +35,15 @@ class JooqCaddieRepository(private val jooq: DSLContext) : CaddieRepository {
         )
     }
 
-    override fun loadRoster(playerUid: Int): CaddieRoster {
-        val caddies = jooq.selectFrom(PLAYER_CADDIE)
+    override fun loadRoster(txCtx: TransactionalContext, playerUid: Int): CaddieRoster {
+        val caddies = txCtx.jooq().selectFrom(PLAYER_CADDIE)
             .where(PLAYER_CADDIE.ACCOUNT_UID.eq(playerUid))
             .fetch(caddieMapper)
         return CaddieRoster(caddies)
     }
 
-    override fun save(playerUid: Int, caddie: Caddie): Caddie {
-        val insert = jooq.insertInto(PLAYER_CADDIE)
+    override fun save(txCtx: TransactionalContext, playerUid: Int, caddie: Caddie): Caddie {
+        val insert = txCtx.jooq().insertInto(PLAYER_CADDIE)
 
         if (caddie.uid != -1) insert.set(PLAYER_CADDIE.UID, caddie.uid)
 

@@ -83,7 +83,7 @@ class GameServer(
         player.currentRoom?.removePlayer(player)
         player.currentChannel?.removePlayer(player)
         players.remove(player)
-        LOGGER.debug("{} disconnected", player.nickname)
+        LOGGER.info("{} disconnected", player.nickname)
     }
 
     fun start() {

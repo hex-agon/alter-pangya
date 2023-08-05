@@ -7,14 +7,14 @@ import work.fking.pangya.game.model.IFF_TYPE_NOEQUIP_ITEM
 import work.fking.pangya.game.model.IffObject
 import work.fking.pangya.game.model.iffTypeFromId
 
-data class Item(
+class Item(
     override val uid: Int = -1,
     override val iffId: Int,
-    val quantity: Int = 0,
+    var quantity: Int = 0,
     val stats: IntArray = IntArray(5)
 ) : IffObject {
 
-    private fun quantifiable(): Boolean {
+    fun quantifiable(): Boolean {
         return when (iffTypeFromId(iffId)) {
             IFF_TYPE_EQUIPITEM_ITEM, IFF_TYPE_NOEQUIP_ITEM, IFF_TYPE_BALL -> true
             else -> false
@@ -35,6 +35,15 @@ data class Item(
             }
             writeZero(174)
         }
+    }
+
+    fun copy(uid: Int): Item {
+        return Item(
+            uid = uid,
+            iffId = iffId,
+            quantity = quantity,
+            stats = stats
+        )
     }
 
     override fun equals(other: Any?): Boolean {

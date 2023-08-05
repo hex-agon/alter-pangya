@@ -11,6 +11,7 @@ import java.util.concurrent.atomic.AtomicInteger
 interface InventoryRepository {
     fun load(txCtx: TransactionalContext, playerUid: Int): Inventory
     fun saveItem(txCtx: TransactionalContext, playerUid: Int, item: Item): Item
+    fun deleteItem(txCtx: TransactionalContext, playerUid: Int, item: Item)
 }
 
 class InMemoryInventoryRepository : InventoryRepository {
@@ -32,6 +33,10 @@ class InMemoryInventoryRepository : InventoryRepository {
         val persistedItem = item.copy(uid = uidSequence.getAndIncrement())
         findInventory(playerUid).add(persistedItem)
         return persistedItem
+    }
+
+    override fun deleteItem(txCtx: TransactionalContext, playerUid: Int, item: Item) {
+        findInventory(playerUid).remove(item)
     }
 }
 
@@ -72,5 +77,10 @@ class JooqInventoryRepository : InventoryRepository {
         return item.copy(
             uid = uid!!
         )
+    }
+
+    override fun deleteItem(txCtx: TransactionalContext, playerUid: Int, item: Item) {
+        txCtx.jooq().deleteFrom(PLAYER_INVENTORY_ITEM)
+            .where(PLAYER_INVENTORY_ITEM.UID.eq(item.uid))
     }
 }

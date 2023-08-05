@@ -55,7 +55,7 @@ class LoginServer(
     }
 
     private fun onPlayerDisconnect(player: Player) {
-        LOGGER.debug("{} disconnected", player.username)
+        LOGGER.info("{} disconnected", player.username)
         sessionClient.unregisterSession(player)
     }
 

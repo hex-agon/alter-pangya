@@ -11,10 +11,6 @@ on:
         description: 'Build login server image'
         required: true
         type: boolean
-      resources_server_image:
-        description: 'Build resources server image'
-        required: true
-        type: boolean
 
 jobs:
   build:
@@ -47,8 +43,3 @@ jobs:
         if:  ${{ inputs.login_server_image }}
         run: |
           mvn package jib:build --no-transfer-progress --pl login-server -am
-
-      - name: Build resources server image
-        if:  ${{ inputs.resources_server_image }}
-        run: |
-          mvn package jib:build --no-transfer-progress --pl resources-server -am

@@ -116,6 +116,7 @@ class HandoverTask(
         // modify the pipeline
         val pipeline = channel.pipeline()
         pipeline.remove("handoverHandler")
+        pipeline.remove("timeoutHandler")
         pipeline.addLast("decoder", ProtocolDecoder(PROTOCOL, cryptKey))
         pipeline.addLast("packetDispatcher", ClientPacketDispatcher(gameServer, player, PROTOCOL.handlers()))
 

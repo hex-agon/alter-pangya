@@ -2,6 +2,7 @@ package work.fking.pangya.game.net
 
 import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.SimpleChannelInboundHandler
+import io.netty.channel.unix.Errors
 import org.slf4j.LoggerFactory
 import work.fking.pangya.game.GameServer
 import work.fking.pangya.game.player.Player
@@ -26,7 +27,12 @@ class ClientPacketDispatcher(
     }
 
     override fun exceptionCaught(ctx: ChannelHandlerContext, cause: Throwable) {
-        LOGGER.error("Exception caught in dispatcher", cause)
-        ctx.disconnect()
+        when (cause) {
+            is Errors.NativeIoException -> ctx.disconnect()
+            else -> {
+                LOGGER.error("Exception caught in dispatcher", cause)
+                ctx.disconnect()
+            }
+        }
     }
 }

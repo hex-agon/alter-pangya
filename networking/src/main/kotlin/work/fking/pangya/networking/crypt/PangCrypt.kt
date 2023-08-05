@@ -13,8 +13,7 @@ object PangCrypt {
     private const val CRYPT_SALT_MAX = 0xFF
     private const val CRYPT_STRIDE = 4
 
-    class PangCryptException(message: String) : RuntimeException(message) {
-    }
+    class PangCryptException(message: String) : RuntimeException(message)
 
     @JvmStatic
     fun decrypt(buffer: ByteBuf, key: Int) {

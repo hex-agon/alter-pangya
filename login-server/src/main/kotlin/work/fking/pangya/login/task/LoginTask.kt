@@ -42,6 +42,7 @@ class LoginTask(
 
         val pipeline = channel.pipeline()
         pipeline.remove("loginHandler")
+        pipeline.remove("timeoutHandler")
         pipeline.addLast("decoder", ProtocolDecoder(PROTOCOL, cryptKey))
         pipeline.addLast("packetDispatcher", ClientPacketDispatcher(loginServer, player, PROTOCOL.handlers()))
 

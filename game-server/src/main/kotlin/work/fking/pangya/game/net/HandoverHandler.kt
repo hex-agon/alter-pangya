@@ -3,6 +3,9 @@ package work.fking.pangya.game.net
 import io.netty.buffer.ByteBuf
 import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.SimpleChannelInboundHandler
+import io.netty.channel.unix.Errors
+import io.netty.handler.codec.TooLongFrameException
+import io.netty.handler.timeout.ReadTimeoutException
 import org.slf4j.LoggerFactory
 import work.fking.pangya.game.GameServer
 import work.fking.pangya.game.task.HandoverTask
@@ -38,4 +41,25 @@ class HandoverHandler(
         gameServer.runTask(HandoverTask(gameServer, ctx.channel(), cryptKey, sessionKey))
     }
 
+    override fun exceptionCaught(ctx: ChannelHandlerContext, cause: Throwable) {
+        when (cause) {
+            is Errors.NativeIoException -> ctx.disconnect()
+            is TooLongFrameException -> ctx.disconnect()
+            is PangCrypt.PangCryptException -> ctx.disconnect()
+            is IndexOutOfBoundsException -> {
+                LOGGER.warn("{} - {}", ctx.channel().remoteAddress(), cause.message)
+                ctx.disconnect()
+            }
+
+            is ReadTimeoutException -> {
+                LOGGER.debug("{} read timeout", ctx.channel().remoteAddress())
+                ctx.disconnect()
+            }
+
+            else -> {
+                LOGGER.warn("Exception caught in the pipeline for client ${ctx.channel().remoteAddress()}", cause)
+                ctx.disconnect()
+            }
+        }
+    }
 }

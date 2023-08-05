@@ -4,6 +4,7 @@ import io.netty.channel.ChannelHandler.Sharable
 import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.ChannelInboundHandlerAdapter
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder
+import io.netty.handler.timeout.ReadTimeoutHandler
 import org.slf4j.LoggerFactory
 import work.fking.pangya.login.LoginServer
 import work.fking.pangya.login.Rand
@@ -11,6 +12,7 @@ import work.fking.pangya.login.packet.outbound.HelloPacket
 import work.fking.pangya.networking.crypt.PangCrypt
 import work.fking.pangya.networking.protocol.ProtocolEncoder
 import java.nio.ByteOrder
+import java.util.concurrent.TimeUnit
 
 private val LOGGER = LoggerFactory.getLogger(HelloHandler::class.java)
 
@@ -28,6 +30,7 @@ class HelloHandler(
         val pipeline = channel.pipeline()
         pipeline.remove(this)
         pipeline.replace("encoder", "protocolEncoder", ProtocolEncoder(cryptKey))
+        pipeline.addLast("timeoutHandler", ReadTimeoutHandler(10, TimeUnit.SECONDS))
         pipeline.addLast("framer", LengthFieldBasedFrameDecoder(ByteOrder.LITTLE_ENDIAN, 250, 1, 2, 1, 0, true))
         pipeline.addLast("loginHandler", LoginHandler(loginServer, cryptKey))
     }

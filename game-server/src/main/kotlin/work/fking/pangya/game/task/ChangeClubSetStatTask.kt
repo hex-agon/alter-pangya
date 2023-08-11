@@ -38,7 +38,7 @@ class ChangeClubSetStatTask(
 
     private fun upgrade(clubSet: Item) {
         val level = clubSet.stats[stat.ordinal]
-        val cost = (level + 1) * when (stat) {
+        val cost = (level + 1L) * when (stat) {
             POWER -> 2100
             CONTROL -> 1700
             ACCURACY -> 2400
@@ -54,7 +54,7 @@ class ChangeClubSetStatTask(
             persistenceCtx.playerRepository.saveWallet(tx, player.uid, wallet)
             persistenceCtx.inventoryRepository.saveItem(tx, player.uid, clubSet)
         }
-        player.writeAndFlush(ClubSetReplies.upgradeAck(type, stat.ordinal, itemUid, cost.toLong()))
+        player.writeAndFlush(ClubSetReplies.upgradeAck(type, stat.ordinal, itemUid, cost))
     }
 
     private fun downgrade(clubSet: Item) {

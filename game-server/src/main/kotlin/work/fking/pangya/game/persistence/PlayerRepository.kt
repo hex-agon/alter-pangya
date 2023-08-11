@@ -28,8 +28,8 @@ class JooqPlayerRepository : PlayerRepository {
             .where(ACCOUNT.UID.eq(playerUid))
             .fetchOne {
                 PlayerWallet(
-                    pangBalance = it[ACCOUNT.PANG_BALANCE] as Int,
-                    cookieBalance = it[ACCOUNT.COOKIE_BALANCE] as Int
+                    pangBalance = it[ACCOUNT.PANG_BALANCE] as Long,
+                    cookieBalance = it[ACCOUNT.COOKIE_BALANCE] as Long
                 )
             }
         return wallet ?: throw IllegalStateException("could not load player wallet for playerUid=$playerUid")

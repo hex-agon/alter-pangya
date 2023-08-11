@@ -22,8 +22,8 @@ class RoomPlayer(
     // in game state
     var currentHole: Int = 1
     var finishedHole: Boolean = false
-    var pang: Int = 0
-    var bonusPang: Int = 0
+    var pang: Long = 0
+    var bonusPang: Long = 0
     var statistics: PlayerStatistics = PlayerStatistics()
 
     fun write(message: Any) {

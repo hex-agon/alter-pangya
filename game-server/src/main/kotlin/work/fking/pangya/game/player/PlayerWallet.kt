@@ -3,8 +3,8 @@ package work.fking.pangya.game.player
 import kotlin.math.max
 
 class PlayerWallet(
-    pangBalance: Int = 10000,
-    cookieBalance: Int = 0
+    pangBalance: Long = 10000,
+    cookieBalance: Long = 0
 ) {
     var pangBalance = pangBalance
         set(value) {

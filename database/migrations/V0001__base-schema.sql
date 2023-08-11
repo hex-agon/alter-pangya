@@ -1,11 +1,11 @@
 CREATE TABLE account (
     uid            serial PRIMARY KEY,
-    uuid           uuid  NOT NULL,
-    username       text  NOT NULL,
+    uuid           uuid   NOT NULL,
+    username       text   NOT NULL,
     nickname       text,
-    password       bytea NOT NULL,
-    pang_balance   int   NOT NULL,
-    cookie_balance int   NOT NULL,
+    password       bytea  NOT NULL,
+    pang_balance   bigint NOT NULL,
+    cookie_balance bigint NOT NULL,
     created_at     timestamptz DEFAULT NOW()
 );
 

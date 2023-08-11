@@ -218,8 +218,8 @@ object MatchReplies {
             buffer.writeByte(player.currentHole) // hole
             buffer.writeByte(3) // total strokes?
             buffer.writeIntLE(-1) // score
-            buffer.writeLongLE(player.pang.toLong()) // pang
-            buffer.writeLongLE(player.bonusPang.toLong()) // bonus pang
+            buffer.writeLongLE(player.pang) // pang
+            buffer.writeLongLE(player.bonusPang) // bonus pang
             buffer.writeByte(1) //  finished the hole, 1 or 0 not
         }
     }

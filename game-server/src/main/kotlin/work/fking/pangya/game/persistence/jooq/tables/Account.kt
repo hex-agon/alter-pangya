@@ -95,12 +95,12 @@ open class Account(
     /**
      * The column <code>public.account.pang_balance</code>.
      */
-    val PANG_BALANCE: TableField<AccountRecord, Int?> = createField(DSL.name("pang_balance"), SQLDataType.INTEGER.nullable(false), this, "")
+    val PANG_BALANCE: TableField<AccountRecord, Long?> = createField(DSL.name("pang_balance"), SQLDataType.BIGINT.nullable(false), this, "")
 
     /**
      * The column <code>public.account.cookie_balance</code>.
      */
-    val COOKIE_BALANCE: TableField<AccountRecord, Int?> = createField(DSL.name("cookie_balance"), SQLDataType.INTEGER.nullable(false), this, "")
+    val COOKIE_BALANCE: TableField<AccountRecord, Long?> = createField(DSL.name("cookie_balance"), SQLDataType.BIGINT.nullable(false), this, "")
 
     /**
      * The column <code>public.account.created_at</code>.
@@ -152,16 +152,16 @@ open class Account(
     // -------------------------------------------------------------------------
     // Row8 type methods
     // -------------------------------------------------------------------------
-    override fun fieldsRow(): Row8<Int?, java.util.UUID?, String?, String?, ByteArray?, Int?, Int?, OffsetDateTime?> = super.fieldsRow() as Row8<Int?, java.util.UUID?, String?, String?, ByteArray?, Int?, Int?, OffsetDateTime?>
+    override fun fieldsRow(): Row8<Int?, java.util.UUID?, String?, String?, ByteArray?, Long?, Long?, OffsetDateTime?> = super.fieldsRow() as Row8<Int?, java.util.UUID?, String?, String?, ByteArray?, Long?, Long?, OffsetDateTime?>
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    fun <U> mapping(from: (Int?, java.util.UUID?, String?, String?, ByteArray?, Int?, Int?, OffsetDateTime?) -> U): SelectField<U> = convertFrom(Records.mapping(from))
+    fun <U> mapping(from: (Int?, java.util.UUID?, String?, String?, ByteArray?, Long?, Long?, OffsetDateTime?) -> U): SelectField<U> = convertFrom(Records.mapping(from))
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    fun <U> mapping(toType: Class<U>, from: (Int?, java.util.UUID?, String?, String?, ByteArray?, Int?, Int?, OffsetDateTime?) -> U): SelectField<U> = convertFrom(toType, Records.mapping(from))
+    fun <U> mapping(toType: Class<U>, from: (Int?, java.util.UUID?, String?, String?, ByteArray?, Long?, Long?, OffsetDateTime?) -> U): SelectField<U> = convertFrom(toType, Records.mapping(from))
 }

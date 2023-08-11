@@ -46,8 +46,8 @@ class PracticeMatchDirector : MatchDirector {
 
     private fun handleShotSync(room: Room, event: PlayerShotSyncEvent) {
         val player = event.player
-        player.pang = event.pang
-        player.bonusPang = event.bonusPang
+        player.pang = event.pang.toLong()
+        player.bonusPang = event.bonusPang.toLong()
         room.broadcast(
             MatchReplies.tourneyShotGhost(
                 player = player,

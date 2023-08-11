@@ -5,6 +5,7 @@ import work.fking.pangya.game.player.PlayerWallet
 
 interface PlayerRepository {
     fun loadWallet(txCtx: TransactionalContext, playerUid: Int): PlayerWallet
+    fun saveWallet(txCtx: TransactionalContext, playerUid: Int, playerWallet: PlayerWallet)
     fun updateNickname(txCtx: TransactionalContext, playerUid: Int, nickname: String)
 }
 
@@ -12,6 +13,9 @@ class InMemoryPlayerRepository : PlayerRepository {
     private val wallets = mutableMapOf<Int, PlayerWallet>()
 
     override fun loadWallet(txCtx: TransactionalContext, playerUid: Int): PlayerWallet = wallets[playerUid] ?: PlayerWallet()
+    override fun saveWallet(txCtx: TransactionalContext, playerUid: Int, playerWallet: PlayerWallet) {
+    }
+
     override fun updateNickname(txCtx: TransactionalContext, playerUid: Int, nickname: String) {
     }
 }
@@ -29,6 +33,14 @@ class JooqPlayerRepository : PlayerRepository {
                 )
             }
         return wallet ?: throw IllegalStateException("could not load player wallet for playerUid=$playerUid")
+    }
+
+    override fun saveWallet(txCtx: TransactionalContext, playerUid: Int, playerWallet: PlayerWallet) {
+        txCtx.jooq().update(ACCOUNT)
+            .set(ACCOUNT.PANG_BALANCE, playerWallet.pangBalance)
+            .set(ACCOUNT.COOKIE_BALANCE, playerWallet.cookieBalance)
+            .where(ACCOUNT.UID.eq(playerUid))
+            .execute()
     }
 
     override fun updateNickname(txCtx: TransactionalContext, playerUid: Int, nickname: String) {

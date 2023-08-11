@@ -1,6 +1,7 @@
 package work.fking.pangya.game.net
 
 import work.fking.pangya.game.packet.handler.AchievementStatusRequestPacketHandler
+import work.fking.pangya.game.packet.handler.ClubSetUpgradePacketHandler
 import work.fking.pangya.game.packet.handler.EquipmentUpdatePacketHandler
 import work.fking.pangya.game.packet.handler.JoinLobbyPacketHandler
 import work.fking.pangya.game.packet.handler.LeaveLobbyPacketHandler
@@ -63,6 +64,7 @@ enum class ClientPacketType(
     MATCH_FINISH_PLAYER_PREVIEW(0x34, MatchFinishPlayerPreviewPacketHandler()),
     MATCH_PLAYER_SHOT_ARROW(0x42),
     PLAYER_LOAD_PROGRESS(0x48),
+    CLUBSET_UPGRADE(0x4b, ClubSetUpgradePacketHandler()),
     LOUNGE_USER_ACTION(0x63),
     MATCH_PLAYER_USE_TIME_BOOSTER(0x65, MatchPlayerUseTimeBoosterPacketHandler()),
     UPDATE_MACROS(0x69, UpdateChatMacrosPacketHandler()),

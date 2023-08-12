@@ -11,7 +11,10 @@ class Item(
     override val uid: Int = -1,
     override val iffId: Int,
     var quantity: Int = 0,
-    val stats: IntArray = IntArray(5)
+    val stats: IntArray = IntArray(5),
+    val cards: IntArray = IntArray(12),
+    var ucc: ItemUcc = nullItemUcc(),
+    var clubWorkshop: ItemClubWorkshop = nullItemClubWorkshop()
 ) : IffObject {
 
     fun quantifiable(): Boolean {
@@ -33,7 +36,11 @@ class Item(
             } else {
                 stats.forEach { buffer.writeShortLE(it) }
             }
-            writeZero(174)
+            writeZero(19)
+
+            write(ucc)
+            cards.forEach { writeIntLE(it) }
+            write(clubWorkshop)
         }
     }
 
@@ -59,3 +66,4 @@ class Item(
         return uid
     }
 }
+

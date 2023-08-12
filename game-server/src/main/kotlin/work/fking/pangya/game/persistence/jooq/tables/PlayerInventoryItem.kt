@@ -14,7 +14,7 @@ import org.jooq.Identity
 import org.jooq.Name
 import org.jooq.Record
 import org.jooq.Records
-import org.jooq.Row5
+import org.jooq.Row7
 import org.jooq.Schema
 import org.jooq.SelectField
 import org.jooq.Table
@@ -31,6 +31,8 @@ import work.fking.pangya.game.persistence.jooq.Public
 import work.fking.pangya.game.persistence.jooq.keys.PLAYER_INVENTORY_ITEM_PKEY
 import work.fking.pangya.game.persistence.jooq.keys.PLAYER_INVENTORY_ITEM__FK_PLAYER_INVENTORY_ITEM__ACCOUNT
 import work.fking.pangya.game.persistence.jooq.tables.records.PlayerInventoryItemRecord
+import work.fking.pangya.game.player.ItemClubWorkshop
+import work.fking.pangya.game.player.ItemUcc
 
 
 /**
@@ -90,6 +92,16 @@ open class PlayerInventoryItem(
      * The column <code>public.player_inventory_item.stats</code>.
      */
     val STATS: TableField<PlayerInventoryItemRecord, IntArray?> = createField(DSL.name("stats"), SQLDataType.JSON, this, "", JSONtoJacksonConverter<IntArray>(IntArray::class.java))
+
+    /**
+     * The column <code>public.player_inventory_item.ucc</code>.
+     */
+    val UCC: TableField<PlayerInventoryItemRecord, ItemUcc?> = createField(DSL.name("ucc"), SQLDataType.JSON, this, "", JSONtoJacksonConverter<ItemUcc>(ItemUcc::class.java))
+
+    /**
+     * The column <code>public.player_inventory_item.club_workshop</code>.
+     */
+    val CLUB_WORKSHOP: TableField<PlayerInventoryItemRecord, ItemClubWorkshop?> = createField(DSL.name("club_workshop"), SQLDataType.JSON, this, "", JSONtoJacksonConverter<ItemClubWorkshop>(ItemClubWorkshop::class.java))
 
     private constructor(alias: Name, aliased: Table<PlayerInventoryItemRecord>?): this(alias, null, null, aliased, null)
     private constructor(alias: Name, aliased: Table<PlayerInventoryItemRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
@@ -151,18 +163,18 @@ open class PlayerInventoryItem(
     override fun rename(name: Table<*>): PlayerInventoryItem = PlayerInventoryItem(name.getQualifiedName(), null)
 
     // -------------------------------------------------------------------------
-    // Row5 type methods
+    // Row7 type methods
     // -------------------------------------------------------------------------
-    override fun fieldsRow(): Row5<Int?, Int?, Int?, Int?, IntArray?> = super.fieldsRow() as Row5<Int?, Int?, Int?, Int?, IntArray?>
+    override fun fieldsRow(): Row7<Int?, Int?, Int?, Int?, IntArray?, ItemUcc?, ItemClubWorkshop?> = super.fieldsRow() as Row7<Int?, Int?, Int?, Int?, IntArray?, ItemUcc?, ItemClubWorkshop?>
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    fun <U> mapping(from: (Int?, Int?, Int?, Int?, IntArray?) -> U): SelectField<U> = convertFrom(Records.mapping(from))
+    fun <U> mapping(from: (Int?, Int?, Int?, Int?, IntArray?, ItemUcc?, ItemClubWorkshop?) -> U): SelectField<U> = convertFrom(Records.mapping(from))
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    fun <U> mapping(toType: Class<U>, from: (Int?, Int?, Int?, Int?, IntArray?) -> U): SelectField<U> = convertFrom(toType, Records.mapping(from))
+    fun <U> mapping(toType: Class<U>, from: (Int?, Int?, Int?, Int?, IntArray?, ItemUcc?, ItemClubWorkshop?) -> U): SelectField<U> = convertFrom(toType, Records.mapping(from))
 }

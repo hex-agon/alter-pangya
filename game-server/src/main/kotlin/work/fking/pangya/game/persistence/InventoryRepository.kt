@@ -6,6 +6,8 @@ import work.fking.pangya.game.persistence.jooq.tables.records.PlayerInventoryIte
 import work.fking.pangya.game.persistence.jooq.tables.references.PLAYER_INVENTORY_ITEM
 import work.fking.pangya.game.player.Inventory
 import work.fking.pangya.game.player.Item
+import work.fking.pangya.game.player.nullItemClubWorkshop
+import work.fking.pangya.game.player.nullItemUcc
 import java.util.concurrent.atomic.AtomicInteger
 
 interface InventoryRepository {
@@ -47,6 +49,8 @@ class JooqInventoryRepository : InventoryRepository {
             iffId = it.iffId,
             quantity = it.quantity ?: 0,
             stats = it.stats ?: IntArray(0),
+            ucc = it.ucc ?: nullItemUcc(),
+            clubWorkshop = it.clubWorkshop ?: nullItemClubWorkshop()
         )
     }
 
@@ -67,10 +71,14 @@ class JooqInventoryRepository : InventoryRepository {
             .set(PLAYER_INVENTORY_ITEM.IFF_ID, item.iffId)
             .set(PLAYER_INVENTORY_ITEM.QUANTITY, item.quantity)
             .set(PLAYER_INVENTORY_ITEM.STATS, item.stats)
+            .set(PLAYER_INVENTORY_ITEM.UCC, item.ucc)
+            .set(PLAYER_INVENTORY_ITEM.CLUB_WORKSHOP, item.clubWorkshop)
             .onConflict(PLAYER_INVENTORY_ITEM_PKEY.fields)
             .doUpdate()
             .set(PLAYER_INVENTORY_ITEM.QUANTITY, item.quantity)
             .set(PLAYER_INVENTORY_ITEM.STATS, item.stats)
+            .set(PLAYER_INVENTORY_ITEM.UCC, item.ucc)
+            .set(PLAYER_INVENTORY_ITEM.CLUB_WORKSHOP, item.clubWorkshop)
             .returningResult(PLAYER_INVENTORY_ITEM.UID)
             .fetchOneInto(Int::class.java)
 

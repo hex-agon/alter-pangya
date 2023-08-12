@@ -1,7 +1,7 @@
 package work.fking.pangya.game.net
 
 import work.fking.pangya.game.packet.handler.AchievementStatusRequestPacketHandler
-import work.fking.pangya.game.packet.handler.ClubSetUpgradePacketHandler
+import work.fking.pangya.game.packet.handler.clubworkshop.ClubSetUpgradePacketHandler
 import work.fking.pangya.game.packet.handler.EquipmentUpdatePacketHandler
 import work.fking.pangya.game.packet.handler.JoinLobbyPacketHandler
 import work.fking.pangya.game.packet.handler.LeaveLobbyPacketHandler
@@ -15,6 +15,9 @@ import work.fking.pangya.game.packet.handler.RareShopOpenPacketHandler
 import work.fking.pangya.game.packet.handler.SelectChannelPacketHandler
 import work.fking.pangya.game.packet.handler.UpdateChatMacrosPacketHandler
 import work.fking.pangya.game.packet.handler.UserProfileRequestPacketHandler
+import work.fking.pangya.game.packet.handler.clubworkshop.ClubWorkshopAcceptTransformPacketHandler
+import work.fking.pangya.game.packet.handler.clubworkshop.ClubWorkshopDeclineTransformPacketHandler
+import work.fking.pangya.game.packet.handler.clubworkshop.ClubWorkshopRankUpPacketHandler
 import work.fking.pangya.game.packet.handler.match.MatchFinalStatsPacketHandler
 import work.fking.pangya.game.packet.handler.match.MatchFinishPlayerPreviewPacketHandler
 import work.fking.pangya.game.packet.handler.match.MatchHoleStartPacketHandler
@@ -82,6 +85,9 @@ enum class ClientPacketType(
     PLAYER_RING_PROC(0x15d),
     MATCH_PLAYER_TOURNEY_SHOT(0x12f, MatchTourneyShotPacketHandler()),
     PAPEL_SHOP_PLAY(0x14b, PapelShopPlayPacketHandler()),
+    CLUB_WORKSHOP_RANK_UP(0x167, ClubWorkshopRankUpPacketHandler()),
+    CLUB_WORKSHOP_DECLINE_TRANSFORM(0x168, ClubWorkshopDeclineTransformPacketHandler()),
+    CLUB_WORKSHOP_ACCEPT_TRANSFORM(0x169, ClubWorkshopAcceptTransformPacketHandler()),
     LOGIN_BONUS_INFO(0x16e, LoginBonusStatusPacketHandler()),
     LOGIN_BONUS_CLAIM(0x16f, LoginBonusClaimPacketHandler());
 

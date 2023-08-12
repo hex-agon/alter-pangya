@@ -10,6 +10,8 @@ CREATE TABLE account (
 );
 
 CREATE INDEX idx__account_uuid ON account (uuid);
+CREATE UNIQUE INDEX idx__account_username ON account (username);
+CREATE UNIQUE INDEX idx__account_nickname ON account (nickname);
 
 CREATE TABLE achievement (
     iff_id                   int NOT NULL PRIMARY KEY,
@@ -52,12 +54,14 @@ CREATE TABLE player_caddie (
 CREATE UNIQUE INDEX idx_player_caddie ON player_caddie (account_uid, iff_id);
 
 CREATE TABLE player_inventory_item (
-    uid         serial PRIMARY KEY,
-    account_uid int NOT NULL
+    uid           serial PRIMARY KEY,
+    account_uid   int NOT NULL
         CONSTRAINT fk_player_inventory_item__account REFERENCES account (uid) ON DELETE CASCADE,
-    iff_id      int NOT NULL,
-    quantity    int DEFAULT 0,
-    stats       json
+    iff_id        int NOT NULL,
+    quantity      int DEFAULT 0,
+    stats         json,
+    ucc           json,
+    club_workshop json
 );
 
 CREATE TABLE player_equipment (

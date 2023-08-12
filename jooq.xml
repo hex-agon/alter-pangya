@@ -7,9 +7,25 @@
             <inputSchema>public</inputSchema>
             <forcedTypes>
                 <forcedType>
-                    <userType>kotlin.IntArray</userType>
+                    <userType>work.fking.pangya.game.player.ItemUcc</userType>
+                    <includeExpression>ucc</includeExpression>
                     <jsonConverter>true</jsonConverter>
                     <includeTypes>JSON</includeTypes>
+                    <objectType>COLUMN</objectType>
+                </forcedType>
+                <forcedType>
+                    <userType>work.fking.pangya.game.player.ItemClubWorkshop</userType>
+                    <includeExpression>club_workshop</includeExpression>
+                    <jsonConverter>true</jsonConverter>
+                    <includeTypes>JSON</includeTypes>
+                    <objectType>COLUMN</objectType>
+                </forcedType>
+                <forcedType>
+                    <userType>kotlin.IntArray</userType>
+                    <includeExpression>.*_parts|.*_ids|.*_uids|cards|stats</includeExpression>
+                    <jsonConverter>true</jsonConverter>
+                    <includeTypes>JSON</includeTypes>
+                    <objectType>COLUMN</objectType>
                 </forcedType>
             </forcedTypes>
         </database>

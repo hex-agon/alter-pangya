@@ -22,6 +22,8 @@ import work.fking.pangya.game.persistence.jooq.tables.PlayerCharacter
 // -------------------------------------------------------------------------
 
 val FLYWAY_SCHEMA_HISTORY_S_IDX: Index = Internal.createIndex(DSL.name("flyway_schema_history_s_idx"), FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY, arrayOf(FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY.SUCCESS), false)
+val IDX__ACCOUNT_NICKNAME: Index = Internal.createIndex(DSL.name("idx__account_nickname"), Account.ACCOUNT, arrayOf(Account.ACCOUNT.NICKNAME), true)
+val IDX__ACCOUNT_USERNAME: Index = Internal.createIndex(DSL.name("idx__account_username"), Account.ACCOUNT, arrayOf(Account.ACCOUNT.USERNAME), true)
 val IDX__ACCOUNT_UUID: Index = Internal.createIndex(DSL.name("idx__account_uuid"), Account.ACCOUNT, arrayOf(Account.ACCOUNT.UUID), false)
 val IDX_PLAYER_ACHIEVEMENT: Index = Internal.createIndex(DSL.name("idx_player_achievement"), PlayerAchievement.PLAYER_ACHIEVEMENT, arrayOf(PlayerAchievement.PLAYER_ACHIEVEMENT.ACCOUNT_UID, PlayerAchievement.PLAYER_ACHIEVEMENT.IFF_ID), true)
 val IDX_PLAYER_ACHIEVEMENT_MILESTONE: Index = Internal.createIndex(DSL.name("idx_player_achievement_milestone"), PlayerAchievementMilestone.PLAYER_ACHIEVEMENT_MILESTONE, arrayOf(PlayerAchievementMilestone.PLAYER_ACHIEVEMENT_MILESTONE.PLAYER_ACHIEVEMENT_UID, PlayerAchievementMilestone.PLAYER_ACHIEVEMENT_MILESTONE.IFF_ID), true)

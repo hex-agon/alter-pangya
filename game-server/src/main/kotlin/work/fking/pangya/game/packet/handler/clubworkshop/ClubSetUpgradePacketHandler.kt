@@ -1,9 +1,8 @@
-package work.fking.pangya.game.packet.handler
+package work.fking.pangya.game.packet.handler.clubworkshop
 
 import io.netty.buffer.ByteBuf
 import work.fking.pangya.game.GameServer
 import work.fking.pangya.game.net.ClientPacketHandler
-import work.fking.pangya.game.packet.outbound.ClubSetReplies
 import work.fking.pangya.game.player.Player
 import work.fking.pangya.game.player.statById
 import work.fking.pangya.game.task.ChangeClubSetStatTask

@@ -29,6 +29,8 @@ import org.jooq.impl.SQLDataType
 import org.jooq.impl.TableImpl
 
 import work.fking.pangya.game.persistence.jooq.Public
+import work.fking.pangya.game.persistence.jooq.indexes.IDX__ACCOUNT_NICKNAME
+import work.fking.pangya.game.persistence.jooq.indexes.IDX__ACCOUNT_USERNAME
 import work.fking.pangya.game.persistence.jooq.indexes.IDX__ACCOUNT_UUID
 import work.fking.pangya.game.persistence.jooq.keys.ACCOUNT_PKEY
 import work.fking.pangya.game.persistence.jooq.tables.records.AccountRecord
@@ -127,7 +129,7 @@ open class Account(
 
     constructor(child: Table<out Record>, key: ForeignKey<out Record, AccountRecord>): this(Internal.createPathAlias(child, key), child, key, ACCOUNT, null)
     override fun getSchema(): Schema? = if (aliased()) null else Public.PUBLIC
-    override fun getIndexes(): List<Index> = listOf(IDX__ACCOUNT_UUID)
+    override fun getIndexes(): List<Index> = listOf(IDX__ACCOUNT_NICKNAME, IDX__ACCOUNT_USERNAME, IDX__ACCOUNT_UUID)
     override fun getIdentity(): Identity<AccountRecord, Int?> = super.getIdentity() as Identity<AccountRecord, Int?>
     override fun getPrimaryKey(): UniqueKey<AccountRecord> = ACCOUNT_PKEY
     override fun `as`(alias: String): Account = Account(DSL.name(alias), this)

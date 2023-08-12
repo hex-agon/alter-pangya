@@ -3,6 +3,10 @@ package work.fking.pangya.game.task
 import work.fking.pangya.game.model.IFF_TYPE_CLUBSET
 import work.fking.pangya.game.model.iffTypeFromId
 import work.fking.pangya.game.packet.outbound.ClubSetReplies
+import work.fking.pangya.game.packet.outbound.ClubSetReplies.UpgradeResult.CANNOT_DOWNGRADE_ANYMORE
+import work.fking.pangya.game.packet.outbound.ClubSetReplies.UpgradeResult.DOWNGRADE_SUCCESS
+import work.fking.pangya.game.packet.outbound.ClubSetReplies.UpgradeResult.INSUFFICIENT_PANG
+import work.fking.pangya.game.packet.outbound.ClubSetReplies.UpgradeResult.UPGRADE_SUCCESS
 import work.fking.pangya.game.persistence.PersistenceContext
 import work.fking.pangya.game.player.Item
 import work.fking.pangya.game.player.Player
@@ -45,7 +49,10 @@ class ChangeClubSetStatTask(
             SPIN, CURVE -> 1900
         }
         val wallet = player.wallet
-        require(wallet.pangBalance >= cost) { "Player ${player.nickname} tried to upgrade an item but doesn't have enough pang" }
+
+        if (wallet.pangBalance < cost) {
+            player.writeAndFlush(ClubSetReplies.upgradeAck(result = INSUFFICIENT_PANG, stat = stat.ordinal, itemUid = itemUid))
+        }
         // TODO: verify clubset upgrade limits
 
         persistenceCtx.transactional { tx ->
@@ -54,15 +61,18 @@ class ChangeClubSetStatTask(
             persistenceCtx.playerRepository.saveWallet(tx, player.uid, wallet)
             persistenceCtx.inventoryRepository.saveItem(tx, player.uid, clubSet)
         }
-        player.writeAndFlush(ClubSetReplies.upgradeAck(type, stat.ordinal, itemUid, cost))
+        player.writeAndFlush(ClubSetReplies.upgradeAck(result = UPGRADE_SUCCESS, stat = stat.ordinal, itemUid = itemUid, cost = cost))
     }
 
     private fun downgrade(clubSet: Item) {
-        require(clubSet.stats[stat.ordinal] > 0) { "Player ${player.nickname} tried to downgrade an item but the stat is already at 0" }
+        if (clubSet.stats[stat.ordinal] <= 0) {
+            player.writeAndFlush(ClubSetReplies.upgradeAck(result = CANNOT_DOWNGRADE_ANYMORE, stat = stat.ordinal, itemUid = itemUid))
+            return
+        }
 
         clubSet.stats[stat.ordinal]--
         persistenceCtx.inventoryRepository.saveItem(persistenceCtx.noTxContext(), player.uid, clubSet)
-        player.writeAndFlush(ClubSetReplies.upgradeAck(type, stat.ordinal, itemUid, 0))
+        player.writeAndFlush(ClubSetReplies.upgradeAck(result = DOWNGRADE_SUCCESS, stat = stat.ordinal, itemUid = itemUid))
     }
 }
 

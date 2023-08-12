@@ -28,13 +28,11 @@ class Room(
         private set
     private var activeMatch: Match? = null
 
-
     private val playersLock = ReentrantReadWriteLock()
     private val players = ArrayList<RoomPlayer>()
     private var nextFreeSlot: Int = 1
 
     fun tick() {
-
     }
 
     fun attemptJoin(player: Player): RoomJoinError? {
@@ -126,8 +124,8 @@ class Room(
             course = settings.course,
             holeMode = settings.holeMode,
             holeCount = settings.holeCount,
-            shotTimeMs = settings.shotTimeMs,
-            gameTimeMs = settings.gameTimeMs
+            shotTime = settings.shotTime,
+            gameTime = settings.gameTime
         )
         activeMatch = Match(matchState, settings.type.matchDirector)
 
@@ -172,8 +170,8 @@ fun ByteBuf.write(room: Room) {
         writeShortLE(id)
         write(settings.holeMode)
         write(settings.course)
-        writeIntLE(settings.shotTimeMs)
-        writeIntLE(settings.gameTimeMs)
+        writeIntLE(settings.shotTime.toMillis().toInt())
+        writeIntLE(settings.gameTime.toMillis().toInt())
         writeIntLE(settings.trophyIffId())
         writeShortLE(0)
         writeZero(66) // guildInfo

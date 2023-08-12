@@ -2,6 +2,7 @@ package work.fking.pangya.game.room
 
 import org.slf4j.LoggerFactory
 import work.fking.pangya.game.room.RoomState.PENDING_REMOVAL
+import java.time.Duration
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
@@ -42,8 +43,8 @@ class RoomManager {
         holeMode: HoleMode,
         holeCount: Int,
         maxPlayers: Int,
-        shotTime: Int,
-        gameTime: Int,
+        shotTime: Duration,
+        gameTime: Duration,
         artifactIffId: Int,
         naturalWind: Boolean
     ): Room {

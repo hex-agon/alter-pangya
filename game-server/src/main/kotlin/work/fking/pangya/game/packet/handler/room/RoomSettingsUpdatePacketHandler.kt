@@ -20,6 +20,8 @@ import work.fking.pangya.game.room.courseById
 import work.fking.pangya.game.room.holeModeById
 import work.fking.pangya.game.room.roomTypeById
 import work.fking.pangya.networking.protocol.readPString
+import java.time.Duration
+import java.time.temporal.ChronoUnit
 
 class RoomSettingsUpdatePacketHandler : ClientPacketHandler {
 
@@ -39,9 +41,9 @@ class RoomSettingsUpdatePacketHandler : ClientPacketHandler {
                 3 -> RoomCourseChange(courseById(packet.readByte()))
                 4 -> RoomHoleCountChange(packet.readByte().toInt())
                 5 -> RoomHoleModeChange(holeModeById(packet.readByte()))
-                6 -> RoomShotTimeChange(packet.readUnsignedByte().toInt() * 1000) // client sends in seconds, need ms
+                6 -> RoomShotTimeChange(Duration.of(packet.readUnsignedByte().toLong(), ChronoUnit.SECONDS))
                 7 -> RoomPlayerCountChange(packet.readUnsignedByte().toInt())
-                8 -> RoomGameTimeChange(packet.readUnsignedByte().toInt() * 60 * 1000) // client sends in minutes, need ms
+                8 -> RoomGameTimeChange(Duration.of(packet.readUnsignedByte().toLong(), ChronoUnit.MINUTES))
                 13 -> RoomArtifactChange(packet.readInt())
                 14 -> RoomNaturalWindChange(packet.readInt() == 0x1000000)
                 else -> throw IllegalStateException("Unsupported room setting change type=$type")

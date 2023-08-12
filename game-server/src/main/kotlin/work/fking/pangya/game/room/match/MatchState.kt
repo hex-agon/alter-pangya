@@ -5,6 +5,7 @@ import work.fking.pangya.game.Rand
 import work.fking.pangya.game.room.Course
 import work.fking.pangya.game.room.HoleMode
 import work.fking.pangya.game.room.write
+import java.time.Duration
 import java.time.LocalDateTime
 
 private const val MAX_HOLES = 18
@@ -14,8 +15,8 @@ data class MatchState(
     val course: Course,
     val holeMode: HoleMode,
     val holeCount: Int,
-    val shotTimeMs: Int,
-    val gameTimeMs: Int,
+    val shotTime: Duration,
+    val gameTime: Duration,
 ) {
     val startTime: LocalDateTime = LocalDateTime.now()
     val randSeed: Int = Rand.nextInt()

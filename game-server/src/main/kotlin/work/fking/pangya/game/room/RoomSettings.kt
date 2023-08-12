@@ -2,6 +2,7 @@ package work.fking.pangya.game.room
 
 import io.netty.buffer.ByteBuf
 import work.fking.pangya.networking.protocol.writePString
+import java.time.Duration
 
 class RoomSettings(
     name: String,
@@ -11,8 +12,8 @@ class RoomSettings(
     holeMode: HoleMode,
     holeCount: Int,
     maxPlayers: Int,
-    shotTime: Int,
-    gameTime: Int,
+    shotTime: Duration,
+    gameTime: Duration,
     artifactIffId: Int,
     naturalWind: Boolean
 ) {
@@ -30,9 +31,9 @@ class RoomSettings(
         private set
     var maxPlayers = maxPlayers
         private set
-    var shotTimeMs = shotTime
+    var shotTime = shotTime
         private set
-    var gameTimeMs = gameTime
+    var gameTime = gameTime
         private set
     var artifactIffId = artifactIffId
         private set
@@ -47,9 +48,9 @@ class RoomSettings(
             is RoomCourseChange -> course = update.course
             is RoomHoleCountChange -> holeCount = update.count
             is RoomHoleModeChange -> holeMode = update.holeMode
-            is RoomShotTimeChange -> shotTimeMs = update.shotTime
+            is RoomShotTimeChange -> shotTime = update.shotTime
             is RoomPlayerCountChange -> maxPlayers = update.playerCount
-            is RoomGameTimeChange -> gameTimeMs = update.gameTime
+            is RoomGameTimeChange -> gameTime = update.gameTime
             is RoomArtifactChange -> artifactIffId = update.artifactIffId
             is RoomNaturalWindChange -> naturalWind = update.naturalWind
         }
@@ -70,8 +71,8 @@ fun ByteBuf.write(settings: RoomSettings) {
         writeByte(maxPlayers) // max players
         writeByte(30)
         writeByte(0)
-        writeIntLE(shotTimeMs)
-        writeIntLE(gameTimeMs)
+        writeIntLE(shotTime.toMillis().toInt())
+        writeIntLE(gameTime.toMillis().toInt())
         writeIntLE(trophyIffId())
         writeByte(if (password != null) 1 else 0)
         writePString(name)

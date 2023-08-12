@@ -8,6 +8,8 @@ import work.fking.pangya.game.room.courseById
 import work.fking.pangya.game.room.holeModeById
 import work.fking.pangya.game.room.roomTypeById
 import work.fking.pangya.networking.protocol.readPString
+import java.time.Duration
+import java.time.temporal.ChronoUnit
 
 class CreateRoomPacketHandler : ClientPacketHandler {
     override fun handle(server: GameServer, player: Player, packet: ByteBuf) {
@@ -36,8 +38,8 @@ class CreateRoomPacketHandler : ClientPacketHandler {
             holeMode = holeMode,
             holeCount = holeCount.toInt(),
             maxPlayers = maxPlayers.toInt(),
-            shotTime = shotTime,
-            gameTime = gameTime,
+            shotTime = Duration.of(shotTime.toLong(), ChronoUnit.MILLIS),
+            gameTime = Duration.of(gameTime.toLong(), ChronoUnit.MILLIS),
             artifactIffId = artifactIffId,
             naturalWind = false
         )

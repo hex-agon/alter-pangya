@@ -18,7 +18,6 @@ class PracticeMatchDirector : MatchDirector {
         }
     }
 
-
     private fun handleFinishedPreview(event: PlayerFinishedPreviewEvent) {
         event.player.writeAndFlush(MatchReplies.finishPlayerPreviewAck())
     }
@@ -27,6 +26,7 @@ class PracticeMatchDirector : MatchDirector {
         val hole = matchState.holes[event.hole - 1]
 
         with(event.player) {
+            finishedHole = false
             currentHole = event.hole
             write(MatchReplies.holeWeather(hole))
             write(MatchReplies.holeWind(hole))

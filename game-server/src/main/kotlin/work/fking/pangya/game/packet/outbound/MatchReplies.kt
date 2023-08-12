@@ -54,8 +54,8 @@ object MatchReplies {
             buffer.write(matchState.holeMode)
             buffer.writeByte(matchState.holeCount)
             buffer.writeIntLE(room.settings.trophyIffId())
-            buffer.writeIntLE(matchState.shotTimeMs)
-            buffer.writeIntLE(matchState.gameTimeMs)
+            buffer.writeIntLE(matchState.shotTime.toMillis().toInt())
+            buffer.writeIntLE(matchState.gameTime.toMillis().toInt())
             matchState.holes.forEach { buffer.write(it) }
             buffer.writeIntLE(matchState.randSeed) // it seems like the original server can only generate short random values
 
@@ -186,7 +186,7 @@ object MatchReplies {
     fun tourneyEndingScore(): OutboundPacket {
         return OutboundPacket { buffer ->
             buffer.writeShortLE(0x79)
-            buffer.writeIntLE(4) // experience
+            buffer.writeIntLE(0) // experience
             buffer.writeIntLE(0x2C000000) // trophy IffId
             buffer.writeByte(0) // trophy again?
             buffer.writeByte(0) // which team won? 0 red 1 blue 2 neither

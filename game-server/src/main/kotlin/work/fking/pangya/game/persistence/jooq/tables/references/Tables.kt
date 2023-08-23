@@ -13,6 +13,7 @@ import work.fking.pangya.game.persistence.jooq.tables.PlayerAchievementMilestone
 import work.fking.pangya.game.persistence.jooq.tables.PlayerCaddie
 import work.fking.pangya.game.persistence.jooq.tables.PlayerCharacter
 import work.fking.pangya.game.persistence.jooq.tables.PlayerEquipment
+import work.fking.pangya.game.persistence.jooq.tables.PlayerInventoryCard
 import work.fking.pangya.game.persistence.jooq.tables.PlayerInventoryItem
 import work.fking.pangya.game.persistence.jooq.tables.PlayerStatistics
 
@@ -62,6 +63,11 @@ val PLAYER_CHARACTER: PlayerCharacter = PlayerCharacter.PLAYER_CHARACTER
  * The table <code>public.player_equipment</code>.
  */
 val PLAYER_EQUIPMENT: PlayerEquipment = PlayerEquipment.PLAYER_EQUIPMENT
+
+/**
+ * The table <code>public.player_inventory_card</code>.
+ */
+val PLAYER_INVENTORY_CARD: PlayerInventoryCard = PlayerInventoryCard.PLAYER_INVENTORY_CARD
 
 /**
  * The table <code>public.player_inventory_item</code>.

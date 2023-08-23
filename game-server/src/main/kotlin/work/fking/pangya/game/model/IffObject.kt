@@ -9,6 +9,7 @@ const val IFF_TYPE_BALL = 20
 const val IFF_TYPE_EQUIPITEM_ITEM = 24
 const val IFF_TYPE_NOEQUIP_ITEM = 26
 const val IFF_TYPE_CADDIE = 28
+const val IFF_TYPE_CARD = 124
 
 interface IffObject {
 

@@ -15,6 +15,7 @@ class Player(
     val characterRoster: CharacterRoster = CharacterRoster(),
     val caddieRoster: CaddieRoster = CaddieRoster(),
     val inventory: Inventory = Inventory(),
+    val cardInventory: CardInventory = CardInventory(),
     val equipment: Equipment = Equipment(),
     var statistics: PlayerStatistics = PlayerStatistics(),
     val achievements: PlayerAchievements = PlayerAchievements(emptyList())

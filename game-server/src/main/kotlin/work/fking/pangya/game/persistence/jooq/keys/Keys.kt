@@ -18,6 +18,7 @@ import work.fking.pangya.game.persistence.jooq.tables.PlayerAchievementMilestone
 import work.fking.pangya.game.persistence.jooq.tables.PlayerCaddie
 import work.fking.pangya.game.persistence.jooq.tables.PlayerCharacter
 import work.fking.pangya.game.persistence.jooq.tables.PlayerEquipment
+import work.fking.pangya.game.persistence.jooq.tables.PlayerInventoryCard
 import work.fking.pangya.game.persistence.jooq.tables.PlayerInventoryItem
 import work.fking.pangya.game.persistence.jooq.tables.PlayerStatistics
 import work.fking.pangya.game.persistence.jooq.tables.records.AccountRecord
@@ -29,6 +30,7 @@ import work.fking.pangya.game.persistence.jooq.tables.records.PlayerAchievementR
 import work.fking.pangya.game.persistence.jooq.tables.records.PlayerCaddieRecord
 import work.fking.pangya.game.persistence.jooq.tables.records.PlayerCharacterRecord
 import work.fking.pangya.game.persistence.jooq.tables.records.PlayerEquipmentRecord
+import work.fking.pangya.game.persistence.jooq.tables.records.PlayerInventoryCardRecord
 import work.fking.pangya.game.persistence.jooq.tables.records.PlayerInventoryItemRecord
 import work.fking.pangya.game.persistence.jooq.tables.records.PlayerStatisticsRecord
 
@@ -47,6 +49,7 @@ val PLAYER_ACHIEVEMENT_MILESTONE_PKEY: UniqueKey<PlayerAchievementMilestoneRecor
 val PLAYER_CADDIE_PKEY: UniqueKey<PlayerCaddieRecord> = Internal.createUniqueKey(PlayerCaddie.PLAYER_CADDIE, DSL.name("player_caddie_pkey"), arrayOf(PlayerCaddie.PLAYER_CADDIE.UID), true)
 val PLAYER_CHARACTER_PKEY: UniqueKey<PlayerCharacterRecord> = Internal.createUniqueKey(PlayerCharacter.PLAYER_CHARACTER, DSL.name("player_character_pkey"), arrayOf(PlayerCharacter.PLAYER_CHARACTER.UID), true)
 val PLAYER_EQUIPMENT_PKEY: UniqueKey<PlayerEquipmentRecord> = Internal.createUniqueKey(PlayerEquipment.PLAYER_EQUIPMENT, DSL.name("player_equipment_pkey"), arrayOf(PlayerEquipment.PLAYER_EQUIPMENT.ACCOUNT_UID), true)
+val PLAYER_INVENTORY_CARD_PKEY: UniqueKey<PlayerInventoryCardRecord> = Internal.createUniqueKey(PlayerInventoryCard.PLAYER_INVENTORY_CARD, DSL.name("player_inventory_card_pkey"), arrayOf(PlayerInventoryCard.PLAYER_INVENTORY_CARD.UID), true)
 val PLAYER_INVENTORY_ITEM_PKEY: UniqueKey<PlayerInventoryItemRecord> = Internal.createUniqueKey(PlayerInventoryItem.PLAYER_INVENTORY_ITEM, DSL.name("player_inventory_item_pkey"), arrayOf(PlayerInventoryItem.PLAYER_INVENTORY_ITEM.UID), true)
 val PLAYER_STATISTICS_PKEY: UniqueKey<PlayerStatisticsRecord> = Internal.createUniqueKey(PlayerStatistics.PLAYER_STATISTICS, DSL.name("player_statistics_pkey"), arrayOf(PlayerStatistics.PLAYER_STATISTICS.ACCOUNT_UID), true)
 
@@ -60,5 +63,6 @@ val PLAYER_ACHIEVEMENT_MILESTONE__FK_PLAYER_ACHIEVEMENT_MILESTONE__PLAYER_ACHIEV
 val PLAYER_CADDIE__FK_PLAYER_CADDIE__ACCOUNT: ForeignKey<PlayerCaddieRecord, AccountRecord> = Internal.createForeignKey(PlayerCaddie.PLAYER_CADDIE, DSL.name("fk_player_caddie__account"), arrayOf(PlayerCaddie.PLAYER_CADDIE.ACCOUNT_UID), work.fking.pangya.game.persistence.jooq.keys.ACCOUNT_PKEY, arrayOf(Account.ACCOUNT.UID), true)
 val PLAYER_CHARACTER__FK_PLAYER_CHARACTER__ACCOUNT: ForeignKey<PlayerCharacterRecord, AccountRecord> = Internal.createForeignKey(PlayerCharacter.PLAYER_CHARACTER, DSL.name("fk_player_character__account"), arrayOf(PlayerCharacter.PLAYER_CHARACTER.ACCOUNT_UID), work.fking.pangya.game.persistence.jooq.keys.ACCOUNT_PKEY, arrayOf(Account.ACCOUNT.UID), true)
 val PLAYER_EQUIPMENT__FK_PLAYER_STATISTICS__ACCOUNT: ForeignKey<PlayerEquipmentRecord, AccountRecord> = Internal.createForeignKey(PlayerEquipment.PLAYER_EQUIPMENT, DSL.name("fk_player_statistics__account"), arrayOf(PlayerEquipment.PLAYER_EQUIPMENT.ACCOUNT_UID), work.fking.pangya.game.persistence.jooq.keys.ACCOUNT_PKEY, arrayOf(Account.ACCOUNT.UID), true)
+val PLAYER_INVENTORY_CARD__FK_PLAYER_INVENTORY_ITEM__ACCOUNT: ForeignKey<PlayerInventoryCardRecord, AccountRecord> = Internal.createForeignKey(PlayerInventoryCard.PLAYER_INVENTORY_CARD, DSL.name("fk_player_inventory_item__account"), arrayOf(PlayerInventoryCard.PLAYER_INVENTORY_CARD.ACCOUNT_UID), work.fking.pangya.game.persistence.jooq.keys.ACCOUNT_PKEY, arrayOf(Account.ACCOUNT.UID), true)
 val PLAYER_INVENTORY_ITEM__FK_PLAYER_INVENTORY_ITEM__ACCOUNT: ForeignKey<PlayerInventoryItemRecord, AccountRecord> = Internal.createForeignKey(PlayerInventoryItem.PLAYER_INVENTORY_ITEM, DSL.name("fk_player_inventory_item__account"), arrayOf(PlayerInventoryItem.PLAYER_INVENTORY_ITEM.ACCOUNT_UID), work.fking.pangya.game.persistence.jooq.keys.ACCOUNT_PKEY, arrayOf(Account.ACCOUNT.UID), true)
 val PLAYER_STATISTICS__FK_PLAYER_STATISTICS__ACCOUNT: ForeignKey<PlayerStatisticsRecord, AccountRecord> = Internal.createForeignKey(PlayerStatistics.PLAYER_STATISTICS, DSL.name("fk_player_statistics__account"), arrayOf(PlayerStatistics.PLAYER_STATISTICS.ACCOUNT_UID), work.fking.pangya.game.persistence.jooq.keys.ACCOUNT_PKEY, arrayOf(Account.ACCOUNT.UID), true)

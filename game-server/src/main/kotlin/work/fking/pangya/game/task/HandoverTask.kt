@@ -8,6 +8,7 @@ import work.fking.pangya.game.net.ClientPacketDispatcher
 import work.fking.pangya.game.net.ClientPacketType
 import work.fking.pangya.game.net.ClientProtocol
 import work.fking.pangya.game.net.ProtocolDecoder
+import work.fking.pangya.game.packet.outbound.CardholicReplies
 import work.fking.pangya.game.packet.outbound.CookieBalancePacket
 import work.fking.pangya.game.packet.outbound.EquipmentPacket
 import work.fking.pangya.game.packet.outbound.HandoverReplies
@@ -72,6 +73,7 @@ class HandoverTask(
         val characterRosterFuture = gameServer.submitTask { persistenceCtx.characterRepository.loadRoster(persistenceCtx.noTxContext(), playerUid) }
         val caddieRosterFuture = gameServer.submitTask { persistenceCtx.caddieRepository.loadRoster(persistenceCtx.noTxContext(), playerUid) }
         val inventoryFuture = gameServer.submitTask { persistenceCtx.inventoryRepository.load(persistenceCtx.noTxContext(), playerUid) }
+        val cardInventoryFuture = gameServer.submitTask { persistenceCtx.cardRepository.load(persistenceCtx.noTxContext(), playerUid) }
         val equipmentFuture = gameServer.submitTask { persistenceCtx.equipmentRepository.load(persistenceCtx.noTxContext(), playerUid) }
         val statisticsFuture = gameServer.submitTask { persistenceCtx.statisticsRepository.load(persistenceCtx.noTxContext(), playerUid) }
         val achievementsFuture = gameServer.submitTask { persistenceCtx.achievementsRepository.load(persistenceCtx.noTxContext(), playerUid) }
@@ -82,6 +84,7 @@ class HandoverTask(
             characterRosterFuture,
             caddieRosterFuture,
             inventoryFuture,
+            cardInventoryFuture,
             equipmentFuture,
             statisticsFuture,
             achievementsFuture
@@ -108,6 +111,7 @@ class HandoverTask(
             characterRoster = characterRosterFuture.get(),
             caddieRoster = caddieRosterFuture.get(),
             inventory = inventoryFuture.get(),
+            cardInventory = cardInventoryFuture.get(),
             equipment = equipmentFuture.get(),
             statistics = statisticsFuture.get(),
             achievements = achievementsFuture.get()
@@ -120,6 +124,7 @@ class HandoverTask(
         pipeline.addLast("decoder", ProtocolDecoder(PROTOCOL, cryptKey))
         pipeline.addLast("packetDispatcher", ClientPacketDispatcher(gameServer, player, PROTOCOL.handlers()))
 
+
         channel.write(HandoverReplies.handoverReply(player))
         chunkIffContainer(0x70, player.characterRoster).forEach(channel::write)
         chunkIffContainer(0x71, player.caddieRoster).forEach(channel::write)
@@ -129,7 +134,7 @@ class HandoverTask(
         channel.write(MascotRosterPacket())
         channel.write(CookieBalancePacket(player))
         channel.write(PangBalancePacket(player))
+        channel.write(CardholicReplies.inventory(player.cardInventory))
         channel.writeAndFlush(ServerChannelsPacket(gameServer.serverChannels))
     }
-
 }

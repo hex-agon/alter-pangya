@@ -8,9 +8,15 @@ This emulator only works with the PangYa GB.852 client, if you browse around the
 In order to run the client it is highly recommended that you use [RugBurn](https://github.com/pangbox/rugburn).
 
 ## Running the servers
+Each server requires a configuration file to be present in the working directory, see the readme of each server for a configuration file template:
+
+[Login Server Config](login-server/README.md)
+
+[Game Server Config](game-server/README.md)
 
 ### Dependencies
-
+Before running the login & game server you'll need the following extra services:
+ 
 * A redis instance
 * A postgres instance
 

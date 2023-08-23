@@ -19,6 +19,7 @@ import work.fking.pangya.game.persistence.jooq.tables.PlayerAchievementMilestone
 import work.fking.pangya.game.persistence.jooq.tables.PlayerCaddie
 import work.fking.pangya.game.persistence.jooq.tables.PlayerCharacter
 import work.fking.pangya.game.persistence.jooq.tables.PlayerEquipment
+import work.fking.pangya.game.persistence.jooq.tables.PlayerInventoryCard
 import work.fking.pangya.game.persistence.jooq.tables.PlayerInventoryItem
 import work.fking.pangya.game.persistence.jooq.tables.PlayerStatistics
 
@@ -82,6 +83,11 @@ open class Public : SchemaImpl("public", DefaultCatalog.DEFAULT_CATALOG) {
     val PLAYER_EQUIPMENT: PlayerEquipment get() = PlayerEquipment.PLAYER_EQUIPMENT
 
     /**
+     * The table <code>public.player_inventory_card</code>.
+     */
+    val PLAYER_INVENTORY_CARD: PlayerInventoryCard get() = PlayerInventoryCard.PLAYER_INVENTORY_CARD
+
+    /**
      * The table <code>public.player_inventory_item</code>.
      */
     val PLAYER_INVENTORY_ITEM: PlayerInventoryItem get() = PlayerInventoryItem.PLAYER_INVENTORY_ITEM
@@ -103,6 +109,7 @@ open class Public : SchemaImpl("public", DefaultCatalog.DEFAULT_CATALOG) {
         PlayerCaddie.PLAYER_CADDIE,
         PlayerCharacter.PLAYER_CHARACTER,
         PlayerEquipment.PLAYER_EQUIPMENT,
+        PlayerInventoryCard.PLAYER_INVENTORY_CARD,
         PlayerInventoryItem.PLAYER_INVENTORY_ITEM,
         PlayerStatistics.PLAYER_STATISTICS
     )

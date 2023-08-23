@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory
 import work.fking.pangya.game.net.ServerChannelInitializer
 import work.fking.pangya.game.persistence.PersistenceContext
 import work.fking.pangya.game.player.CaddieRoster
+import work.fking.pangya.game.player.CardInventory
 import work.fking.pangya.game.player.CharacterRoster
 import work.fking.pangya.game.player.Equipment
 import work.fking.pangya.game.player.Inventory
@@ -55,9 +56,10 @@ class GameServer(
         characterRoster: CharacterRoster,
         caddieRoster: CaddieRoster,
         inventory: Inventory,
+        cardInventory: CardInventory,
         equipment: Equipment,
         statistics: PlayerStatistics,
-        achievements: PlayerAchievements
+        achievements: PlayerAchievements,
     ): Player {
         val player = Player(
             channel = channel,
@@ -69,6 +71,7 @@ class GameServer(
             characterRoster = characterRoster,
             caddieRoster = caddieRoster,
             inventory = inventory,
+            cardInventory = cardInventory,
             equipment = equipment,
             statistics = statistics,
             achievements = achievements,

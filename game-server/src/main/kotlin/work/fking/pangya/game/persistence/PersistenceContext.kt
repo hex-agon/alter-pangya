@@ -8,6 +8,7 @@ data class PersistenceContext(
     val characterRepository: CharacterRepository = InMemoryCharacterRepository(),
     val caddieRepository: CaddieRepository = InMemoryCaddieRepository(),
     val inventoryRepository: InventoryRepository = InMemoryInventoryRepository(),
+    val cardRepository: CardRepository = InMemoryCardRepository(),
     val equipmentRepository: EquipmentRepository = InMemoryEquipmentRepository(),
     val statisticsRepository: StatisticsRepository = InMemoryStatisticsRepository(),
     val achievementsRepository: AchievementsRepository = InMemoryAchievementsRepository()

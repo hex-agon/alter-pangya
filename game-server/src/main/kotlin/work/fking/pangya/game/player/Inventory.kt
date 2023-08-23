@@ -40,6 +40,7 @@ class Inventory(override val entries: MutableList<Item> = ArrayList()) : IffCont
     }
 
     private fun decrement(item: Item, amount: Int) {
+        require(item.quantifiable()) { "item is not quantifiable" }
         require(amount > 0) { "amount must be positive" }
         item.quantity = max(item.quantity - amount, 0)
 

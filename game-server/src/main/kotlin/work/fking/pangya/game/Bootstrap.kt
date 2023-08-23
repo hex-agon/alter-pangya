@@ -18,6 +18,7 @@ import work.fking.pangya.discovery.HeartbeatPublisher
 import work.fking.pangya.discovery.ServerType.GAME
 import work.fking.pangya.game.persistence.JooqAchievementsRepository
 import work.fking.pangya.game.persistence.JooqCaddieRepository
+import work.fking.pangya.game.persistence.JooqCardInventory
 import work.fking.pangya.game.persistence.JooqCharacterRepository
 import work.fking.pangya.game.persistence.JooqEquipmentRepository
 import work.fking.pangya.game.persistence.JooqInventoryRepository
@@ -62,6 +63,7 @@ object Bootstrap {
             characterRepository = JooqCharacterRepository(),
             caddieRepository = JooqCaddieRepository(),
             inventoryRepository = JooqInventoryRepository(),
+            cardRepository = JooqCardInventory(),
             equipmentRepository = JooqEquipmentRepository(),
             statisticsRepository = JooqStatisticsRepository(),
             achievementsRepository = JooqAchievementsRepository()

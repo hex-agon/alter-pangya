@@ -9,6 +9,7 @@ import io.netty.handler.timeout.ReadTimeoutException
 import org.slf4j.LoggerFactory
 import work.fking.pangya.login.LoginServer
 import work.fking.pangya.login.packet.outbound.LoginReplies
+import work.fking.pangya.login.packet.outbound.LoginReplies.Error.INCORRECT_USERNAME_PASSWORD
 import work.fking.pangya.login.task.LoginTask
 import work.fking.pangya.networking.crypt.PangCrypt
 import work.fking.pangya.networking.crypt.PangCrypt.PangCryptException
@@ -54,7 +55,7 @@ class LoginHandler(
         val loginKey = buffer.readPString()
 
         LOGGER.debug("Rejecting reconnect for username={} uid={} loginKey={}", username, playerUid, loginKey)
-        ctx.writeAndFlush(LoginReplies.error(LoginReplies.Error.INCORRECT_USERNAME_PASSWORD))
+        ctx.writeAndFlush(LoginReplies.error(INCORRECT_USERNAME_PASSWORD))
     }
 
     override fun exceptionCaught(ctx: ChannelHandlerContext, cause: Throwable) {

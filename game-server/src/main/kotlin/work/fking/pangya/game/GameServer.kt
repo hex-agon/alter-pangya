@@ -51,7 +51,7 @@ class GameServer(
 
     fun registerPlayer(
         channel: Channel,
-        sessionInfo: SessionClient.SessionInfo,
+        sessionInfo: SessionClient.HandoverInfo,
         playerWallet: PlayerWallet,
         characterRoster: CharacterRoster,
         caddieRoster: CaddieRoster,
@@ -86,6 +86,7 @@ class GameServer(
         player.currentRoom?.removePlayer(player)
         player.currentChannel?.removePlayer(player)
         players.remove(player)
+        sessionClient.unregisterSession(player)
         LOGGER.info("{} disconnected", player.nickname)
     }
 

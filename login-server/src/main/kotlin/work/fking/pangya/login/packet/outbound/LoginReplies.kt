@@ -46,6 +46,7 @@ object LoginReplies {
         }
     }
 
+    // TODO: We're probably doing something wrong here because it doesn't match any of the documented stuff
     fun error(error: Error, message: String = ""): OutboundPacket {
         return OutboundPacket { buffer: ByteBuf ->
             buffer.writeShortLE(RESULT_PACKET_ID)
@@ -86,7 +87,6 @@ object LoginReplies {
         INCORRECT_SSN(0xC),
         INCORRECT_USERNAME(0xD),
         WHITELISTED_USERS_ONLY(0xE),
-        SERVER_MAINTENANCE(0xF),
-        GEO_BLOCKED(0x10)
+        SERVER_MAINTENANCE(0xF)
     }
 }

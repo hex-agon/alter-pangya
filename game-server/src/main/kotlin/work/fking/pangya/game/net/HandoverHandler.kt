@@ -38,7 +38,7 @@ class HandoverHandler(
         buffer.readIntLE()
         val sessionKey = buffer.readPString()
         LOGGER.info("Successful handover username={}, uid={}, clientVersion={}, loginKey={}, sessionKey={}", username, uid, clientVersion, loginKey, sessionKey)
-        gameServer.runTask(HandoverTask(gameServer, ctx.channel(), cryptKey, sessionKey))
+        gameServer.runTask(HandoverTask(gameServer, ctx.channel(), cryptKey, loginKey))
     }
 
     override fun exceptionCaught(ctx: ChannelHandlerContext, cause: Throwable) {

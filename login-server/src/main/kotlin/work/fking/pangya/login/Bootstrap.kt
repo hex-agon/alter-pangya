@@ -12,8 +12,7 @@ import work.fking.pangya.discovery.DiscoveryClient
 import work.fking.pangya.discovery.HeartbeatPublisher
 import work.fking.pangya.discovery.ServerType.LOGIN
 import work.fking.pangya.login.auth.DatabaseAuthenticator
-import work.fking.pangya.login.auth.NOOP_AUTHENTICATOR
-import work.fking.pangya.login.auth.SessionClient
+import work.fking.pangya.login.session.SessionClient
 import work.fking.pangya.login.persistence.AccountRepository
 import java.nio.file.Files
 import java.nio.file.Path

@@ -15,8 +15,10 @@ import work.fking.pangya.login.net.LoginState.SELECTING_CHARACTER
 import work.fking.pangya.login.net.LoginState.SELECTING_NICKNAME
 import work.fking.pangya.login.net.pipe.ProtocolDecoder
 import work.fking.pangya.login.packet.outbound.LoginReplies
+import work.fking.pangya.login.packet.outbound.LoginReplies.Error.INCORRECT_USERNAME_PASSWORD
+import work.fking.pangya.login.packet.outbound.LoginReplies.Error.INVALID_ID
 
-private val PROTOCOL: ClientProtocol = ClientProtocol(ClientPacketType.values())
+private val PROTOCOL: ClientProtocol = ClientProtocol(ClientPacketType.entries.toTypedArray())
 private val LOGGER = LoggerFactory.getLogger(LoginTask::class.java)
 
 class LoginTask(
@@ -38,7 +40,15 @@ class LoginTask(
     }
 
     private fun onSuccessAuth(userInfo: UserInfo) {
+        val sessionClient = loginServer.sessionClient
+        val userSession = sessionClient.sessionKeyForUsername(username)
+
+        if (userSession == null) {
+            duplicateConnection()
+            return
+        }
         val player = loginServer.registerPlayer(channel, userInfo)
+        sessionClient.registerSession(player)
 
         val pipeline = channel.pipeline()
         pipeline.remove("loginHandler")
@@ -61,6 +71,10 @@ class LoginTask(
     }
 
     private fun onInvalidCredentials() {
-        channel.writeAndFlush(LoginReplies.error(LoginReplies.Error.INCORRECT_USERNAME_PASSWORD))
+        channel.writeAndFlush(LoginReplies.error(INCORRECT_USERNAME_PASSWORD))
+    }
+
+    private fun duplicateConnection() {
+        channel.writeAndFlush(LoginReplies.error(INVALID_ID, "Account is already logged in."))
     }
 }

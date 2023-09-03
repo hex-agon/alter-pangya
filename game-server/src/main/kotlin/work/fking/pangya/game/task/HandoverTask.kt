@@ -27,19 +27,19 @@ class HandoverTask(
     private val gameServer: GameServer,
     private val channel: Channel,
     private val cryptKey: Int,
-    private val sessionKey: String
+    private val loginKey: String
 ) : Runnable {
 
     override fun run() {
-        val sessionInfo: SessionClient.SessionInfo? = try {
-            gameServer.sessionClient.loadSession(sessionKey)
+        val sessionInfo: SessionClient.HandoverInfo? = try {
+            gameServer.sessionClient.loadHandoverInfo(loginKey)
         } catch (e: Exception) {
-            LOGGER.warn("Handover error sessionKey={}, message={}", sessionKey, e.message)
+            LOGGER.warn("Handover error loginKey={}, message={}", loginKey, e.message)
             channel.writeAndFlush(HandoverReplies.error(HandoverResult.CANNOT_CONNECT_LOGIN_SERVER))
             return
         }
         if (sessionInfo == null) {
-            LOGGER.warn("Handover failed, unknown sessionKey={}", sessionKey)
+            LOGGER.warn("Handover failed, unknown loginKey={}", loginKey)
             channel.writeAndFlush(HandoverReplies.error(HandoverResult.CANNOT_CONNECT_LOGIN_SERVER))
             return
         }

@@ -24,7 +24,12 @@ enum class LoginState {
     /**
      * Player is fully authenticated, has a valid nickname and has a base character.
      */
-    LOGGED_IN;
+    LOGGED_IN,
+
+    /**
+     * Player has been handed over to a game server.
+     */
+    HANDED_OVER;
 
     fun validTransition(to: LoginState): Boolean {
         return when (this) {
@@ -33,7 +38,8 @@ enum class LoginState {
             SELECTING_NICKNAME -> to == SELECTED_NICKNAME
             SELECTED_NICKNAME -> to == LOGGED_IN || to == SELECTING_CHARACTER
             SELECTING_CHARACTER -> to == SELECTING_NICKNAME || to == LOGGED_IN
-            LOGGED_IN -> false
+            LOGGED_IN -> to == HANDED_OVER
+            HANDED_OVER -> false
         }
     }
 }

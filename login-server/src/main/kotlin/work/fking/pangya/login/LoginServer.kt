@@ -7,11 +7,12 @@ import org.slf4j.LoggerFactory
 import work.fking.pangya.discovery.DiscoveryClient
 import work.fking.pangya.discovery.ServerType
 import work.fking.pangya.login.auth.Authenticator
-import work.fking.pangya.login.auth.SessionClient
 import work.fking.pangya.login.auth.UserInfo
+import work.fking.pangya.login.net.LoginState.HANDED_OVER
 import work.fking.pangya.login.net.pipe.ServerChannelInitializer
 import work.fking.pangya.login.packet.outbound.LoginReplies
 import work.fking.pangya.login.packet.outbound.ServerListReplies
+import work.fking.pangya.login.session.SessionClient
 import work.fking.pangya.networking.selectBestEventLoopAvailable
 import work.fking.pangya.networking.selectBestServerChannelAvailable
 import java.net.InetAddress
@@ -56,7 +57,11 @@ class LoginServer(
 
     private fun onPlayerDisconnect(player: Player) {
         LOGGER.info("{} disconnected", player.username)
-        sessionClient.unregisterSession(player)
+
+        if (player.state != HANDED_OVER) {
+            sessionClient.unregisterSession(player)
+        }
+        sessionClient.expireHandoverInfo(player)
     }
 
     fun start() {

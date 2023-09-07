@@ -15,3 +15,5 @@ data class RoomPlayerCountChange(val playerCount: Int) : RoomUpdate
 data class RoomGameTimeChange(val gameTime: Duration) : RoomUpdate
 data class RoomArtifactChange(val artifactIffId: Int) : RoomUpdate
 data class RoomNaturalWindChange(val naturalWind: Boolean) : RoomUpdate
+data class RoomHoleRepeatHoleChange(val repeatingHole: Int) : RoomUpdate
+data class RoomHoleRepeatFixedHoleChange(val fixedHole: Boolean) : RoomUpdate

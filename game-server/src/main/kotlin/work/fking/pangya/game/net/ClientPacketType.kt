@@ -81,6 +81,7 @@ enum class ClientPacketType(
     LOCKER_INVENTORY_REQUEST(0xd3, LockerInventoryRequestPacketHandler()),
     MATCH_PLAYER_QUIT(0x130, MatchPlayerQuitPacketHandler()),
     UNKNOWN_140(0x140),
+    HOLE_REPEAT_CHANGE_WIND(0x141),
     ACHIEVEMENT_STATUS_REQUEST(0x157, AchievementStatusRequestPacketHandler()),
     PLAYER_RING_PROC(0x15d),
     MATCH_PLAYER_TOURNEY_SHOT(0x12f, MatchTourneyShotPacketHandler()),

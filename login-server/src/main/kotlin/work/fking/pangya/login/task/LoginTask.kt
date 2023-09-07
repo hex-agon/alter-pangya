@@ -43,7 +43,7 @@ class LoginTask(
         val sessionClient = loginServer.sessionClient
         val userSession = sessionClient.sessionKeyForUsername(username)
 
-        if (userSession == null) {
+        if (userSession != null) {
             duplicateConnection()
             return
         }

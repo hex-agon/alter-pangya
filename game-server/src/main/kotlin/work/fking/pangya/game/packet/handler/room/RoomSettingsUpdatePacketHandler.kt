@@ -1,6 +1,7 @@
 package work.fking.pangya.game.packet.handler.room
 
 import io.netty.buffer.ByteBuf
+import io.netty.buffer.ByteBufUtil
 import work.fking.pangya.game.GameServer
 import work.fking.pangya.game.net.ClientPacketHandler
 import work.fking.pangya.game.player.Player
@@ -9,6 +10,8 @@ import work.fking.pangya.game.room.RoomCourseChange
 import work.fking.pangya.game.room.RoomGameTimeChange
 import work.fking.pangya.game.room.RoomHoleCountChange
 import work.fking.pangya.game.room.RoomHoleModeChange
+import work.fking.pangya.game.room.RoomHoleRepeatFixedHoleChange
+import work.fking.pangya.game.room.RoomHoleRepeatHoleChange
 import work.fking.pangya.game.room.RoomNameChange
 import work.fking.pangya.game.room.RoomNaturalWindChange
 import work.fking.pangya.game.room.RoomPasswordChange
@@ -34,6 +37,7 @@ class RoomSettingsUpdatePacketHandler : ClientPacketHandler {
 
         repeat(count.toInt()) {
             val type = packet.readUnsignedByte()
+            println(ByteBufUtil.prettyHexDump(packet))
             val roomUpdate = when (type.toInt()) {
                 0 -> RoomNameChange(packet.readPString())
                 1 -> RoomPasswordChange(packet.readPString())
@@ -44,6 +48,8 @@ class RoomSettingsUpdatePacketHandler : ClientPacketHandler {
                 6 -> RoomShotTimeChange(Duration.of(packet.readUnsignedByte().toLong(), ChronoUnit.SECONDS))
                 7 -> RoomPlayerCountChange(packet.readUnsignedByte().toInt())
                 8 -> RoomGameTimeChange(Duration.of(packet.readUnsignedByte().toLong(), ChronoUnit.MINUTES))
+                11 -> RoomHoleRepeatHoleChange(packet.readUnsignedByte().toInt())
+                12 -> RoomHoleRepeatFixedHoleChange(packet.readIntLE() == 7)
                 13 -> RoomArtifactChange(packet.readInt())
                 14 -> RoomNaturalWindChange(packet.readInt() == 0x1000000)
                 else -> throw IllegalStateException("Unsupported room setting change type=$type")

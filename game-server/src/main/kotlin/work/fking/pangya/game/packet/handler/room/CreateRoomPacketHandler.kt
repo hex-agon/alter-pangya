@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf
 import work.fking.pangya.game.GameServer
 import work.fking.pangya.game.net.ClientPacketHandler
 import work.fking.pangya.game.player.Player
+import work.fking.pangya.game.room.HoleMode.REPEAT
 import work.fking.pangya.game.room.courseById
 import work.fking.pangya.game.room.holeModeById
 import work.fking.pangya.game.room.roomTypeById
@@ -23,6 +24,8 @@ class CreateRoomPacketHandler : ClientPacketHandler {
         val course = courseById(packet.readByte())
         val holeModeId = packet.readByte()
         val holeMode = holeModeById(holeModeId)
+        val repeatingHole = if (holeMode == REPEAT) packet.readUnsignedByte().toInt() else -1
+        val repeatFixedHole = if (holeMode == REPEAT) packet.readIntLE() == 7 else false
         val unknown3 = packet.readIntLE()
         val name = packet.readPString()
         val password = packet.readPString()
@@ -36,6 +39,8 @@ class CreateRoomPacketHandler : ClientPacketHandler {
             roomType = roomType,
             course = course,
             holeMode = holeMode,
+            repeatFixedHole = repeatFixedHole,
+            repeatingHole = repeatingHole,
             holeCount = holeCount.toInt(),
             maxPlayers = maxPlayers.toInt(),
             shotTime = Duration.of(shotTime.toLong(), ChronoUnit.MILLIS),

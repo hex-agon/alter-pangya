@@ -35,7 +35,7 @@
         <junit.version>5.9.3</junit.version>
         <mockito.version>5.4.0</mockito.version>
 
-        <jib.version>3.3.2</jib.version>
+        <jib.version>3.4.0</jib.version>
         <jib.base.image>eclipse-temurin:21-jre-alpine</jib.base.image>
     </properties>
 

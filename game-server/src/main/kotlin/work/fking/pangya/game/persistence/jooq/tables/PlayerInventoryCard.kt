@@ -26,7 +26,7 @@ import org.jooq.impl.Internal
 import org.jooq.impl.SQLDataType
 import org.jooq.impl.TableImpl
 
-import work.fking.pangya.game.persistence.jooq.Public
+import work.fking.pangya.game.persistence.jooq.AlterPangya
 import work.fking.pangya.game.persistence.jooq.keys.PLAYER_INVENTORY_CARD_PKEY
 import work.fking.pangya.game.persistence.jooq.keys.PLAYER_INVENTORY_CARD__FK_PLAYER_INVENTORY_ITEM__ACCOUNT
 import work.fking.pangya.game.persistence.jooq.tables.records.PlayerInventoryCardRecord
@@ -44,7 +44,7 @@ open class PlayerInventoryCard(
     parameters: Array<Field<*>?>?
 ): TableImpl<PlayerInventoryCardRecord>(
     alias,
-    Public.PUBLIC,
+    AlterPangya.ALTER_PANGYA,
     child,
     path,
     aliased,
@@ -55,7 +55,8 @@ open class PlayerInventoryCard(
     companion object {
 
         /**
-         * The reference instance of <code>public.player_inventory_card</code>
+         * The reference instance of
+         * <code>alter_pangya.player_inventory_card</code>
          */
         val PLAYER_INVENTORY_CARD: PlayerInventoryCard = PlayerInventoryCard()
     }
@@ -66,22 +67,22 @@ open class PlayerInventoryCard(
     override fun getRecordType(): Class<PlayerInventoryCardRecord> = PlayerInventoryCardRecord::class.java
 
     /**
-     * The column <code>public.player_inventory_card.uid</code>.
+     * The column <code>alter_pangya.player_inventory_card.uid</code>.
      */
     val UID: TableField<PlayerInventoryCardRecord, Int?> = createField(DSL.name("uid"), SQLDataType.INTEGER.nullable(false).identity(true), this, "")
 
     /**
-     * The column <code>public.player_inventory_card.account_uid</code>.
+     * The column <code>alter_pangya.player_inventory_card.account_uid</code>.
      */
     val ACCOUNT_UID: TableField<PlayerInventoryCardRecord, Int?> = createField(DSL.name("account_uid"), SQLDataType.INTEGER.nullable(false), this, "")
 
     /**
-     * The column <code>public.player_inventory_card.iff_id</code>.
+     * The column <code>alter_pangya.player_inventory_card.iff_id</code>.
      */
     val IFF_ID: TableField<PlayerInventoryCardRecord, Int?> = createField(DSL.name("iff_id"), SQLDataType.INTEGER.nullable(false), this, "")
 
     /**
-     * The column <code>public.player_inventory_card.quantity</code>.
+     * The column <code>alter_pangya.player_inventory_card.quantity</code>.
      */
     val QUANTITY: TableField<PlayerInventoryCardRecord, Int?> = createField(DSL.name("quantity"), SQLDataType.INTEGER, this, "")
 
@@ -89,24 +90,24 @@ open class PlayerInventoryCard(
     private constructor(alias: Name, aliased: Table<PlayerInventoryCardRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
 
     /**
-     * Create an aliased <code>public.player_inventory_card</code> table
+     * Create an aliased <code>alter_pangya.player_inventory_card</code> table
      * reference
      */
     constructor(alias: String): this(DSL.name(alias))
 
     /**
-     * Create an aliased <code>public.player_inventory_card</code> table
+     * Create an aliased <code>alter_pangya.player_inventory_card</code> table
      * reference
      */
     constructor(alias: Name): this(alias, null)
 
     /**
-     * Create a <code>public.player_inventory_card</code> table reference
+     * Create a <code>alter_pangya.player_inventory_card</code> table reference
      */
     constructor(): this(DSL.name("player_inventory_card"), null)
 
     constructor(child: Table<out Record>, key: ForeignKey<out Record, PlayerInventoryCardRecord>): this(Internal.createPathAlias(child, key), child, key, PLAYER_INVENTORY_CARD, null)
-    override fun getSchema(): Schema? = if (aliased()) null else Public.PUBLIC
+    override fun getSchema(): Schema? = if (aliased()) null else AlterPangya.ALTER_PANGYA
     override fun getIdentity(): Identity<PlayerInventoryCardRecord, Int?> = super.getIdentity() as Identity<PlayerInventoryCardRecord, Int?>
     override fun getPrimaryKey(): UniqueKey<PlayerInventoryCardRecord> = PLAYER_INVENTORY_CARD_PKEY
     override fun getReferences(): List<ForeignKey<PlayerInventoryCardRecord, *>> = listOf(PLAYER_INVENTORY_CARD__FK_PLAYER_INVENTORY_ITEM__ACCOUNT)
@@ -114,7 +115,8 @@ open class PlayerInventoryCard(
     private lateinit var _account: Account
 
     /**
-     * Get the implicit join path to the <code>public.account</code> table.
+     * Get the implicit join path to the <code>alter_pangya.account</code>
+     * table.
      */
     fun account(): Account {
         if (!this::_account.isInitialized)

@@ -23,7 +23,7 @@ import org.jooq.impl.Internal
 import org.jooq.impl.SQLDataType
 import org.jooq.impl.TableImpl
 
-import work.fking.pangya.game.persistence.jooq.Public
+import work.fking.pangya.game.persistence.jooq.AlterPangya
 import work.fking.pangya.game.persistence.jooq.keys.ACHIEVEMENT_PKEY
 import work.fking.pangya.game.persistence.jooq.tables.records.AchievementRecord
 
@@ -40,7 +40,7 @@ open class Achievement(
     parameters: Array<Field<*>?>?
 ): TableImpl<AchievementRecord>(
     alias,
-    Public.PUBLIC,
+    AlterPangya.ALTER_PANGYA,
     child,
     path,
     aliased,
@@ -51,7 +51,7 @@ open class Achievement(
     companion object {
 
         /**
-         * The reference instance of <code>public.achievement</code>
+         * The reference instance of <code>alter_pangya.achievement</code>
          */
         val ACHIEVEMENT: Achievement = Achievement()
     }
@@ -62,17 +62,18 @@ open class Achievement(
     override fun getRecordType(): Class<AchievementRecord> = AchievementRecord::class.java
 
     /**
-     * The column <code>public.achievement.iff_id</code>.
+     * The column <code>alter_pangya.achievement.iff_id</code>.
      */
     val IFF_ID: TableField<AchievementRecord, Int?> = createField(DSL.name("iff_id"), SQLDataType.INTEGER.nullable(false), this, "")
 
     /**
-     * The column <code>public.achievement.completed_with_milestone</code>.
+     * The column
+     * <code>alter_pangya.achievement.completed_with_milestone</code>.
      */
     val COMPLETED_WITH_MILESTONE: TableField<AchievementRecord, Int?> = createField(DSL.name("completed_with_milestone"), SQLDataType.INTEGER.nullable(false), this, "")
 
     /**
-     * The column <code>public.achievement.category</code>.
+     * The column <code>alter_pangya.achievement.category</code>.
      */
     val CATEGORY: TableField<AchievementRecord, Int?> = createField(DSL.name("category"), SQLDataType.INTEGER.nullable(false), this, "")
 
@@ -80,22 +81,22 @@ open class Achievement(
     private constructor(alias: Name, aliased: Table<AchievementRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
 
     /**
-     * Create an aliased <code>public.achievement</code> table reference
+     * Create an aliased <code>alter_pangya.achievement</code> table reference
      */
     constructor(alias: String): this(DSL.name(alias))
 
     /**
-     * Create an aliased <code>public.achievement</code> table reference
+     * Create an aliased <code>alter_pangya.achievement</code> table reference
      */
     constructor(alias: Name): this(alias, null)
 
     /**
-     * Create a <code>public.achievement</code> table reference
+     * Create a <code>alter_pangya.achievement</code> table reference
      */
     constructor(): this(DSL.name("achievement"), null)
 
     constructor(child: Table<out Record>, key: ForeignKey<out Record, AchievementRecord>): this(Internal.createPathAlias(child, key), child, key, ACHIEVEMENT, null)
-    override fun getSchema(): Schema? = if (aliased()) null else Public.PUBLIC
+    override fun getSchema(): Schema? = if (aliased()) null else AlterPangya.ALTER_PANGYA
     override fun getPrimaryKey(): UniqueKey<AchievementRecord> = ACHIEVEMENT_PKEY
     override fun `as`(alias: String): Achievement = Achievement(DSL.name(alias), this)
     override fun `as`(alias: Name): Achievement = Achievement(alias, this)

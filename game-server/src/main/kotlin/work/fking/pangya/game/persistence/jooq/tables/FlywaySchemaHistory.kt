@@ -27,7 +27,7 @@ import org.jooq.impl.Internal
 import org.jooq.impl.SQLDataType
 import org.jooq.impl.TableImpl
 
-import work.fking.pangya.game.persistence.jooq.Public
+import work.fking.pangya.game.persistence.jooq.AlterPangya
 import work.fking.pangya.game.persistence.jooq.indexes.FLYWAY_SCHEMA_HISTORY_S_IDX
 import work.fking.pangya.game.persistence.jooq.keys.FLYWAY_SCHEMA_HISTORY_PK
 import work.fking.pangya.game.persistence.jooq.tables.records.FlywaySchemaHistoryRecord
@@ -45,7 +45,7 @@ open class FlywaySchemaHistory(
     parameters: Array<Field<*>?>?
 ): TableImpl<FlywaySchemaHistoryRecord>(
     alias,
-    Public.PUBLIC,
+    AlterPangya.ALTER_PANGYA,
     child,
     path,
     aliased,
@@ -56,7 +56,8 @@ open class FlywaySchemaHistory(
     companion object {
 
         /**
-         * The reference instance of <code>public.flyway_schema_history</code>
+         * The reference instance of
+         * <code>alter_pangya.flyway_schema_history</code>
          */
         val FLYWAY_SCHEMA_HISTORY: FlywaySchemaHistory = FlywaySchemaHistory()
     }
@@ -67,52 +68,54 @@ open class FlywaySchemaHistory(
     override fun getRecordType(): Class<FlywaySchemaHistoryRecord> = FlywaySchemaHistoryRecord::class.java
 
     /**
-     * The column <code>public.flyway_schema_history.installed_rank</code>.
+     * The column
+     * <code>alter_pangya.flyway_schema_history.installed_rank</code>.
      */
     val INSTALLED_RANK: TableField<FlywaySchemaHistoryRecord, Int?> = createField(DSL.name("installed_rank"), SQLDataType.INTEGER.nullable(false), this, "")
 
     /**
-     * The column <code>public.flyway_schema_history.version</code>.
+     * The column <code>alter_pangya.flyway_schema_history.version</code>.
      */
     val VERSION: TableField<FlywaySchemaHistoryRecord, String?> = createField(DSL.name("version"), SQLDataType.VARCHAR(50), this, "")
 
     /**
-     * The column <code>public.flyway_schema_history.description</code>.
+     * The column <code>alter_pangya.flyway_schema_history.description</code>.
      */
     val DESCRIPTION: TableField<FlywaySchemaHistoryRecord, String?> = createField(DSL.name("description"), SQLDataType.VARCHAR(200).nullable(false), this, "")
 
     /**
-     * The column <code>public.flyway_schema_history.type</code>.
+     * The column <code>alter_pangya.flyway_schema_history.type</code>.
      */
     val TYPE: TableField<FlywaySchemaHistoryRecord, String?> = createField(DSL.name("type"), SQLDataType.VARCHAR(20).nullable(false), this, "")
 
     /**
-     * The column <code>public.flyway_schema_history.script</code>.
+     * The column <code>alter_pangya.flyway_schema_history.script</code>.
      */
     val SCRIPT: TableField<FlywaySchemaHistoryRecord, String?> = createField(DSL.name("script"), SQLDataType.VARCHAR(1000).nullable(false), this, "")
 
     /**
-     * The column <code>public.flyway_schema_history.checksum</code>.
+     * The column <code>alter_pangya.flyway_schema_history.checksum</code>.
      */
     val CHECKSUM: TableField<FlywaySchemaHistoryRecord, Int?> = createField(DSL.name("checksum"), SQLDataType.INTEGER, this, "")
 
     /**
-     * The column <code>public.flyway_schema_history.installed_by</code>.
+     * The column <code>alter_pangya.flyway_schema_history.installed_by</code>.
      */
     val INSTALLED_BY: TableField<FlywaySchemaHistoryRecord, String?> = createField(DSL.name("installed_by"), SQLDataType.VARCHAR(100).nullable(false), this, "")
 
     /**
-     * The column <code>public.flyway_schema_history.installed_on</code>.
+     * The column <code>alter_pangya.flyway_schema_history.installed_on</code>.
      */
     val INSTALLED_ON: TableField<FlywaySchemaHistoryRecord, LocalDateTime?> = createField(DSL.name("installed_on"), SQLDataType.LOCALDATETIME(6).nullable(false).defaultValue(DSL.field(DSL.raw("now()"), SQLDataType.LOCALDATETIME)), this, "")
 
     /**
-     * The column <code>public.flyway_schema_history.execution_time</code>.
+     * The column
+     * <code>alter_pangya.flyway_schema_history.execution_time</code>.
      */
     val EXECUTION_TIME: TableField<FlywaySchemaHistoryRecord, Int?> = createField(DSL.name("execution_time"), SQLDataType.INTEGER.nullable(false), this, "")
 
     /**
-     * The column <code>public.flyway_schema_history.success</code>.
+     * The column <code>alter_pangya.flyway_schema_history.success</code>.
      */
     val SUCCESS: TableField<FlywaySchemaHistoryRecord, Boolean?> = createField(DSL.name("success"), SQLDataType.BOOLEAN.nullable(false), this, "")
 
@@ -120,24 +123,24 @@ open class FlywaySchemaHistory(
     private constructor(alias: Name, aliased: Table<FlywaySchemaHistoryRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
 
     /**
-     * Create an aliased <code>public.flyway_schema_history</code> table
+     * Create an aliased <code>alter_pangya.flyway_schema_history</code> table
      * reference
      */
     constructor(alias: String): this(DSL.name(alias))
 
     /**
-     * Create an aliased <code>public.flyway_schema_history</code> table
+     * Create an aliased <code>alter_pangya.flyway_schema_history</code> table
      * reference
      */
     constructor(alias: Name): this(alias, null)
 
     /**
-     * Create a <code>public.flyway_schema_history</code> table reference
+     * Create a <code>alter_pangya.flyway_schema_history</code> table reference
      */
     constructor(): this(DSL.name("flyway_schema_history"), null)
 
     constructor(child: Table<out Record>, key: ForeignKey<out Record, FlywaySchemaHistoryRecord>): this(Internal.createPathAlias(child, key), child, key, FLYWAY_SCHEMA_HISTORY, null)
-    override fun getSchema(): Schema? = if (aliased()) null else Public.PUBLIC
+    override fun getSchema(): Schema? = if (aliased()) null else AlterPangya.ALTER_PANGYA
     override fun getIndexes(): List<Index> = listOf(FLYWAY_SCHEMA_HISTORY_S_IDX)
     override fun getPrimaryKey(): UniqueKey<FlywaySchemaHistoryRecord> = FLYWAY_SCHEMA_HISTORY_PK
     override fun `as`(alias: String): FlywaySchemaHistory = FlywaySchemaHistory(DSL.name(alias), this)

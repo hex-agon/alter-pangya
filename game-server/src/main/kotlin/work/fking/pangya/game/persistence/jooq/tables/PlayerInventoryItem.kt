@@ -27,7 +27,7 @@ import org.jooq.impl.SQLDataType
 import org.jooq.impl.TableImpl
 import org.jooq.jackson.extensions.converters.JSONtoJacksonConverter
 
-import work.fking.pangya.game.persistence.jooq.Public
+import work.fking.pangya.game.persistence.jooq.AlterPangya
 import work.fking.pangya.game.persistence.jooq.keys.PLAYER_INVENTORY_ITEM_PKEY
 import work.fking.pangya.game.persistence.jooq.keys.PLAYER_INVENTORY_ITEM__FK_PLAYER_INVENTORY_ITEM__ACCOUNT
 import work.fking.pangya.game.persistence.jooq.tables.records.PlayerInventoryItemRecord
@@ -47,7 +47,7 @@ open class PlayerInventoryItem(
     parameters: Array<Field<*>?>?
 ): TableImpl<PlayerInventoryItemRecord>(
     alias,
-    Public.PUBLIC,
+    AlterPangya.ALTER_PANGYA,
     child,
     path,
     aliased,
@@ -58,7 +58,8 @@ open class PlayerInventoryItem(
     companion object {
 
         /**
-         * The reference instance of <code>public.player_inventory_item</code>
+         * The reference instance of
+         * <code>alter_pangya.player_inventory_item</code>
          */
         val PLAYER_INVENTORY_ITEM: PlayerInventoryItem = PlayerInventoryItem()
     }
@@ -69,37 +70,37 @@ open class PlayerInventoryItem(
     override fun getRecordType(): Class<PlayerInventoryItemRecord> = PlayerInventoryItemRecord::class.java
 
     /**
-     * The column <code>public.player_inventory_item.uid</code>.
+     * The column <code>alter_pangya.player_inventory_item.uid</code>.
      */
     val UID: TableField<PlayerInventoryItemRecord, Int?> = createField(DSL.name("uid"), SQLDataType.INTEGER.nullable(false).identity(true), this, "")
 
     /**
-     * The column <code>public.player_inventory_item.account_uid</code>.
+     * The column <code>alter_pangya.player_inventory_item.account_uid</code>.
      */
     val ACCOUNT_UID: TableField<PlayerInventoryItemRecord, Int?> = createField(DSL.name("account_uid"), SQLDataType.INTEGER.nullable(false), this, "")
 
     /**
-     * The column <code>public.player_inventory_item.iff_id</code>.
+     * The column <code>alter_pangya.player_inventory_item.iff_id</code>.
      */
     val IFF_ID: TableField<PlayerInventoryItemRecord, Int?> = createField(DSL.name("iff_id"), SQLDataType.INTEGER.nullable(false), this, "")
 
     /**
-     * The column <code>public.player_inventory_item.quantity</code>.
+     * The column <code>alter_pangya.player_inventory_item.quantity</code>.
      */
     val QUANTITY: TableField<PlayerInventoryItemRecord, Int?> = createField(DSL.name("quantity"), SQLDataType.INTEGER.defaultValue(DSL.field(DSL.raw("0"), SQLDataType.INTEGER)), this, "")
 
     /**
-     * The column <code>public.player_inventory_item.stats</code>.
+     * The column <code>alter_pangya.player_inventory_item.stats</code>.
      */
     val STATS: TableField<PlayerInventoryItemRecord, IntArray?> = createField(DSL.name("stats"), SQLDataType.JSON, this, "", JSONtoJacksonConverter<IntArray>(IntArray::class.java))
 
     /**
-     * The column <code>public.player_inventory_item.ucc</code>.
+     * The column <code>alter_pangya.player_inventory_item.ucc</code>.
      */
     val UCC: TableField<PlayerInventoryItemRecord, ItemUcc?> = createField(DSL.name("ucc"), SQLDataType.JSON, this, "", JSONtoJacksonConverter<ItemUcc>(ItemUcc::class.java))
 
     /**
-     * The column <code>public.player_inventory_item.club_workshop</code>.
+     * The column <code>alter_pangya.player_inventory_item.club_workshop</code>.
      */
     val CLUB_WORKSHOP: TableField<PlayerInventoryItemRecord, ItemClubWorkshop?> = createField(DSL.name("club_workshop"), SQLDataType.JSON, this, "", JSONtoJacksonConverter<ItemClubWorkshop>(ItemClubWorkshop::class.java))
 
@@ -107,24 +108,24 @@ open class PlayerInventoryItem(
     private constructor(alias: Name, aliased: Table<PlayerInventoryItemRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
 
     /**
-     * Create an aliased <code>public.player_inventory_item</code> table
+     * Create an aliased <code>alter_pangya.player_inventory_item</code> table
      * reference
      */
     constructor(alias: String): this(DSL.name(alias))
 
     /**
-     * Create an aliased <code>public.player_inventory_item</code> table
+     * Create an aliased <code>alter_pangya.player_inventory_item</code> table
      * reference
      */
     constructor(alias: Name): this(alias, null)
 
     /**
-     * Create a <code>public.player_inventory_item</code> table reference
+     * Create a <code>alter_pangya.player_inventory_item</code> table reference
      */
     constructor(): this(DSL.name("player_inventory_item"), null)
 
     constructor(child: Table<out Record>, key: ForeignKey<out Record, PlayerInventoryItemRecord>): this(Internal.createPathAlias(child, key), child, key, PLAYER_INVENTORY_ITEM, null)
-    override fun getSchema(): Schema? = if (aliased()) null else Public.PUBLIC
+    override fun getSchema(): Schema? = if (aliased()) null else AlterPangya.ALTER_PANGYA
     override fun getIdentity(): Identity<PlayerInventoryItemRecord, Int?> = super.getIdentity() as Identity<PlayerInventoryItemRecord, Int?>
     override fun getPrimaryKey(): UniqueKey<PlayerInventoryItemRecord> = PLAYER_INVENTORY_ITEM_PKEY
     override fun getReferences(): List<ForeignKey<PlayerInventoryItemRecord, *>> = listOf(PLAYER_INVENTORY_ITEM__FK_PLAYER_INVENTORY_ITEM__ACCOUNT)
@@ -132,7 +133,8 @@ open class PlayerInventoryItem(
     private lateinit var _account: Account
 
     /**
-     * Get the implicit join path to the <code>public.account</code> table.
+     * Get the implicit join path to the <code>alter_pangya.account</code>
+     * table.
      */
     fun account(): Account {
         if (!this::_account.isInitialized)

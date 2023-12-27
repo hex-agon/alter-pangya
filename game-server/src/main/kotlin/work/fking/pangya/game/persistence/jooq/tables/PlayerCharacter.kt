@@ -28,7 +28,7 @@ import org.jooq.impl.SQLDataType
 import org.jooq.impl.TableImpl
 import org.jooq.jackson.extensions.converters.JSONtoJacksonConverter
 
-import work.fking.pangya.game.persistence.jooq.Public
+import work.fking.pangya.game.persistence.jooq.AlterPangya
 import work.fking.pangya.game.persistence.jooq.indexes.IDX_PLAYER_CHARACTER
 import work.fking.pangya.game.persistence.jooq.keys.PLAYER_CHARACTER_PKEY
 import work.fking.pangya.game.persistence.jooq.keys.PLAYER_CHARACTER__FK_PLAYER_CHARACTER__ACCOUNT
@@ -47,7 +47,7 @@ open class PlayerCharacter(
     parameters: Array<Field<*>?>?
 ): TableImpl<PlayerCharacterRecord>(
     alias,
-    Public.PUBLIC,
+    AlterPangya.ALTER_PANGYA,
     child,
     path,
     aliased,
@@ -58,7 +58,7 @@ open class PlayerCharacter(
     companion object {
 
         /**
-         * The reference instance of <code>public.player_character</code>
+         * The reference instance of <code>alter_pangya.player_character</code>
          */
         val PLAYER_CHARACTER: PlayerCharacter = PlayerCharacter()
     }
@@ -69,57 +69,57 @@ open class PlayerCharacter(
     override fun getRecordType(): Class<PlayerCharacterRecord> = PlayerCharacterRecord::class.java
 
     /**
-     * The column <code>public.player_character.uid</code>.
+     * The column <code>alter_pangya.player_character.uid</code>.
      */
     val UID: TableField<PlayerCharacterRecord, Int?> = createField(DSL.name("uid"), SQLDataType.INTEGER.nullable(false).identity(true), this, "")
 
     /**
-     * The column <code>public.player_character.account_uid</code>.
+     * The column <code>alter_pangya.player_character.account_uid</code>.
      */
     val ACCOUNT_UID: TableField<PlayerCharacterRecord, Int?> = createField(DSL.name("account_uid"), SQLDataType.INTEGER.nullable(false), this, "")
 
     /**
-     * The column <code>public.player_character.iff_id</code>.
+     * The column <code>alter_pangya.player_character.iff_id</code>.
      */
     val IFF_ID: TableField<PlayerCharacterRecord, Int?> = createField(DSL.name("iff_id"), SQLDataType.INTEGER.nullable(false), this, "")
 
     /**
-     * The column <code>public.player_character.hair_color</code>.
+     * The column <code>alter_pangya.player_character.hair_color</code>.
      */
     val HAIR_COLOR: TableField<PlayerCharacterRecord, Int?> = createField(DSL.name("hair_color"), SQLDataType.INTEGER.nullable(false), this, "")
 
     /**
-     * The column <code>public.player_character.part_iff_ids</code>.
+     * The column <code>alter_pangya.player_character.part_iff_ids</code>.
      */
     val PART_IFF_IDS: TableField<PlayerCharacterRecord, IntArray?> = createField(DSL.name("part_iff_ids"), SQLDataType.JSON.nullable(false), this, "", JSONtoJacksonConverter<IntArray>(IntArray::class.java))
 
     /**
-     * The column <code>public.player_character.part_uids</code>.
+     * The column <code>alter_pangya.player_character.part_uids</code>.
      */
     val PART_UIDS: TableField<PlayerCharacterRecord, IntArray?> = createField(DSL.name("part_uids"), SQLDataType.JSON.nullable(false), this, "", JSONtoJacksonConverter<IntArray>(IntArray::class.java))
 
     /**
-     * The column <code>public.player_character.aux_parts</code>.
+     * The column <code>alter_pangya.player_character.aux_parts</code>.
      */
     val AUX_PARTS: TableField<PlayerCharacterRecord, IntArray?> = createField(DSL.name("aux_parts"), SQLDataType.JSON.nullable(false), this, "", JSONtoJacksonConverter<IntArray>(IntArray::class.java))
 
     /**
-     * The column <code>public.player_character.cutin_iff_id</code>.
+     * The column <code>alter_pangya.player_character.cutin_iff_id</code>.
      */
     val CUTIN_IFF_ID: TableField<PlayerCharacterRecord, Int?> = createField(DSL.name("cutin_iff_id"), SQLDataType.INTEGER.nullable(false), this, "")
 
     /**
-     * The column <code>public.player_character.stats</code>.
+     * The column <code>alter_pangya.player_character.stats</code>.
      */
     val STATS: TableField<PlayerCharacterRecord, IntArray?> = createField(DSL.name("stats"), SQLDataType.JSON.nullable(false), this, "", JSONtoJacksonConverter<IntArray>(IntArray::class.java))
 
     /**
-     * The column <code>public.player_character.mastery</code>.
+     * The column <code>alter_pangya.player_character.mastery</code>.
      */
     val MASTERY: TableField<PlayerCharacterRecord, Int?> = createField(DSL.name("mastery"), SQLDataType.INTEGER.nullable(false), this, "")
 
     /**
-     * The column <code>public.player_character.cards</code>.
+     * The column <code>alter_pangya.player_character.cards</code>.
      */
     val CARDS: TableField<PlayerCharacterRecord, IntArray?> = createField(DSL.name("cards"), SQLDataType.JSON.nullable(false), this, "", JSONtoJacksonConverter<IntArray>(IntArray::class.java))
 
@@ -127,22 +127,24 @@ open class PlayerCharacter(
     private constructor(alias: Name, aliased: Table<PlayerCharacterRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
 
     /**
-     * Create an aliased <code>public.player_character</code> table reference
+     * Create an aliased <code>alter_pangya.player_character</code> table
+     * reference
      */
     constructor(alias: String): this(DSL.name(alias))
 
     /**
-     * Create an aliased <code>public.player_character</code> table reference
+     * Create an aliased <code>alter_pangya.player_character</code> table
+     * reference
      */
     constructor(alias: Name): this(alias, null)
 
     /**
-     * Create a <code>public.player_character</code> table reference
+     * Create a <code>alter_pangya.player_character</code> table reference
      */
     constructor(): this(DSL.name("player_character"), null)
 
     constructor(child: Table<out Record>, key: ForeignKey<out Record, PlayerCharacterRecord>): this(Internal.createPathAlias(child, key), child, key, PLAYER_CHARACTER, null)
-    override fun getSchema(): Schema? = if (aliased()) null else Public.PUBLIC
+    override fun getSchema(): Schema? = if (aliased()) null else AlterPangya.ALTER_PANGYA
     override fun getIndexes(): List<Index> = listOf(IDX_PLAYER_CHARACTER)
     override fun getIdentity(): Identity<PlayerCharacterRecord, Int?> = super.getIdentity() as Identity<PlayerCharacterRecord, Int?>
     override fun getPrimaryKey(): UniqueKey<PlayerCharacterRecord> = PLAYER_CHARACTER_PKEY
@@ -151,7 +153,8 @@ open class PlayerCharacter(
     private lateinit var _account: Account
 
     /**
-     * Get the implicit join path to the <code>public.account</code> table.
+     * Get the implicit join path to the <code>alter_pangya.account</code>
+     * table.
      */
     fun account(): Account {
         if (!this::_account.isInitialized)

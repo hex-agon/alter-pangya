@@ -28,7 +28,7 @@ import org.jooq.impl.Internal
 import org.jooq.impl.SQLDataType
 import org.jooq.impl.TableImpl
 
-import work.fking.pangya.game.persistence.jooq.Public
+import work.fking.pangya.game.persistence.jooq.AlterPangya
 import work.fking.pangya.game.persistence.jooq.indexes.IDX__ACCOUNT_NICKNAME
 import work.fking.pangya.game.persistence.jooq.indexes.IDX__ACCOUNT_USERNAME
 import work.fking.pangya.game.persistence.jooq.indexes.IDX__ACCOUNT_UUID
@@ -48,7 +48,7 @@ open class Account(
     parameters: Array<Field<*>?>?
 ): TableImpl<AccountRecord>(
     alias,
-    Public.PUBLIC,
+    AlterPangya.ALTER_PANGYA,
     child,
     path,
     aliased,
@@ -59,7 +59,7 @@ open class Account(
     companion object {
 
         /**
-         * The reference instance of <code>public.account</code>
+         * The reference instance of <code>alter_pangya.account</code>
          */
         val ACCOUNT: Account = Account()
     }
@@ -70,42 +70,42 @@ open class Account(
     override fun getRecordType(): Class<AccountRecord> = AccountRecord::class.java
 
     /**
-     * The column <code>public.account.uid</code>.
+     * The column <code>alter_pangya.account.uid</code>.
      */
     val UID: TableField<AccountRecord, Int?> = createField(DSL.name("uid"), SQLDataType.INTEGER.nullable(false).identity(true), this, "")
 
     /**
-     * The column <code>public.account.uuid</code>.
+     * The column <code>alter_pangya.account.uuid</code>.
      */
     val UUID: TableField<AccountRecord, java.util.UUID?> = createField(DSL.name("uuid"), SQLDataType.UUID.nullable(false), this, "")
 
     /**
-     * The column <code>public.account.username</code>.
+     * The column <code>alter_pangya.account.username</code>.
      */
     val USERNAME: TableField<AccountRecord, String?> = createField(DSL.name("username"), SQLDataType.CLOB.nullable(false), this, "")
 
     /**
-     * The column <code>public.account.nickname</code>.
+     * The column <code>alter_pangya.account.nickname</code>.
      */
     val NICKNAME: TableField<AccountRecord, String?> = createField(DSL.name("nickname"), SQLDataType.CLOB, this, "")
 
     /**
-     * The column <code>public.account.password</code>.
+     * The column <code>alter_pangya.account.password</code>.
      */
     val PASSWORD: TableField<AccountRecord, ByteArray?> = createField(DSL.name("password"), SQLDataType.BLOB.nullable(false), this, "")
 
     /**
-     * The column <code>public.account.pang_balance</code>.
+     * The column <code>alter_pangya.account.pang_balance</code>.
      */
     val PANG_BALANCE: TableField<AccountRecord, Long?> = createField(DSL.name("pang_balance"), SQLDataType.BIGINT.nullable(false), this, "")
 
     /**
-     * The column <code>public.account.cookie_balance</code>.
+     * The column <code>alter_pangya.account.cookie_balance</code>.
      */
     val COOKIE_BALANCE: TableField<AccountRecord, Long?> = createField(DSL.name("cookie_balance"), SQLDataType.BIGINT.nullable(false), this, "")
 
     /**
-     * The column <code>public.account.created_at</code>.
+     * The column <code>alter_pangya.account.created_at</code>.
      */
     val CREATED_AT: TableField<AccountRecord, OffsetDateTime?> = createField(DSL.name("created_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).defaultValue(DSL.field(DSL.raw("now()"), SQLDataType.TIMESTAMPWITHTIMEZONE)), this, "")
 
@@ -113,22 +113,22 @@ open class Account(
     private constructor(alias: Name, aliased: Table<AccountRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
 
     /**
-     * Create an aliased <code>public.account</code> table reference
+     * Create an aliased <code>alter_pangya.account</code> table reference
      */
     constructor(alias: String): this(DSL.name(alias))
 
     /**
-     * Create an aliased <code>public.account</code> table reference
+     * Create an aliased <code>alter_pangya.account</code> table reference
      */
     constructor(alias: Name): this(alias, null)
 
     /**
-     * Create a <code>public.account</code> table reference
+     * Create a <code>alter_pangya.account</code> table reference
      */
     constructor(): this(DSL.name("account"), null)
 
     constructor(child: Table<out Record>, key: ForeignKey<out Record, AccountRecord>): this(Internal.createPathAlias(child, key), child, key, ACCOUNT, null)
-    override fun getSchema(): Schema? = if (aliased()) null else Public.PUBLIC
+    override fun getSchema(): Schema? = if (aliased()) null else AlterPangya.ALTER_PANGYA
     override fun getIndexes(): List<Index> = listOf(IDX__ACCOUNT_NICKNAME, IDX__ACCOUNT_USERNAME, IDX__ACCOUNT_UUID)
     override fun getIdentity(): Identity<AccountRecord, Int?> = super.getIdentity() as Identity<AccountRecord, Int?>
     override fun getPrimaryKey(): UniqueKey<AccountRecord> = ACCOUNT_PKEY

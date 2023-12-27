@@ -4,7 +4,7 @@
         <name>org.jooq.codegen.KotlinGenerator</name>
         <database>
             <name>org.jooq.meta.postgres.PostgresDatabase</name>
-            <inputSchema>public</inputSchema>
+            <inputSchema>alter_pangya</inputSchema>
             <forcedTypes>
                 <forcedType>
                     <userType>work.fking.pangya.game.player.ItemUcc</userType>

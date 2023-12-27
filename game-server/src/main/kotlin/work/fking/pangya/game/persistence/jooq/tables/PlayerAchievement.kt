@@ -27,7 +27,7 @@ import org.jooq.impl.Internal
 import org.jooq.impl.SQLDataType
 import org.jooq.impl.TableImpl
 
-import work.fking.pangya.game.persistence.jooq.Public
+import work.fking.pangya.game.persistence.jooq.AlterPangya
 import work.fking.pangya.game.persistence.jooq.indexes.IDX_PLAYER_ACHIEVEMENT
 import work.fking.pangya.game.persistence.jooq.keys.PLAYER_ACHIEVEMENT_PKEY
 import work.fking.pangya.game.persistence.jooq.keys.PLAYER_ACHIEVEMENT__FK_PLAYER_ACHIEVEMENT__ACCOUNT
@@ -46,7 +46,7 @@ open class PlayerAchievement(
     parameters: Array<Field<*>?>?
 ): TableImpl<PlayerAchievementRecord>(
     alias,
-    Public.PUBLIC,
+    AlterPangya.ALTER_PANGYA,
     child,
     path,
     aliased,
@@ -57,7 +57,8 @@ open class PlayerAchievement(
     companion object {
 
         /**
-         * The reference instance of <code>public.player_achievement</code>
+         * The reference instance of
+         * <code>alter_pangya.player_achievement</code>
          */
         val PLAYER_ACHIEVEMENT: PlayerAchievement = PlayerAchievement()
     }
@@ -68,17 +69,17 @@ open class PlayerAchievement(
     override fun getRecordType(): Class<PlayerAchievementRecord> = PlayerAchievementRecord::class.java
 
     /**
-     * The column <code>public.player_achievement.uid</code>.
+     * The column <code>alter_pangya.player_achievement.uid</code>.
      */
     val UID: TableField<PlayerAchievementRecord, Int?> = createField(DSL.name("uid"), SQLDataType.INTEGER.nullable(false).identity(true), this, "")
 
     /**
-     * The column <code>public.player_achievement.account_uid</code>.
+     * The column <code>alter_pangya.player_achievement.account_uid</code>.
      */
     val ACCOUNT_UID: TableField<PlayerAchievementRecord, Int?> = createField(DSL.name("account_uid"), SQLDataType.INTEGER.nullable(false), this, "")
 
     /**
-     * The column <code>public.player_achievement.iff_id</code>.
+     * The column <code>alter_pangya.player_achievement.iff_id</code>.
      */
     val IFF_ID: TableField<PlayerAchievementRecord, Int?> = createField(DSL.name("iff_id"), SQLDataType.INTEGER.nullable(false), this, "")
 
@@ -86,22 +87,24 @@ open class PlayerAchievement(
     private constructor(alias: Name, aliased: Table<PlayerAchievementRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
 
     /**
-     * Create an aliased <code>public.player_achievement</code> table reference
+     * Create an aliased <code>alter_pangya.player_achievement</code> table
+     * reference
      */
     constructor(alias: String): this(DSL.name(alias))
 
     /**
-     * Create an aliased <code>public.player_achievement</code> table reference
+     * Create an aliased <code>alter_pangya.player_achievement</code> table
+     * reference
      */
     constructor(alias: Name): this(alias, null)
 
     /**
-     * Create a <code>public.player_achievement</code> table reference
+     * Create a <code>alter_pangya.player_achievement</code> table reference
      */
     constructor(): this(DSL.name("player_achievement"), null)
 
     constructor(child: Table<out Record>, key: ForeignKey<out Record, PlayerAchievementRecord>): this(Internal.createPathAlias(child, key), child, key, PLAYER_ACHIEVEMENT, null)
-    override fun getSchema(): Schema? = if (aliased()) null else Public.PUBLIC
+    override fun getSchema(): Schema? = if (aliased()) null else AlterPangya.ALTER_PANGYA
     override fun getIndexes(): List<Index> = listOf(IDX_PLAYER_ACHIEVEMENT)
     override fun getIdentity(): Identity<PlayerAchievementRecord, Int?> = super.getIdentity() as Identity<PlayerAchievementRecord, Int?>
     override fun getPrimaryKey(): UniqueKey<PlayerAchievementRecord> = PLAYER_ACHIEVEMENT_PKEY
@@ -110,7 +113,8 @@ open class PlayerAchievement(
     private lateinit var _account: Account
 
     /**
-     * Get the implicit join path to the <code>public.account</code> table.
+     * Get the implicit join path to the <code>alter_pangya.account</code>
+     * table.
      */
     fun account(): Account {
         if (!this::_account.isInitialized)

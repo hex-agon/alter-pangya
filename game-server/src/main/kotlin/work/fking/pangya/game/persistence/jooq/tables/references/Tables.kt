@@ -20,61 +20,61 @@ import work.fking.pangya.game.persistence.jooq.tables.PlayerStatistics
 
 
 /**
- * The table <code>public.account</code>.
+ * The table <code>alter_pangya.account</code>.
  */
 val ACCOUNT: Account = Account.ACCOUNT
 
 /**
- * The table <code>public.achievement</code>.
+ * The table <code>alter_pangya.achievement</code>.
  */
 val ACHIEVEMENT: Achievement = Achievement.ACHIEVEMENT
 
 /**
- * The table <code>public.achievement_milestone</code>.
+ * The table <code>alter_pangya.achievement_milestone</code>.
  */
 val ACHIEVEMENT_MILESTONE: AchievementMilestone = AchievementMilestone.ACHIEVEMENT_MILESTONE
 
 /**
- * The table <code>public.flyway_schema_history</code>.
+ * The table <code>alter_pangya.flyway_schema_history</code>.
  */
 val FLYWAY_SCHEMA_HISTORY: FlywaySchemaHistory = FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY
 
 /**
- * The table <code>public.player_achievement</code>.
+ * The table <code>alter_pangya.player_achievement</code>.
  */
 val PLAYER_ACHIEVEMENT: PlayerAchievement = PlayerAchievement.PLAYER_ACHIEVEMENT
 
 /**
- * The table <code>public.player_achievement_milestone</code>.
+ * The table <code>alter_pangya.player_achievement_milestone</code>.
  */
 val PLAYER_ACHIEVEMENT_MILESTONE: PlayerAchievementMilestone = PlayerAchievementMilestone.PLAYER_ACHIEVEMENT_MILESTONE
 
 /**
- * The table <code>public.player_caddie</code>.
+ * The table <code>alter_pangya.player_caddie</code>.
  */
 val PLAYER_CADDIE: PlayerCaddie = PlayerCaddie.PLAYER_CADDIE
 
 /**
- * The table <code>public.player_character</code>.
+ * The table <code>alter_pangya.player_character</code>.
  */
 val PLAYER_CHARACTER: PlayerCharacter = PlayerCharacter.PLAYER_CHARACTER
 
 /**
- * The table <code>public.player_equipment</code>.
+ * The table <code>alter_pangya.player_equipment</code>.
  */
 val PLAYER_EQUIPMENT: PlayerEquipment = PlayerEquipment.PLAYER_EQUIPMENT
 
 /**
- * The table <code>public.player_inventory_card</code>.
+ * The table <code>alter_pangya.player_inventory_card</code>.
  */
 val PLAYER_INVENTORY_CARD: PlayerInventoryCard = PlayerInventoryCard.PLAYER_INVENTORY_CARD
 
 /**
- * The table <code>public.player_inventory_item</code>.
+ * The table <code>alter_pangya.player_inventory_item</code>.
  */
 val PLAYER_INVENTORY_ITEM: PlayerInventoryItem = PlayerInventoryItem.PLAYER_INVENTORY_ITEM
 
 /**
- * The table <code>public.player_statistics</code>.
+ * The table <code>alter_pangya.player_statistics</code>.
  */
 val PLAYER_STATISTICS: PlayerStatistics = PlayerStatistics.PLAYER_STATISTICS

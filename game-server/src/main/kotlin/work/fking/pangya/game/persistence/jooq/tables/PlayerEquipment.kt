@@ -26,7 +26,7 @@ import org.jooq.impl.SQLDataType
 import org.jooq.impl.TableImpl
 import org.jooq.jackson.extensions.converters.JSONtoJacksonConverter
 
-import work.fking.pangya.game.persistence.jooq.Public
+import work.fking.pangya.game.persistence.jooq.AlterPangya
 import work.fking.pangya.game.persistence.jooq.keys.PLAYER_EQUIPMENT_PKEY
 import work.fking.pangya.game.persistence.jooq.keys.PLAYER_EQUIPMENT__FK_PLAYER_STATISTICS__ACCOUNT
 import work.fking.pangya.game.persistence.jooq.tables.records.PlayerEquipmentRecord
@@ -44,7 +44,7 @@ open class PlayerEquipment(
     parameters: Array<Field<*>?>?
 ): TableImpl<PlayerEquipmentRecord>(
     alias,
-    Public.PUBLIC,
+    AlterPangya.ALTER_PANGYA,
     child,
     path,
     aliased,
@@ -55,7 +55,7 @@ open class PlayerEquipment(
     companion object {
 
         /**
-         * The reference instance of <code>public.player_equipment</code>
+         * The reference instance of <code>alter_pangya.player_equipment</code>
          */
         val PLAYER_EQUIPMENT: PlayerEquipment = PlayerEquipment()
     }
@@ -66,32 +66,32 @@ open class PlayerEquipment(
     override fun getRecordType(): Class<PlayerEquipmentRecord> = PlayerEquipmentRecord::class.java
 
     /**
-     * The column <code>public.player_equipment.account_uid</code>.
+     * The column <code>alter_pangya.player_equipment.account_uid</code>.
      */
     val ACCOUNT_UID: TableField<PlayerEquipmentRecord, Int?> = createField(DSL.name("account_uid"), SQLDataType.INTEGER.nullable(false), this, "")
 
     /**
-     * The column <code>public.player_equipment.item_iff_ids</code>.
+     * The column <code>alter_pangya.player_equipment.item_iff_ids</code>.
      */
     val ITEM_IFF_IDS: TableField<PlayerEquipmentRecord, IntArray?> = createField(DSL.name("item_iff_ids"), SQLDataType.JSON.nullable(false), this, "", JSONtoJacksonConverter<IntArray>(IntArray::class.java))
 
     /**
-     * The column <code>public.player_equipment.character_uid</code>.
+     * The column <code>alter_pangya.player_equipment.character_uid</code>.
      */
     val CHARACTER_UID: TableField<PlayerEquipmentRecord, Int?> = createField(DSL.name("character_uid"), SQLDataType.INTEGER.nullable(false), this, "")
 
     /**
-     * The column <code>public.player_equipment.caddie_uid</code>.
+     * The column <code>alter_pangya.player_equipment.caddie_uid</code>.
      */
     val CADDIE_UID: TableField<PlayerEquipmentRecord, Int?> = createField(DSL.name("caddie_uid"), SQLDataType.INTEGER.nullable(false), this, "")
 
     /**
-     * The column <code>public.player_equipment.club_set_uid</code>.
+     * The column <code>alter_pangya.player_equipment.club_set_uid</code>.
      */
     val CLUB_SET_UID: TableField<PlayerEquipmentRecord, Int?> = createField(DSL.name("club_set_uid"), SQLDataType.INTEGER.nullable(false), this, "")
 
     /**
-     * The column <code>public.player_equipment.comet_iff_id</code>.
+     * The column <code>alter_pangya.player_equipment.comet_iff_id</code>.
      */
     val COMET_IFF_ID: TableField<PlayerEquipmentRecord, Int?> = createField(DSL.name("comet_iff_id"), SQLDataType.INTEGER.nullable(false), this, "")
 
@@ -99,29 +99,32 @@ open class PlayerEquipment(
     private constructor(alias: Name, aliased: Table<PlayerEquipmentRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
 
     /**
-     * Create an aliased <code>public.player_equipment</code> table reference
+     * Create an aliased <code>alter_pangya.player_equipment</code> table
+     * reference
      */
     constructor(alias: String): this(DSL.name(alias))
 
     /**
-     * Create an aliased <code>public.player_equipment</code> table reference
+     * Create an aliased <code>alter_pangya.player_equipment</code> table
+     * reference
      */
     constructor(alias: Name): this(alias, null)
 
     /**
-     * Create a <code>public.player_equipment</code> table reference
+     * Create a <code>alter_pangya.player_equipment</code> table reference
      */
     constructor(): this(DSL.name("player_equipment"), null)
 
     constructor(child: Table<out Record>, key: ForeignKey<out Record, PlayerEquipmentRecord>): this(Internal.createPathAlias(child, key), child, key, PLAYER_EQUIPMENT, null)
-    override fun getSchema(): Schema? = if (aliased()) null else Public.PUBLIC
+    override fun getSchema(): Schema? = if (aliased()) null else AlterPangya.ALTER_PANGYA
     override fun getPrimaryKey(): UniqueKey<PlayerEquipmentRecord> = PLAYER_EQUIPMENT_PKEY
     override fun getReferences(): List<ForeignKey<PlayerEquipmentRecord, *>> = listOf(PLAYER_EQUIPMENT__FK_PLAYER_STATISTICS__ACCOUNT)
 
     private lateinit var _account: Account
 
     /**
-     * Get the implicit join path to the <code>public.account</code> table.
+     * Get the implicit join path to the <code>alter_pangya.account</code>
+     * table.
      */
     fun account(): Account {
         if (!this::_account.isInitialized)

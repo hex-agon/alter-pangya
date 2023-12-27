@@ -27,7 +27,7 @@ import org.jooq.impl.Internal
 import org.jooq.impl.SQLDataType
 import org.jooq.impl.TableImpl
 
-import work.fking.pangya.game.persistence.jooq.Public
+import work.fking.pangya.game.persistence.jooq.AlterPangya
 import work.fking.pangya.game.persistence.jooq.indexes.IDX_PLAYER_CADDIE
 import work.fking.pangya.game.persistence.jooq.keys.PLAYER_CADDIE_PKEY
 import work.fking.pangya.game.persistence.jooq.keys.PLAYER_CADDIE__FK_PLAYER_CADDIE__ACCOUNT
@@ -46,7 +46,7 @@ open class PlayerCaddie(
     parameters: Array<Field<*>?>?
 ): TableImpl<PlayerCaddieRecord>(
     alias,
-    Public.PUBLIC,
+    AlterPangya.ALTER_PANGYA,
     child,
     path,
     aliased,
@@ -57,7 +57,7 @@ open class PlayerCaddie(
     companion object {
 
         /**
-         * The reference instance of <code>public.player_caddie</code>
+         * The reference instance of <code>alter_pangya.player_caddie</code>
          */
         val PLAYER_CADDIE: PlayerCaddie = PlayerCaddie()
     }
@@ -68,27 +68,27 @@ open class PlayerCaddie(
     override fun getRecordType(): Class<PlayerCaddieRecord> = PlayerCaddieRecord::class.java
 
     /**
-     * The column <code>public.player_caddie.uid</code>.
+     * The column <code>alter_pangya.player_caddie.uid</code>.
      */
     val UID: TableField<PlayerCaddieRecord, Int?> = createField(DSL.name("uid"), SQLDataType.INTEGER.nullable(false).identity(true), this, "")
 
     /**
-     * The column <code>public.player_caddie.account_uid</code>.
+     * The column <code>alter_pangya.player_caddie.account_uid</code>.
      */
     val ACCOUNT_UID: TableField<PlayerCaddieRecord, Int?> = createField(DSL.name("account_uid"), SQLDataType.INTEGER.nullable(false), this, "")
 
     /**
-     * The column <code>public.player_caddie.iff_id</code>.
+     * The column <code>alter_pangya.player_caddie.iff_id</code>.
      */
     val IFF_ID: TableField<PlayerCaddieRecord, Int?> = createField(DSL.name("iff_id"), SQLDataType.INTEGER.nullable(false), this, "")
 
     /**
-     * The column <code>public.player_caddie.level</code>.
+     * The column <code>alter_pangya.player_caddie.level</code>.
      */
     val LEVEL: TableField<PlayerCaddieRecord, Int?> = createField(DSL.name("level"), SQLDataType.INTEGER.nullable(false), this, "")
 
     /**
-     * The column <code>public.player_caddie.experience</code>.
+     * The column <code>alter_pangya.player_caddie.experience</code>.
      */
     val EXPERIENCE: TableField<PlayerCaddieRecord, Int?> = createField(DSL.name("experience"), SQLDataType.INTEGER.nullable(false), this, "")
 
@@ -96,22 +96,22 @@ open class PlayerCaddie(
     private constructor(alias: Name, aliased: Table<PlayerCaddieRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
 
     /**
-     * Create an aliased <code>public.player_caddie</code> table reference
+     * Create an aliased <code>alter_pangya.player_caddie</code> table reference
      */
     constructor(alias: String): this(DSL.name(alias))
 
     /**
-     * Create an aliased <code>public.player_caddie</code> table reference
+     * Create an aliased <code>alter_pangya.player_caddie</code> table reference
      */
     constructor(alias: Name): this(alias, null)
 
     /**
-     * Create a <code>public.player_caddie</code> table reference
+     * Create a <code>alter_pangya.player_caddie</code> table reference
      */
     constructor(): this(DSL.name("player_caddie"), null)
 
     constructor(child: Table<out Record>, key: ForeignKey<out Record, PlayerCaddieRecord>): this(Internal.createPathAlias(child, key), child, key, PLAYER_CADDIE, null)
-    override fun getSchema(): Schema? = if (aliased()) null else Public.PUBLIC
+    override fun getSchema(): Schema? = if (aliased()) null else AlterPangya.ALTER_PANGYA
     override fun getIndexes(): List<Index> = listOf(IDX_PLAYER_CADDIE)
     override fun getIdentity(): Identity<PlayerCaddieRecord, Int?> = super.getIdentity() as Identity<PlayerCaddieRecord, Int?>
     override fun getPrimaryKey(): UniqueKey<PlayerCaddieRecord> = PLAYER_CADDIE_PKEY
@@ -120,7 +120,8 @@ open class PlayerCaddie(
     private lateinit var _account: Account
 
     /**
-     * Get the implicit join path to the <code>public.account</code> table.
+     * Get the implicit join path to the <code>alter_pangya.account</code>
+     * table.
      */
     fun account(): Account {
         if (!this::_account.isInitialized)

@@ -28,7 +28,7 @@ import org.jooq.impl.Internal
 import org.jooq.impl.SQLDataType
 import org.jooq.impl.TableImpl
 
-import work.fking.pangya.game.persistence.jooq.Public
+import work.fking.pangya.game.persistence.jooq.AlterPangya
 import work.fking.pangya.game.persistence.jooq.indexes.IDX_PLAYER_ACHIEVEMENT_MILESTONE
 import work.fking.pangya.game.persistence.jooq.keys.PLAYER_ACHIEVEMENT_MILESTONE_PKEY
 import work.fking.pangya.game.persistence.jooq.keys.PLAYER_ACHIEVEMENT_MILESTONE__FK_PLAYER_ACHIEVEMENT_MILESTONE__PLAYER_ACHIEVEMENT
@@ -47,7 +47,7 @@ open class PlayerAchievementMilestone(
     parameters: Array<Field<*>?>?
 ): TableImpl<PlayerAchievementMilestoneRecord>(
     alias,
-    Public.PUBLIC,
+    AlterPangya.ALTER_PANGYA,
     child,
     path,
     aliased,
@@ -59,7 +59,7 @@ open class PlayerAchievementMilestone(
 
         /**
          * The reference instance of
-         * <code>public.player_achievement_milestone</code>
+         * <code>alter_pangya.player_achievement_milestone</code>
          */
         val PLAYER_ACHIEVEMENT_MILESTONE: PlayerAchievementMilestone = PlayerAchievementMilestone()
     }
@@ -70,28 +70,30 @@ open class PlayerAchievementMilestone(
     override fun getRecordType(): Class<PlayerAchievementMilestoneRecord> = PlayerAchievementMilestoneRecord::class.java
 
     /**
-     * The column <code>public.player_achievement_milestone.uid</code>.
+     * The column <code>alter_pangya.player_achievement_milestone.uid</code>.
      */
     val UID: TableField<PlayerAchievementMilestoneRecord, Int?> = createField(DSL.name("uid"), SQLDataType.INTEGER.nullable(false).identity(true), this, "")
 
     /**
      * The column
-     * <code>public.player_achievement_milestone.player_achievement_uid</code>.
+     * <code>alter_pangya.player_achievement_milestone.player_achievement_uid</code>.
      */
     val PLAYER_ACHIEVEMENT_UID: TableField<PlayerAchievementMilestoneRecord, Int?> = createField(DSL.name("player_achievement_uid"), SQLDataType.INTEGER.nullable(false), this, "")
 
     /**
-     * The column <code>public.player_achievement_milestone.iff_id</code>.
+     * The column <code>alter_pangya.player_achievement_milestone.iff_id</code>.
      */
     val IFF_ID: TableField<PlayerAchievementMilestoneRecord, Int?> = createField(DSL.name("iff_id"), SQLDataType.INTEGER.nullable(false), this, "")
 
     /**
-     * The column <code>public.player_achievement_milestone.progress</code>.
+     * The column
+     * <code>alter_pangya.player_achievement_milestone.progress</code>.
      */
     val PROGRESS: TableField<PlayerAchievementMilestoneRecord, Int?> = createField(DSL.name("progress"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field(DSL.raw("0"), SQLDataType.INTEGER)), this, "")
 
     /**
-     * The column <code>public.player_achievement_milestone.completed_at</code>.
+     * The column
+     * <code>alter_pangya.player_achievement_milestone.completed_at</code>.
      */
     val COMPLETED_AT: TableField<PlayerAchievementMilestoneRecord, OffsetDateTime?> = createField(DSL.name("completed_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6), this, "")
 
@@ -99,24 +101,25 @@ open class PlayerAchievementMilestone(
     private constructor(alias: Name, aliased: Table<PlayerAchievementMilestoneRecord>?, parameters: Array<Field<*>?>?): this(alias, null, null, aliased, parameters)
 
     /**
-     * Create an aliased <code>public.player_achievement_milestone</code> table
-     * reference
+     * Create an aliased <code>alter_pangya.player_achievement_milestone</code>
+     * table reference
      */
     constructor(alias: String): this(DSL.name(alias))
 
     /**
-     * Create an aliased <code>public.player_achievement_milestone</code> table
-     * reference
+     * Create an aliased <code>alter_pangya.player_achievement_milestone</code>
+     * table reference
      */
     constructor(alias: Name): this(alias, null)
 
     /**
-     * Create a <code>public.player_achievement_milestone</code> table reference
+     * Create a <code>alter_pangya.player_achievement_milestone</code> table
+     * reference
      */
     constructor(): this(DSL.name("player_achievement_milestone"), null)
 
     constructor(child: Table<out Record>, key: ForeignKey<out Record, PlayerAchievementMilestoneRecord>): this(Internal.createPathAlias(child, key), child, key, PLAYER_ACHIEVEMENT_MILESTONE, null)
-    override fun getSchema(): Schema? = if (aliased()) null else Public.PUBLIC
+    override fun getSchema(): Schema? = if (aliased()) null else AlterPangya.ALTER_PANGYA
     override fun getIndexes(): List<Index> = listOf(IDX_PLAYER_ACHIEVEMENT_MILESTONE)
     override fun getIdentity(): Identity<PlayerAchievementMilestoneRecord, Int?> = super.getIdentity() as Identity<PlayerAchievementMilestoneRecord, Int?>
     override fun getPrimaryKey(): UniqueKey<PlayerAchievementMilestoneRecord> = PLAYER_ACHIEVEMENT_MILESTONE_PKEY
@@ -125,8 +128,8 @@ open class PlayerAchievementMilestone(
     private lateinit var _playerAchievement: PlayerAchievement
 
     /**
-     * Get the implicit join path to the <code>public.player_achievement</code>
-     * table.
+     * Get the implicit join path to the
+     * <code>alter_pangya.player_achievement</code> table.
      */
     fun playerAchievement(): PlayerAchievement {
         if (!this::_playerAchievement.isInitialized)

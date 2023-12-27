@@ -58,7 +58,6 @@
                     </to>
                     <container>
                         <appRoot>/alter-pangya/login-server</appRoot>
-                        <jvmFlags>--enable-preview</jvmFlags>
                     </container>
                 </configuration>
             </plugin>

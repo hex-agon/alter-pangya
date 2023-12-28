@@ -4,7 +4,7 @@ package work.fking.pangya.login.auth
 val NOOP_AUTHENTICATOR: Authenticator = Authenticator { _, _ -> InvalidCredentialsResult }
 
 fun interface Authenticator {
-    fun authenticate(username: String, password: CharArray): AuthResult
+    fun authenticate(username: String, password: ByteArray): AuthResult
 }
 
 sealed interface AuthResult

@@ -14,7 +14,7 @@ import work.fking.pangya.login.task.LoginTask
 import work.fking.pangya.networking.crypt.PangCrypt
 import work.fking.pangya.networking.crypt.PangCrypt.PangCryptException
 import work.fking.pangya.networking.protocol.readPString
-import work.fking.pangya.networking.protocol.readPStringCharArray
+import work.fking.pangya.networking.protocol.readPStringBytes
 
 private const val LOGIN_PACKET_ID = 0x1
 private const val RECONNECT_PACKET_ID = 0xb
@@ -43,7 +43,7 @@ class LoginHandler(
 
     private fun handleLogin(ctx: ChannelHandlerContext, buffer: ByteBuf) {
         val username = buffer.readPString()
-        val passwordMd5 = buffer.readPStringCharArray()
+        val passwordMd5 = buffer.readPStringBytes()
         val channel = ctx.channel()
         LOGGER.debug("Queueing login request from {} for {}", channel.remoteAddress(), username)
         loginServer.submitTask(LoginTask(loginServer, channel, cryptKey, username, passwordMd5))

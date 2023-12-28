@@ -11,13 +11,13 @@ fun ByteBuf.readPString(): String {
     return String(bytes, StandardCharsets.US_ASCII)
 }
 
-fun ByteBuf.readPStringCharArray(): CharArray {
+fun ByteBuf.readPStringBytes(): ByteArray {
     val size = readUnsignedShortLE()
-    val characters = CharArray(size)
+    val bytes = ByteArray(size)
     for (i in 0 until size) {
-        characters[i] = readByte().toInt().toChar()
+        bytes[i] = readByte()
     }
-    return characters
+    return bytes
 }
 
 fun ByteBuf.readFixedSizeString(size: Int): String {

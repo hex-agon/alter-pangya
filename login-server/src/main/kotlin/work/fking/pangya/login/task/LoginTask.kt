@@ -26,7 +26,7 @@ class LoginTask(
     private val channel: Channel,
     private val cryptKey: Int,
     private val username: String,
-    private val password: CharArray
+    private val password: ByteArray
 ) : Runnable {
 
     override fun run() {

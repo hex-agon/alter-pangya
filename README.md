@@ -7,6 +7,14 @@ A PangYa GB.852 server emulator
 This emulator only works with the PangYa GB.852 client, if you browse around the pangya communities you'll easily find a download.
 In order to run the client it is highly recommended that you use [RugBurn](https://github.com/pangbox/rugburn).
 
+## Working features
+The server is still a work in progress and not all features are supported/working correctly, the following features work:
+
+* Practice mode
+* Equipping items in 'My Room'
+
+If you're looking for a more feature complete server make sure to checkout acrisio's [SuperSS](https://github.com/Acrisio-Filho/SuperSS-Dev) project.
+
 ## Running the servers
 Each server requires a configuration file to be present in the working directory, see the readme of each server for a configuration file template:
 

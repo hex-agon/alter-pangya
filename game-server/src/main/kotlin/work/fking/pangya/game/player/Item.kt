@@ -1,10 +1,10 @@
 package work.fking.pangya.game.player
 
 import io.netty.buffer.ByteBuf
-import work.fking.pangya.game.model.IFF_TYPE_BALL
-import work.fking.pangya.game.model.IFF_TYPE_EQUIPITEM_ITEM
-import work.fking.pangya.game.model.IFF_TYPE_NOEQUIP_ITEM
 import work.fking.pangya.game.model.IffObject
+import work.fking.pangya.game.model.IffType.BALL
+import work.fking.pangya.game.model.IffType.EQUIPITEM_ITEM
+import work.fking.pangya.game.model.IffType.NOEQUIP_ITEM
 import work.fking.pangya.game.model.iffTypeFromId
 
 class Item(
@@ -19,7 +19,7 @@ class Item(
 
     fun quantifiable(): Boolean {
         return when (iffTypeFromId(iffId)) {
-            IFF_TYPE_EQUIPITEM_ITEM, IFF_TYPE_NOEQUIP_ITEM, IFF_TYPE_BALL -> true
+            EQUIPITEM_ITEM, NOEQUIP_ITEM, BALL -> true
             else -> false
         }
     }

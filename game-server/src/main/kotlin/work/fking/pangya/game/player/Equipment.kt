@@ -1,9 +1,9 @@
 package work.fking.pangya.game.player
 
 import io.netty.buffer.ByteBuf
-import work.fking.pangya.game.model.IFF_TYPE_BALL
-import work.fking.pangya.game.model.IFF_TYPE_CLUBSET
-import work.fking.pangya.game.model.IFF_TYPE_EQUIPITEM_ITEM
+import work.fking.pangya.game.model.IffType.BALL
+import work.fking.pangya.game.model.IffType.CLUBSET
+import work.fking.pangya.game.model.IffType.EQUIPITEM_ITEM
 import work.fking.pangya.game.model.iffTypeFromId
 
 const val EQUIPPED_ITEMS_SIZE = 10
@@ -28,18 +28,18 @@ class Equipment(
         require(itemIffIds.size == EQUIPPED_ITEMS_SIZE) { "Equipped item iff ids invalid length" }
         for (i in itemIffIds.indices) {
             val iffId = itemIffIds[i]
-            require(iffId == 0 || iffTypeFromId(iffId) == IFF_TYPE_EQUIPITEM_ITEM) { "Iff object $iffId is not an item" }
+            require(iffId == 0 || iffTypeFromId(iffId) == EQUIPITEM_ITEM) { "Iff object $iffId is not an item" }
             this.itemIffIds[i] = iffId
         }
     }
 
     fun equipClubSet(clubSet: Item) {
-        require(clubSet.iffTypeId() == IFF_TYPE_CLUBSET) { "Item is not a clubSet" }
+        require(clubSet.iffTypeId() == CLUBSET) { "Item is not a clubSet" }
         clubSetUid = clubSet.uid
     }
 
     fun equipComet(comet: Item) {
-        require(comet.iffTypeId() == IFF_TYPE_BALL) { "Item is not a comet" }
+        require(comet.iffTypeId() == BALL) { "Item is not a comet" }
         cometIffId = comet.iffId
     }
 

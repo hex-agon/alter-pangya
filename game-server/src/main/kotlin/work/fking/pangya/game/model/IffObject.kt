@@ -2,14 +2,16 @@ package work.fking.pangya.game.model
 
 import io.netty.buffer.ByteBuf
 
-const val IFF_TYPE_CHARACTER = 4
-const val IFF_TYPE_PART = 8
-const val IFF_TYPE_CLUBSET = 16
-const val IFF_TYPE_BALL = 20
-const val IFF_TYPE_EQUIPITEM_ITEM = 24
-const val IFF_TYPE_NOEQUIP_ITEM = 26
-const val IFF_TYPE_CADDIE = 28
-const val IFF_TYPE_CARD = 124
+enum class IffType {
+    CHARACTER,
+    PART,
+    CLUBSET,
+    BALL,
+    EQUIPITEM_ITEM,
+    NOEQUIP_ITEM,
+    CADDIE,
+    CARD
+}
 
 interface IffObject {
 
@@ -17,13 +19,21 @@ interface IffObject {
 
     val iffId: Int
 
-    fun iffTypeId(): Int {
-        return iffTypeFromId(iffId)
-    }
+    fun iffTypeId() = iffTypeFromId(iffId)
 
     fun encode(buffer: ByteBuf)
 }
 
-fun iffTypeFromId(iffId: Int): Int {
-    return iffId shr 24
+fun iffTypeFromId(iffId: Int): IffType {
+    return when (val typeId = iffId shr 24) {
+        4 -> IffType.CHARACTER
+        8 -> IffType.PART
+        16 -> IffType.CLUBSET
+        20 -> IffType.BALL
+        24 -> IffType.EQUIPITEM_ITEM
+        26 -> IffType.NOEQUIP_ITEM
+        28 -> IffType.CADDIE
+        124 -> IffType.CARD
+        else -> throw IllegalArgumentException("Unknown iffTypeId $typeId")
+    }
 }

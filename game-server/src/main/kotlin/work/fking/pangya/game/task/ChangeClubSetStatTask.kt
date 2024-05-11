@@ -1,6 +1,6 @@
 package work.fking.pangya.game.task
 
-import work.fking.pangya.game.model.IFF_TYPE_CLUBSET
+import work.fking.pangya.game.model.IffType.CLUBSET
 import work.fking.pangya.game.model.iffTypeFromId
 import work.fking.pangya.game.packet.outbound.ClubSetReplies
 import work.fking.pangya.game.packet.outbound.ClubSetReplies.UpgradeResult.CANNOT_DOWNGRADE_ANYMORE
@@ -31,7 +31,7 @@ class ChangeClubSetStatTask(
 
     override fun run() {
         val clubSet = player.inventory.findByUid(itemUid) ?: throw IllegalStateException("Player ${player.nickname} tried to upgrade an item it does not own")
-        require(iffTypeFromId(clubSet.iffId) == IFF_TYPE_CLUBSET) { "Player ${player.nickname} tried to upgrade an item that is not a ClubSet" }
+        require(iffTypeFromId(clubSet.iffId) == CLUBSET) { "Player ${player.nickname} tried to upgrade an item that is not a ClubSet" }
 
         when (type) {
             TYPE_UPGRADE_CLUBSET -> upgrade(clubSet)

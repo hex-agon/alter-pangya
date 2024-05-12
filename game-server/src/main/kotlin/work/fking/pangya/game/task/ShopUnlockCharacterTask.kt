@@ -17,14 +17,16 @@ class ShopUnlockCharacterTask(
     override fun run() {
         require(iffTypeFromId(iffId) == CHARACTER) { "iffId is not a character" }
         val partIffIds = characterBaseParts(iffId)
-        val character = persistenceCtx.characterRepository.save(
-            txCtx = persistenceCtx.noTxContext(),
-            playerUid = player.uid,
-            character = Character(
-                iffId = iffId,
-                partIffIds = partIffIds
+        val character = persistenceCtx.noTx { tx ->
+            characterRepository.save(
+                txCtx = tx,
+                playerUid = player.uid,
+                character = Character(
+                    iffId = iffId,
+                    partIffIds = partIffIds
+                )
             )
-        )
+        }
         player.characterRoster.entries.add(character)
         player.writeAndFlush(ShopReplies.purchaseSuccessful(player.wallet))
     }

@@ -3,9 +3,9 @@ package work.fking.pangya.game.packet.outbound
 import io.netty.buffer.ByteBuf
 import work.fking.pangya.networking.protocol.OutboundPacket
 
-object EquipmentUpdateReplies {
+object MyRoomEquipmentUpdateReplies {
 
-    enum class EquipmentUpdateType(val id: Int) {
+    enum class MyRoomEquipmentUpdateType(val id: Int) {
         CHARACTER_PARTS(0),
         CADDIE(1),
         EQUIPPED_ITEMS(2),
@@ -16,14 +16,14 @@ object EquipmentUpdateReplies {
         CUT_IN(9)
     }
 
-    enum class EquipmentUpdateResult(val id: Int) {
+    enum class MyRoomEquipmentUpdateResult(val id: Int) {
         INCORRECT_ITEM_CODE(0),
         FAILED_BECAUSE_OF_DB_ERROR(1),
         SUCCESS(4),
         FAILED_TO_UPGRADE(5)
     }
 
-    fun ack(result: EquipmentUpdateResult, type: EquipmentUpdateType, body: (buffer: ByteBuf) -> Unit = {}): OutboundPacket {
+    fun ack(result: MyRoomEquipmentUpdateResult, type: MyRoomEquipmentUpdateType, body: (buffer: ByteBuf) -> Unit = {}): OutboundPacket {
         return OutboundPacket { buffer ->
             buffer.writeShortLE(0x6b)
             buffer.writeByte(result.id)

@@ -17,16 +17,18 @@ data class PersistenceContext(
     /**
      * Returns a transactional context without an active transaction.
      */
-    fun noTxContext() = TransactionalContext(jooq)
+    fun <T> noTx(block: PersistenceContext.(txContext: TransactionalContext) -> T): T {
+        return block(TransactionalContext(jooq))
+    }
 
     /**
      * Returns a transactional context with an active transaction.
      */
-    fun transactional(transactional: (txContext: TransactionalContext) -> Unit) {
+    fun transactional(block: PersistenceContext.(txContext: TransactionalContext) -> Unit) {
         if (jooq != null) {
-            jooq.transaction { tx -> transactional(TransactionalContext(tx.dsl())) }
+            jooq.transaction { tx -> block(TransactionalContext(tx.dsl())) }
         } else {
-            transactional(TransactionalContext())
+            block(TransactionalContext())
         }
     }
 }

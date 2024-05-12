@@ -3,6 +3,7 @@ package work.fking.pangya.game.player
 import io.netty.channel.Channel
 import work.fking.pangya.game.ServerChannel
 import work.fking.pangya.game.room.Room
+import work.fking.pangya.game.room.RoomPlayer
 import java.util.Objects
 
 class Player(

@@ -71,7 +71,7 @@ class ChangeClubSetStatTask(
         }
 
         clubSet.stats[stat.ordinal]--
-        persistenceCtx.inventoryRepository.saveItem(persistenceCtx.noTxContext(), player.uid, clubSet)
+        persistenceCtx.noTx { tx -> inventoryRepository.saveItem(tx, player.uid, clubSet) }
         player.writeAndFlush(ClubSetReplies.upgradeAck(result = DOWNGRADE_SUCCESS, stat = stat.ordinal, itemUid = itemUid))
     }
 }

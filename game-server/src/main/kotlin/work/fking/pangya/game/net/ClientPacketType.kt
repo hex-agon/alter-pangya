@@ -1,14 +1,14 @@
 package work.fking.pangya.game.net
 
 import work.fking.pangya.game.packet.handler.AchievementStatusRequestPacketHandler
-import work.fking.pangya.game.packet.handler.EquipmentUpdatePacketHandler
+import work.fking.pangya.game.packet.handler.myroom.MyRoomEquipmentUpdatePacketHandler
 import work.fking.pangya.game.packet.handler.JoinLobbyPacketHandler
 import work.fking.pangya.game.packet.handler.LeaveLobbyPacketHandler
 import work.fking.pangya.game.packet.handler.LockerInventoryRequestPacketHandler
 import work.fking.pangya.game.packet.handler.LoginBonusClaimPacketHandler
 import work.fking.pangya.game.packet.handler.LoginBonusStatusPacketHandler
-import work.fking.pangya.game.packet.handler.MyRoomOpenPacketHandler
-import work.fking.pangya.game.packet.handler.MyRoomOpenedPacketHandler
+import work.fking.pangya.game.packet.handler.myroom.MyRoomOpenPacketHandler
+import work.fking.pangya.game.packet.handler.myroom.MyRoomOpenedPacketHandler
 import work.fking.pangya.game.packet.handler.PapelShopPlayPacketHandler
 import work.fking.pangya.game.packet.handler.RareShopOpenPacketHandler
 import work.fking.pangya.game.packet.handler.SelectChannelPacketHandler
@@ -34,6 +34,7 @@ import work.fking.pangya.game.packet.handler.match.MatchPlayerUseTimeBoosterPack
 import work.fking.pangya.game.packet.handler.match.MatchTourneyShotPacketHandler
 import work.fking.pangya.game.packet.handler.match.StartGamePacketHandler
 import work.fking.pangya.game.packet.handler.room.CreateRoomPacketHandler
+import work.fking.pangya.game.packet.handler.room.EquipmentUpdatePacketHandler
 import work.fking.pangya.game.packet.handler.room.JoinRoomHandler
 import work.fking.pangya.game.packet.handler.room.LeaveRoomPacketHandler
 import work.fking.pangya.game.packet.handler.room.RoomSettingsUpdatePacketHandler
@@ -48,8 +49,8 @@ enum class ClientPacketType(
     ROOM_CREATE(0x8, CreateRoomPacketHandler()),
     ROOM_JOIN(0x9, JoinRoomHandler()),
     ROOM_SETTINGS_UPDATE(0xa, RoomSettingsUpdatePacketHandler()),
-    EQUIPMENT_UPDATE_IN_LOBBY(0xb),
-    EQUIPMENT_UPDATE_IN_GAME_ROOM(0xc),
+    EQUIPMENT_UPDATE_IN_LOBBY(0xb, EquipmentUpdatePacketHandler(false)),
+    EQUIPMENT_UPDATE_IN_GAME_ROOM(0xc, EquipmentUpdatePacketHandler(true)),
     START_MATCH(0xe, StartGamePacketHandler()),
     ROOM_LEAVE(0xf, LeaveRoomPacketHandler()),
     MATCH_HOLE_LOAD_FINISHED(0x11),
@@ -63,7 +64,7 @@ enum class ClientPacketType(
     MATCH_PLAYER_SHOT_SYNC(0x1b, MatchPlayerShotSyncPacketHandler()),
     MATCH_PLAYER_SHOT_END(0x1c, MatchPlayerTurnEndPacketHandler()),
     SHOP_PURCHASE(0x1d, ShopPurchaseHandler()),
-    EQUIPMENT_UPDATE_IN_MY_ROOM(0x20, EquipmentUpdatePacketHandler()),
+    EQUIPMENT_UPDATE_IN_MY_ROOM(0x20, MyRoomEquipmentUpdatePacketHandler()),
     MATCH_PLAYER_TURN_START(0x22),
     USER_PROFILE_REQUEST(0x2f, UserProfileRequestPacketHandler()),
     MATCH_PLAYER_HOLE_FINISH(0x31, MatchPlayerHoleFinishPacketHandler()),

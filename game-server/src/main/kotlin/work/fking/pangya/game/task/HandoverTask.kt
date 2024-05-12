@@ -68,15 +68,15 @@ class HandoverTask(
 
         val persistenceCtx = gameServer.persistenceCtx
 
-        val updateNicknameFuture = gameServer.submitTask { persistenceCtx.playerRepository.updateNickname(persistenceCtx.noTxContext(), playerUid, sessionInfo.nickname) }
-        val playerWalletFuture = gameServer.submitTask { persistenceCtx.playerRepository.loadWallet(persistenceCtx.noTxContext(), playerUid) }
-        val characterRosterFuture = gameServer.submitTask { persistenceCtx.characterRepository.loadRoster(persistenceCtx.noTxContext(), playerUid) }
-        val caddieRosterFuture = gameServer.submitTask { persistenceCtx.caddieRepository.loadRoster(persistenceCtx.noTxContext(), playerUid) }
-        val inventoryFuture = gameServer.submitTask { persistenceCtx.inventoryRepository.load(persistenceCtx.noTxContext(), playerUid) }
-        val cardInventoryFuture = gameServer.submitTask { persistenceCtx.cardRepository.load(persistenceCtx.noTxContext(), playerUid) }
-        val equipmentFuture = gameServer.submitTask { persistenceCtx.equipmentRepository.load(persistenceCtx.noTxContext(), playerUid) }
-        val statisticsFuture = gameServer.submitTask { persistenceCtx.statisticsRepository.load(persistenceCtx.noTxContext(), playerUid) }
-        val achievementsFuture = gameServer.submitTask { persistenceCtx.achievementsRepository.load(persistenceCtx.noTxContext(), playerUid) }
+        val updateNicknameFuture = gameServer.submitTask { persistenceCtx.noTx { tx -> playerRepository.updateNickname(tx, playerUid, sessionInfo.nickname) } }
+        val playerWalletFuture = gameServer.submitTask { persistenceCtx.noTx { tx -> playerRepository.loadWallet(tx, playerUid) } }
+        val characterRosterFuture = gameServer.submitTask { persistenceCtx.noTx { tx -> characterRepository.loadRoster(tx, playerUid) } }
+        val caddieRosterFuture = gameServer.submitTask { persistenceCtx.noTx { tx -> caddieRepository.loadRoster(tx, playerUid) } }
+        val inventoryFuture = gameServer.submitTask { persistenceCtx.noTx { tx -> inventoryRepository.load(tx, playerUid) } }
+        val cardInventoryFuture = gameServer.submitTask { persistenceCtx.noTx { tx -> cardRepository.load(tx, playerUid) } }
+        val equipmentFuture = gameServer.submitTask { persistenceCtx.noTx { tx -> equipmentRepository.load(tx, playerUid) } }
+        val statisticsFuture = gameServer.submitTask { persistenceCtx.noTx { tx -> statisticsRepository.load(tx, playerUid) } }
+        val achievementsFuture = gameServer.submitTask { persistenceCtx.noTx { tx -> achievementsRepository.load(tx, playerUid) } }
 
         val futures = listOf(
             updateNicknameFuture,

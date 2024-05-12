@@ -15,7 +15,7 @@ class UnlockCaddieTask(
     override fun run() {
         require(iffTypeFromId(iffId) == CADDIE) { "iffId is not a caddie" }
         val caddie = Caddie(iffId = iffId)
-        val persistedCaddie = persistenceCtx.caddieRepository.save(persistenceCtx.noTxContext(), player.uid, caddie)
+        val persistedCaddie = persistenceCtx.noTx { tx -> caddieRepository.save(tx, player.uid, caddie) }
         player.caddieRoster.entries.add(persistedCaddie)
     }
 }

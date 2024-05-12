@@ -38,6 +38,19 @@ class RoomPlayer(
         player.flush()
     }
 
+    fun resetLobbyState() {
+        ready = false
+        away = false
+    }
+
+    fun resetGameState() {
+        currentHole = 1
+        finishedHole = false
+        pang = 0
+        bonusPang = 0
+        statistics = PlayerStatistics()
+    }
+
     private fun computeRoomFlags(roomOwner: Boolean): List<RoomPlayerFlag> {
         val playerFlags = mutableListOf<RoomPlayerFlag>()
 

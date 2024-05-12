@@ -70,5 +70,6 @@ class PracticeMatchDirector : MatchDirector {
             write(MatchReplies.tourneyTimeout())
         }
         room.broadcast(MatchReplies.tourneyUpdatePlayerProgress(event.player))
+        room.endGame()
     }
 }

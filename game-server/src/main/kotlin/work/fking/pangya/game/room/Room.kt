@@ -11,6 +11,7 @@ import work.fking.pangya.game.room.RoomJoinError.ROOM_FULL
 import work.fking.pangya.game.room.match.MatchDirector
 import work.fking.pangya.game.room.match.MatchEvent
 import work.fking.pangya.game.room.match.MatchState
+import work.fking.pangya.networking.protocol.OutboundPacket
 import work.fking.pangya.networking.protocol.writeFixedSizeString
 import java.util.concurrent.locks.ReentrantReadWriteLock
 import kotlin.concurrent.read
@@ -70,6 +71,7 @@ class Room(
             player.currentRoom = null
             val roomPlayer = findSelf(player)
             players.remove(roomPlayer)
+            nextFreeSlot--
 
             broadcast(RoomReplies.roomCensusRemove(roomPlayer))
 
@@ -100,7 +102,7 @@ class Room(
     }
 
     fun handleMatchEvent(event: MatchEvent) {
-        activeMatch?.onMatchEvent(this, event) ?: throw IllegalStateException("Room[$id] Cannot handle match event, no bound handler")
+        activeMatch?.onMatchEvent(this, event)
     }
 
     fun handleUpdates(updates: List<RoomUpdate>) {
@@ -112,7 +114,7 @@ class Room(
         broadcast(RoomReplies.roomSettings(this))
     }
 
-    fun broadcast(message: Any) {
+    fun broadcast(message: OutboundPacket) {
         playersLock.read {
             players.forEach { it.player.writeAndFlush(message) }
         }
@@ -129,8 +131,9 @@ class Room(
         )
         activeMatch = Match(matchState, settings.type.matchDirector)
 
-        playersLock.read {
+        playersLock.write {
             players.forEach { player ->
+                player.resetGameState()
                 player.write(MatchReplies.start230())
                 player.write(MatchReplies.start231())
                 player.write(MatchReplies.start77())
@@ -138,6 +141,12 @@ class Room(
                 player.writeAndFlush(MatchReplies.matchInfo(this, matchState))
             }
         }
+    }
+
+    fun endGame() {
+        state = RoomState.LOBBY
+        activeMatch = null
+        playersLock.write { players.forEach { player -> player.resetLobbyState() } }
     }
 
     override fun equals(other: Any?): Boolean {
@@ -152,7 +161,6 @@ class Room(
     override fun hashCode(): Int {
         return id
     }
-
 }
 
 fun ByteBuf.write(room: Room) {

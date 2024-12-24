@@ -12,7 +12,7 @@
     <artifactId>service-discovery</artifactId>
 
     <properties>
-        <lettuce.version>6.2.4.RELEASE</lettuce.version>
+        <lettuce.version>6.5.1.RELEASE</lettuce.version>
     </properties>
 
     <dependencies>

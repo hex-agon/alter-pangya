@@ -36,8 +36,13 @@ object Bootstrap {
     fun main(args: Array<String>) {
         LOGGER.info("Bootstrapping the game server server...")
         val objectMapper = TomlMapper().registerKotlinModule()
+        val configPath = Path.of("config.toml")
 
-        val serverConfig = objectMapper.readValue<GameServerConfig>(Files.newInputStream(Path.of("config.toml")))
+        if (!Files.exists(configPath)) {
+            LOGGER.error("Missing 'config.toml' file, double check if it exists.")
+            return
+        }
+        val serverConfig = objectMapper.readValue<GameServerConfig>(Files.newInputStream(configPath))
 
         val redisClient = RedisClient.create(RedisURI.create(serverConfig.redis.url))
         val discoveryClient = DiscoveryClient(redisClient)

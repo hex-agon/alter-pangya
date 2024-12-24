@@ -22,9 +22,16 @@ object Bootstrap {
 
     @JvmStatic
     fun main(args: Array<String>) {
-        val objectMapper = TomlMapper().registerKotlinModule()
         LOGGER.info("Bootstrapping the login server...")
-        val serverConfig = objectMapper.readValue<LoginServerConfig>(Files.newInputStream(Path.of("config.toml")))
+
+        val objectMapper = TomlMapper().registerKotlinModule()
+        val configPath = Path.of("config.toml")
+
+        if (!Files.exists(configPath)) {
+            LOGGER.error("Missing 'config.toml' file, double check if it exists.")
+            return
+        }
+        val serverConfig = objectMapper.readValue<LoginServerConfig>(Files.newInputStream(configPath))
 
         val redisClient = RedisClient.create(RedisURI.create(serverConfig.redis.url))
         val discoveryClient = DiscoveryClient(redisClient)

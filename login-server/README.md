@@ -13,5 +13,5 @@ username = "alter_pangya"
 password = "alter_pangya"
 
 [redis]
-url = "redis://cubi.link"
+url = "redis://localhost"
 ```

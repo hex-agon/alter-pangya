@@ -1,6 +1,7 @@
-package work.fking.pangya.login.session
+package work.fking.pangya.game.session
 
-data class HandoverInfo(
+@JvmRecord
+data class SessionInfo(
     val sessionKey: String,
     val loginKey: String,
     val uid: Int,

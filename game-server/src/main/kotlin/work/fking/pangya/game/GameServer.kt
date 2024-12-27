@@ -1,5 +1,6 @@
 package work.fking.pangya.game
 
+import io.lettuce.core.RedisClient
 import io.netty.bootstrap.ServerBootstrap
 import io.netty.channel.Channel
 import io.netty.channel.ChannelOption
@@ -16,6 +17,8 @@ import work.fking.pangya.game.player.PlayerAchievements
 import work.fking.pangya.game.player.PlayerGroup
 import work.fking.pangya.game.player.PlayerStatistics
 import work.fking.pangya.game.player.PlayerWallet
+import work.fking.pangya.game.session.SessionInfo
+import work.fking.pangya.game.session.SessionClient
 import work.fking.pangya.networking.selectBestEventLoopAvailable
 import work.fking.pangya.networking.selectBestServerChannelAvailable
 import java.net.InetAddress
@@ -27,11 +30,13 @@ import java.util.concurrent.atomic.AtomicInteger
 private val LOGGER = LoggerFactory.getLogger(GameServer::class.java)
 
 class GameServer(
-    private val serverConfig: GameServerConfig,
+    redisClient: RedisClient,
+    val serverConfig: GameServerConfig,
     val persistenceCtx: PersistenceContext,
-    val sessionClient: SessionClient,
     val serverChannels: List<ServerChannel> = serverConfig.serverChannels
 ) {
+    val sessionClient = SessionClient(redisClient, this)
+
     private val executorService = Executors.newThreadPerTaskExecutor(
         Thread.ofVirtual()
             .uncaughtExceptionHandler { _, throwable -> LOGGER.error("Uncaught exception while running task", throwable) }
@@ -51,7 +56,7 @@ class GameServer(
 
     fun registerPlayer(
         channel: Channel,
-        sessionInfo: SessionClient.HandoverInfo,
+        sessionInfo: SessionInfo,
         playerWallet: PlayerWallet,
         characterRoster: CharacterRoster,
         caddieRoster: CaddieRoster,
@@ -63,6 +68,7 @@ class GameServer(
     ): Player {
         val player = Player(
             channel = channel,
+            sessionKey = sessionInfo.sessionKey,
             uid = sessionInfo.uid,
             connectionId = connectionIdSequence.getAndIncrement(),
             username = sessionInfo.username,

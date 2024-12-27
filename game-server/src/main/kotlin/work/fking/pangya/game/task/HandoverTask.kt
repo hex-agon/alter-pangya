@@ -3,7 +3,7 @@ package work.fking.pangya.game.task
 import io.netty.channel.Channel
 import org.slf4j.LoggerFactory
 import work.fking.pangya.game.GameServer
-import work.fking.pangya.game.SessionClient
+import work.fking.pangya.game.session.SessionClient
 import work.fking.pangya.game.net.ClientPacketDispatcher
 import work.fking.pangya.game.net.ClientPacketType
 import work.fking.pangya.game.net.ClientProtocol
@@ -18,6 +18,7 @@ import work.fking.pangya.game.packet.outbound.PangBalancePacket
 import work.fking.pangya.game.packet.outbound.ServerChannelsPacket
 import work.fking.pangya.game.packet.outbound.TreasureHunterPacket
 import work.fking.pangya.game.packet.outbound.chunkIffContainer
+import work.fking.pangya.game.session.SessionInfo
 import java.util.concurrent.TimeUnit
 
 private val LOGGER = LoggerFactory.getLogger(HandoverTask::class.java)
@@ -31,8 +32,8 @@ class HandoverTask(
 ) : Runnable {
 
     override fun run() {
-        val sessionInfo: SessionClient.HandoverInfo? = try {
-            gameServer.sessionClient.loadHandoverInfo(loginKey)
+        val sessionInfo: SessionInfo? = try {
+            gameServer.sessionClient.loadSessionInfo(loginKey)
         } catch (e: Exception) {
             LOGGER.warn("Handover error loginKey={}, message={}", loginKey, e.message)
             channel.writeAndFlush(HandoverReplies.error(HandoverResult.CANNOT_CONNECT_LOGIN_SERVER))

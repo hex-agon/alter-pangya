@@ -3,11 +3,11 @@ package work.fking.pangya.game.player
 import io.netty.channel.Channel
 import work.fking.pangya.game.ServerChannel
 import work.fking.pangya.game.room.Room
-import work.fking.pangya.game.room.RoomPlayer
 import java.util.Objects
 
 class Player(
     private val channel: Channel,
+    val sessionKey: String,
     val uid: Int,
     val connectionId: Int,
     val username: String,

@@ -17,8 +17,8 @@ private const val CHANNEL_NAME = "pangya.servers.heartbeat"
 
 class DiscoveryClient(
     redisClient: RedisClient,
-    private val redis: RedisPubSubCommands<String, String> = redisClient.connectPubSub().sync()
 ) {
+    private val redis: RedisPubSubCommands<String, String> = redisClient.connectPubSub().sync()
     private val objectMapper = jacksonObjectMapper()
 
     init {

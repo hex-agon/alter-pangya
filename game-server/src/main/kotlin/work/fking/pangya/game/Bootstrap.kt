@@ -25,6 +25,7 @@ import work.fking.pangya.game.persistence.JooqInventoryRepository
 import work.fking.pangya.game.persistence.JooqPlayerRepository
 import work.fking.pangya.game.persistence.JooqStatisticsRepository
 import work.fking.pangya.game.persistence.PersistenceContext
+import work.fking.pangya.game.session.SessionClient
 import java.nio.file.Files
 import java.nio.file.Path
 
@@ -46,15 +47,14 @@ object Bootstrap {
 
         val redisClient = RedisClient.create(RedisURI.create(serverConfig.redis.url))
         val discoveryClient = DiscoveryClient(redisClient)
-        val sessionClient = SessionClient(redisClient)
 
         val jooq = setupJooq(serverConfig.database)
         val persistenceContext = setupPersistenceContext(jooq)
 
         val server = GameServer(
+            redisClient = redisClient,
             serverConfig = serverConfig,
             persistenceCtx = persistenceContext,
-            sessionClient = sessionClient
         )
         HeartbeatPublisher(discoveryClient, GAME, serverConfig) { server.players.count() }.start()
         server.start()

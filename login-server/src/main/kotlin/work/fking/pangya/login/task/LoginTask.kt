@@ -17,6 +17,11 @@ import work.fking.pangya.login.net.pipe.ProtocolDecoder
 import work.fking.pangya.login.packet.outbound.LoginReplies
 import work.fking.pangya.login.packet.outbound.LoginReplies.Error.INCORRECT_USERNAME_PASSWORD
 import work.fking.pangya.login.packet.outbound.LoginReplies.Error.INVALID_ID
+import work.fking.pangya.login.packet.outbound.LoginReplies.Error.SERVER_MAINTENANCE
+import work.fking.pangya.login.session.Active
+import work.fking.pangya.login.session.Error
+import work.fking.pangya.login.session.NotFound
+import work.fking.pangya.login.session.Timeout
 
 private val PROTOCOL: ClientProtocol = ClientProtocol(ClientPacketType.entries.toTypedArray())
 private val LOGGER = LoggerFactory.getLogger(LoginTask::class.java)
@@ -33,22 +38,24 @@ class LoginTask(
         when (val authResult = loginServer.authenticator.authenticate(username, password)) {
             is SuccessResult -> onSuccessAuth(authResult.userInfo)
             is InvalidCredentialsResult -> onInvalidCredentials()
-            is ExceptionResult -> {
-                LOGGER.warn("Auth failed", authResult.exception)
-            }
+            is ExceptionResult -> LOGGER.warn("Auth failed", authResult.exception)
         }
     }
 
     private fun onSuccessAuth(userInfo: UserInfo) {
         val sessionClient = loginServer.sessionClient
-        val userSession = sessionClient.sessionKeyForUsername(username)
+        val result = sessionClient.findSessionByUsername(username)
 
-        if (userSession != null) {
-            duplicateConnection()
-            return
+        when (result) {
+            is Active -> duplicateConnection()
+            is NotFound, Timeout -> proceedLogin(userInfo)
+            is Error -> serverError()
         }
+    }
+
+    private fun proceedLogin(userInfo: UserInfo) {
         val player = loginServer.registerPlayer(channel, userInfo)
-        sessionClient.registerSession(player)
+        loginServer.sessionClient.registerSession(player)
 
         val pipeline = channel.pipeline()
         pipeline.remove("loginHandler")
@@ -76,5 +83,10 @@ class LoginTask(
 
     private fun duplicateConnection() {
         channel.writeAndFlush(LoginReplies.error(INVALID_ID, "Account is already logged in."))
+    }
+
+    private fun serverError() {
+        channel.writeAndFlush(LoginReplies.error(SERVER_MAINTENANCE))
+
     }
 }

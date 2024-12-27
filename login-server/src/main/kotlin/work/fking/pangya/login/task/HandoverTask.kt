@@ -16,7 +16,7 @@ class HandoverTask(
 
     override fun run() {
         LOGGER.info("Player {} is being handed over to serverId={} with loginKey={} and sessionKey={}", player.uid, serverId, player.loginKey, player.sessionKey)
-        runCatching { server.sessionClient.registerHandoverInfo(player, serverId) }.onFailure { throw RuntimeException("Failed to register player session") }
+        runCatching { server.sessionClient.registerHandoverInfo(player) }.onFailure { throw RuntimeException("Failed to register player session") }
         player.writeAndFlush(LoginReplies.sessionKey(player.sessionKey))
         player.state = LoginState.HANDED_OVER
     }

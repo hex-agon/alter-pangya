@@ -1,6 +1,5 @@
 package work.fking.pangya.game.player
 
-import io.netty.channel.group.ChannelGroup
 import java.util.concurrent.locks.ReentrantReadWriteLock
 import java.util.function.Consumer
 import kotlin.concurrent.read
@@ -16,10 +15,18 @@ class PlayerGroup(
     private val players: MutableMap<Int, Player> = LinkedHashMap()
 
     fun find(connectionId: Int): Player? {
-        val group: ChannelGroup? = null
         lock.read {
             return players[connectionId]
         }
+    }
+
+    fun find(predicate: (Player) -> Boolean): Player? {
+        lock.read {
+            for ((_, player) in players) {
+                if (predicate.invoke(player)) return player
+            }
+        }
+        return null
     }
 
     fun add(player: Player): Boolean {
